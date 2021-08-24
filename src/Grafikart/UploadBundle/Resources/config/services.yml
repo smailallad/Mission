@@ -1,0 +1,10 @@
+services:
+  upload.annotation_reader:
+    class: Grafikart\UploadBundle\Annotation\UploadAnnotationReader
+    arguments: ["@annotations.reader"]
+
+  upload.subscriber:
+    class: Grafikart\UploadBundle\Listener\UploadSubscriber
+    arguments: ["@upload.annotation_reader"]
+    tags:
+      - { name: doctrine.event_subscriber, connection: default }

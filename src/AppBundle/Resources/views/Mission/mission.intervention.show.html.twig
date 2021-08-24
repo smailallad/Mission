@@ -1,0 +1,300 @@
+{% set appel_employe = app.session.get('appel_employe') %}
+{% set appel_journal = app.session.get('appel_journal') %}
+
+{% extends "base.html.twig" %}
+{% block title %}Intervention - {{ parent() }}{% endblock %}
+{% block detail %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4></h4>
+            {#{% if appel_journal == 'non'%}
+                {% if appel_employe == 'non' %}#}
+                    <a class="btn btn-primary mr-2" href="{{ path('mission_intervention',{id: intervention.mission.id | Mycrypt }) }}">
+                        <i class="glyphicon glyphicon-list"></i>
+                    </a>
+             {#}   {% else %}
+                    <a class="btn btn-primary mr-2" href="{{ path('mission_employe_index') }}">
+                        <i class="glyphicon glyphicon-list"></i>
+                    </a>
+                {% endif %}
+            {% else %}
+                <a class="btn btn-primary mr-2" href="{{ path('journal') }}">
+                    <i class="glyphicon glyphicon-list"></i>
+                </a>
+            {% endif %}
+            Mission
+            {% if is_granted('ROLE_COMPTABLE') %}
+            <a class="ml-5" href=""><img src="{{ asset('icones/Excel-icon.png') }}" title="Exporter vers excel."></a>
+            {% endif %}#}
+            Mission
+        </h4>
+    </div>
+    <div class="panel-body">
+        {% include "@App/Mission/mission.detail.html.twig" %}
+    </div>
+</div>
+{% endblock %}
+
+{% block contenu %}
+{#{% include "@App/messages.html.twig" %}#}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4> Intervention </h4>
+    </div>
+    <div class="panel-body">
+        <table class="table table-hover record_properties">
+            <tbody>
+                <tr>
+                    <th scope="row">Id</th>
+                    <td>{{ intervention.id }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Date</th>
+                    <td>{{ intervention.dateIntervention | date('d/m/Y') }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Code site</th>
+                    <td>{{ intervention.site.code }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Nom site</th>
+                    <td>{{ intervention.site.nom }}</td>
+                </tr>
+                </tr>
+                <tr>
+                    <th scope="row">Client</th>
+                    <td>{{ intervention.site.client.nom }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Equipement</th>
+                    <td>{{ intervention.prestation.sousProjet.nom }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Travail</th>
+                    <td>{{ intervention.prestation.nom }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Designation</th>
+                    <td>{{ intervention.designation }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-heading">
+        <h4> Validation </h4>
+    </div>
+    <div class="panel-body">
+        <table class="table table-hover record_properties">
+            <tbody>
+
+                <tr>
+                    <th scope="row">Employé</th>
+                    <td>
+                        <h4>
+                            {% if intervention.mission.vEmploye %}
+                            <i class="glyphicon glyphicon-check"></i>
+                            {% else %}
+                            <i class="glyphicon glyphicon-unchecked"></i>
+                            {% endif %}
+                        </h4>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">Rollout</th>
+                    <td>
+                        <h4>
+                            {% if intervention.mission.vRollout %}
+                            <i class="glyphicon glyphicon-check"></i>
+                            {% else %}
+                            <i class="glyphicon glyphicon-unchecked"></i>
+                            {% endif %}
+                        </h4>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row">Comptabilité</th>
+                    <td>
+                        <h4>
+                            {% if intervention.mission.vComptabilite %}
+                            <i class="glyphicon glyphicon-check"></i>
+                            {% else %}
+                            <i class="glyphicon glyphicon-unchecked"></i>
+                            {% endif %}
+                        </h4>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+
+    <div class="panel-footer">
+        <div class="btn-group record_actions">
+            {% if (appel_employe == "non") and (
+            (is_granted("ROLE_ADMIN")) or
+            (is_granted("ROLE_ROLLOUT") and not intervention.mission.vComptabilite ) or
+            (is_granted("ROLE_BUREAU") and not intervention.mission.vComptabilite and not intervention.mission.vRollout
+            ))
+            %}
+            <a class="btn btn-primary" href="{{ path('mission_intervention_edit', {id: intervention.id | Mycrypt}) }}">
+                <i class="glyphicon glyphicon-edit"></i>Modifier
+            </a>
+            {% endif %}
+            {% if (appel_employe == "non") and ((not intervention.mission.vComptabilite and not
+            intervention.mission.vRollout and not
+            intervention.mission.vEmploye)) %}
+            <button class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteIntervention"><i
+                    class="glyphicon glyphicon-trash"></i> Supprimer
+            </button>
+            {% endif %}
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">
+            <h4>Realisateurs</h4>
+        </div>
+        <div class="panel-body">
+            <table class="table table-hover record_properties">
+                <tbody>
+                    {% for realisateur in realisateurs %}
+                    <tr>
+                        <th scope="row">{{ realisateur.user.nom }}</th>
+                        <td>
+                            {% if (appel_employe == "non") and (
+                            (is_granted("ROLE_ADMIN")) or
+                            (is_granted("ROLE_ROLLOUT") and not intervention.mission.vComptabilite ) or
+                            (is_granted("ROLE_BUREAU") and not intervention.mission.vComptabilite and not
+                            intervention.mission.vRollout ))
+                            %}
+                            <button class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteRealisateur"
+                                data-user="{{ realisateur.user.id }}"
+                                data-intervention="{{ realisateur.intervention.id }}">
+                                <i class="glyphicon glyphicon-trash"></i>
+                            </button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="panel-footer">
+            <div class="btn-group record_actions">
+                {% if (appel_employe == "non") and (
+                (is_granted("ROLE_ADMIN") or
+                (is_granted("ROLE_ROLLOUT") and not intervention.mission.vComptabilite ) or
+                (is_granted("ROLE_BUREAU") and not intervention.mission.vComptabilite and not
+                intervention.mission.vRollout
+                )))
+                %}
+                <button class="btn btn-primary" data-toggle="modal" data-target="#modalAddRealisateur"><i
+                        class="glyphicon glyphicon-plus"></i>
+                </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modale delete Intervention-->
+<div id="modalDeleteIntervention" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjoutRoleLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>Confirmer la suppression</h4>
+            </div>
+            <div class="modal-body">
+                <p>Vous êtes sur le point de supprimer l'intervention, cette procédure est irréversible.</p>
+                <p>Voulez-vous poursuivre?</p>
+            </div>
+            <div class="modal-footer">
+                {{ form_start(delete_form) }}
+                {{ form_widget(delete_form) }}
+                <button class="btn btn-danger" type="submit"><i class="glyphicon glyphicon-trash-o"></i>
+                    Oui</button>
+                <button class="btn btn-primary" data-dismiss="modal">Non</button>
+                <input name="modal" type="hidden" value="0">
+                {{ form_end(delete_form) }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modale delete Realisateur-->
+<div id="modalDeleteRealisateur" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="modalDeleteRealisateurLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>Confirmer la suppression</h4>
+            </div>
+            <div class="modal-body">
+                <p>Vous êtes sur le point de supprimer cet réalisateur, cette procédure est irréversible.</p>
+                <p>Voulez-vous poursuivre?</p>
+            </div>
+            <div class="modal-footer">
+                <form name="form" id="modalDeleteRealisateurForm" action="#" method="post">
+                    <button class="btn btn-danger" type="submit"><i class="glyphicon glyphicon-trash"></i>
+                        Supprimer</button>
+                    <button class="btn btn-primary" data-dismiss="modal">Non</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modale add realisateur-->
+<div id="modalAddRealisateur" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjoutRoleLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>Ajouter un réalisateur</h4>
+            </div>
+            <div class="modal-body">
+                {{ form_start(form_realisateur, {action: path('mission_intervention_realisateur_add',{id:
+                intervention.id | Mycrypt })}) }}
+                {{ form_widget(form_realisateur) }}
+                <button class="btn btn-danger" type="submit"><i class="glyphicon glyphicon-trash-o"></i>
+                    Valider</button>
+                <button class="btn btn-primary" data-dismiss="modal">Annuler</button>
+                <input name="modal" type="hidden" value="0">
+                {{ form_end(form_realisateur) }}
+            </div>
+            <div class="modal-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block js %}
+<script>
+    $(document).ready(function () {
+        $('#modalDeleteIntervention').on('show.bs.modal', function (event) {
+            //var button = $(event.relatedTarget) // Button that triggered the modal
+            //var id = button.data('id') // Extract info from data-* attributes
+            //var cURL = Routing.generate('mission_intervention_delete', { id: id });
+            //alert(cURL);
+            //$("#modalDeleteInterventionForm").attr('action', cURL);
+        })
+        $('#modalDeleteRealisateur').on('show.bs.modal', function (event) {
+            //alert('ddd');
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var user = button.data('user') // Extract info from data-* attributes
+            var intervention = button.data('intervention') // Extract info from data-* attributes
+            //alert(user);
+            //alert(intervention);
+            var cURL = Routing.generate('intervention_realisateur_delete', { user: user, intervention: intervention });
+            //alert(cURL);
+            $("#modalDeleteRealisateurForm").attr('action', cURL);
+        })
+    })
+</script>
+{% endblock %}

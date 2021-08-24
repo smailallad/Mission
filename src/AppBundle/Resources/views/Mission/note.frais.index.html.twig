@@ -1,0 +1,335 @@
+{% extends "base.html.twig" %}
+{% form_theme form 'Form/bootstrap_3_layout.html.twig' %}
+{% block title %}Liste missions - {{ parent() }}{% endblock %}
+
+{% macro thead(name, field, label) %}
+{% spaceless %}
+{% set sort = app.session.get('sort.' ~ name) %}
+{% if sort and sort.field == field %}
+{% if sort.type == 'DESC' %}
+<a href="{{ path('mission_sort', {field: field, type: 'ASC'}) }}">{{ label }} <i
+        class="glyphicon glyphicon-sort-by-attributes-alt"></i></a>
+{% elseif sort.type == 'ASC' %}
+<a href="{{ path('mission_sort', {field: field, type: 'DESC'}) }}">{{ label }} <i
+        class="glyphicon glyphicon-sort-by-attributes"></i></a>
+{% endif %}
+{% else %}
+<a href="{{ path('mission_sort', {field: field, type: 'ASC'}) }}">{{ label }} <i
+        class="glyphicon glyphicon-sort"></i></a>
+{% endif %}
+{% endspaceless %}
+{% endmacro %}
+
+{% from _self import thead %}
+
+{% block detail %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4>
+        <a href="{{ path('excel_notes_frais')}}" class="ml-2 mr-4"><img src="{{ asset('icones/Excel-icon.png') }}"
+                title="Exporter vers excel.">
+        </a>
+            Filtre
+        </h4>
+    </div>
+    <div class="panel-body">
+        {% include '@App/Mission/filter.html.twig' with {form: form} %}
+    </div>
+</div>
+{% endblock %}
+
+{% block contenu %}
+{#{% include "@App/messages.html.twig" %}#}
+{% include "@App/Mission/note.frais.pages.html.twig" %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        {{ knp_pagination_render(paginator) }}
+    </div>
+    <div class="panel-body">
+
+        <table class="table table-striped table-hover records_list">
+            <thead>
+                <tr>
+                    <th>
+                        {% if is_granted("ROLE_BUREAU") %}
+                        <a class="btn btn-primary" href="{{ path('mission_new') }}">
+                            <i class="glyphicon glyphicon-plus"></i></a>
+                        {% endif %}
+
+                    </th>
+                    <th scope="col" colspan="2">{{ thead('mission', 'code', 'Code') }}</th>
+                    <th scope="col">{{ thead('mission', 'user', 'Chef de Mission') }}</th>
+                    <th scope="col">{{ thead('mission', 'depart', 'Du') }}</th>
+                    <th scope="col">{{ thead('mission', 'retour', 'Au') }}</th>
+                    <th scope="col">{{ thead('mission', 'vEmploye', 'V.Employe') }}</th>
+                    <th scope="col">{{ thead('mission', 'vComptabilit', 'V.Compt') }}</th>
+                    {% if is_granted("ROLE_COMPTABLE") %}
+                    <th scope="col" class="text-right">{{ thead('mission', 'avance', 'Avance') }}</th>
+                    <th scope="col" class="text-right">Depense</th>
+                    <th scope="col" class="text-right">Solde</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for mission in missions %}
+                <tr>
+                    <td>
+                        {% if is_granted("ROLE_ADMIN") or
+                        (is_granted("ROLE_BUREAU") and (not mission.vEmploye) and ( not mission.vRollout) and (not
+                        mission.vComptabilite)) %}
+                        <button class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteMission"
+                            data-id="{{ mission.id }}">
+                            <i class="glyphicon glyphicon-trash"></i>
+                        </button>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ path('mission_show', {id: mission.id | Mycrypt}) }}">{{ mission.code }}</a>
+                    </td>
+                    <td>
+                        <a href="{{ path('mission_depense', {id: mission.id | Mycrypt}) }}">
+                            <li class="glyphicon glyphicon-list"></li>
+                        </a>
+                    </td>
+                    </td>
+                    <td>{{ mission.user }}</td>
+                    <td>{{ mission.depart | date('d/m/Y') }}</td>
+                    <td>{{ mission.retour | date('d/m/Y') }}</td>
+
+                    <td class="text-center">
+
+                        {% if not mission.vComptabilite or is_granted("ROLE_ADMIN") %}
+                        {% if mission.vEmploye %}
+                        {% if is_granted("ROLE_SUPER_COMPTABLE") %}
+                        <a href="#" onclick="valideremploye('{{ mission.id }}',1);return false;"><i
+                                class="glyphicon glyphicon-check"></i></a>
+                        {% else %}
+                        <i class="glyphicon glyphicon-check"></i>
+                        {% endif %}
+                        {% elseif is_granted('ROLE_COMPTABLE') %}
+                        <a href="#" onclick="valideremploye('{{ mission.id }}',0);return false;"> <i
+                                class="glyphicon glyphicon-unchecked"></i></a>
+                        {% else %}
+                        <i class="glyphicon glyphicon-check"></i>
+                        {% endif %}
+                        {% else %}
+                        {% if mission.vEmploye %}
+                        <i class="glyphicon glyphicon-check"></i>
+                        {% else %}
+                        <i class="glyphicon glyphicon-unchecked"></i>
+                        {% endif %}
+                        {% endif %}
+
+                    </td>
+
+                    <td class="text-center">
+                        {% if mission.vComptabilite %}
+                        {% if is_granted("ROLE_SUPER_COMPTABLE") %}
+                        <a href="#" onclick="validercomptabilite('{{ mission.id }}',1);return false;"> <i
+                                class="glyphicon glyphicon-check"></i></a>
+                        {% else %}
+                        <i class="glyphicon glyphicon-check"></i>
+                        {% endif %}
+                        {% else %}
+                        {% if is_granted("ROLE_COMPTABLE") %}
+                        <a href="#" onclick="validercomptabilite('{{ mission.id }}',0);return false;"> <i
+                                class="glyphicon glyphicon-unchecked"></i></a>
+                        {% else %}
+                        <i class="glyphicon glyphicon-unchecked"></i>
+                        {% endif %}
+                        {% endif %} 
+                    </td>
+                    {% if is_granted("ROLE_COMPTABLE") %}
+                    <td class="text-right">{{ mission.avance | number_format(2,',', ' ') }} DA </td>
+                    <td class="text-right">
+                        {{ mission.depense | number_format(2, ',', ' ') }} DA
+                    </td>
+                    <td class="text-right {% if (mission.solde < 0) %}  danger  {% endif %}">
+                        <b>{{ mission.solde | number_format(2, ',', ' ') }} DA </b>
+                    </td>
+                    {% endif %}
+
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr class="info">
+                    <td colspan="8" class="text-right"> <b>Total</b> </td>
+                    <td class="text-right"> <b>{{ sumAvance | number_format(2, ',', ' ') }} DA</b> </td>
+                    <td class="text-right"> <b>{{ sumDepense| number_format(2, ',', ' ') }} DA</b> </td>
+                    <td class="text-right"> <b>{{ sumSolde| number_format(2, ',', ' ') }} DA</b> </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+</div>
+<!-- Modale Validation Employe-->
+<div id="modalve" data-id="id" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalveLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>Confirmer!</h4>
+            </div>
+            <div class="modal-body">
+                <p id="msgvemploye">Validée cette mission ?.</p>
+            </div>
+            <div class="modal-footer">
+                <button id="btnvemploye" class="btn btn-primary" data-dismiss="modal">
+                    <i class="glyphicon glyphicon-check"></i>Oui
+                </button>
+                <button class="btn btn-primary" data-dismiss="modal">Non</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modale Validation Rollout-->
+<div id="modalvr" data-id="id" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalvrLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>Confirmer!</h4>
+            </div>
+            <div class="modal-body">
+                <p id="msgvrollout">Validée cette mission ?.</p>
+            </div>
+            <div class="modal-footer">
+                <button id="btnvrollout" class="btn btn-primary" data-dismiss="modal">
+                    <i class="glyphicon glyphicon-check"></i>Oui
+                </button>
+                <button class="btn btn-primary" data-dismiss="modal">Non</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modale Validation Comptabilite-->
+<div id="modalvc" data-id="id" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalvcLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>Confirmer!</h4>
+            </div>
+            <div class="modal-body">
+                <p id="msgvcomptabilite">Validée cette mission ?.</p>
+            </div>
+            <div class="modal-footer">
+                <button id="btnvcomptabilite" class="btn btn-primary" data-dismiss="modal">
+                    <i class="glyphicon glyphicon-check"></i>Oui
+                </button>
+                <button class="btn btn-primary" data-dismiss="modal">Non</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modale delete Mission-->
+<div id="modalDeleteMission" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalDeleteMissionLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>Confirmer la suppression</h4>
+            </div>
+            <div class="modal-body">
+                <p>Vous êtes sur le point de supprimer cette Mission, cette procédure est irréversible.</p>
+                <p>Voulez-vous poursuivre?</p>
+            </div>
+            <div class="modal-footer">
+                <form name="form" id="modalDeleteMissionForm" action="#" method="post">
+                    <button class="btn btn-danger" type="submit"><i class="glyphicon glyphicon-trash"></i>
+                        Supprimer</button>
+                    <button class="btn btn-primary" data-dismiss="modal">Non</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block js %}
+<script>
+    $(document).ready(function () {
+        $('#btnvemploye').click(function () {
+            var id = $("#modalve").data("id");
+            var cURL = Routing.generate('mission_validation_employe', { id: id });
+            $.post(
+                cURL,
+                function (data) {
+                    location.reload(true);
+                }
+            )
+
+        })
+
+        $('#btnvrollout').click(function () {
+            var id = $("#modalvr").data("id");
+            var cURL = Routing.generate('mission_validation_rollout', { id: id });
+            $.post(
+                cURL,
+                function (data) {
+                    location.reload(true);
+                }
+            )
+        })
+
+        $('#btnvcomptabilite').click(function () {
+            var id = $("#modalvc").data("id");
+            var cURL = Routing.generate('mission_validation_comptabilite', { id: id });
+            $.post(
+                cURL,
+                function (data) {
+                    location.reload(true);
+                }
+            )
+        })
+        $('#modalDeleteMission').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var id = button.data('id') // Extract info from data-* attributes
+            var cURL = Routing.generate('mission_delete_index', { id: id });
+            //alert(cURL);
+            $("#modalDeleteMissionForm").attr('action', cURL);
+        })
+    })
+
+    function valideremploye(mission, v) {
+        $("#modalve").data("id", mission);
+        if (v == 0) {
+            $("#msgvemploye").html("Valider cette mission coté employé ?");
+        } else {
+            $("#msgvemploye").html("Invalider cette mission coté employé ?");
+        }
+        $("#modalve").modal('show');
+    }
+
+    function validerrollout(mission, v) {
+        $("#modalvr").data("id", mission);
+        if (v == 0) {
+            $("#msgvrollout").html("Valider cette mission coté rollout ?");
+        } else {
+            $("#msgvrollout").html("Invalider cette mission coté rollout ?");
+        }
+        $("#modalvr").modal('show');
+    }
+
+    function validercomptabilite(mission, v) {
+        $("#modalvc").data("id", mission);
+        if (v == 0) {
+            $("#msgvcomptabilite").html("Valider cette mission coté comptabilite ?");
+        } else {
+            $("#msgvcomptabilite").html("Invalider cette mission coté comptabilite ?");
+        }
+        $("#modalvc").modal('show');
+    }
+
+
+</script>
+{% endblock %}

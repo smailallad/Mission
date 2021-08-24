@@ -1,0 +1,61 @@
+{% set ind=0 %}
+{% for message in app.session.flashbag.get('danger') %}
+    {% if ind==0 %}
+    <div id="msg-danger" class="hidden">
+    {% set ind=1 %}
+    {% endif %}
+    <p>{{ message }}</p>
+{% endfor %}
+
+{% if ind==1 %}
+</div>
+{% else %}
+<div id="msg-danger" class="hidden"></div>
+{% endif %}
+
+{% set ind=0 %}
+{% for message in app.session.flashbag.get('warning') %}
+    {% if ind==0 %}
+    <div id="msg-warning" class="hidden">
+    {% set ind=1 %}
+    {% endif %}
+    <p>{{ message }}</p>
+{% endfor %}
+
+{% if ind==1 %}
+</div>
+{% else %}
+<div id="msg-warning" class="hidden"></div>
+{% endif %}
+
+{% set ind=0 %}
+{% for message in app.session.flashbag.get('info') %}
+    {% if ind==0 %}
+    <div id="msg-info" class="hidden">
+    {% set ind=1 %}
+    {% endif %}
+    <p>{{ message }}</p>
+{% endfor %}
+
+{% if ind==1 %}
+</div>
+{% else %}
+<div id="msg-info" class="hidden"></div>
+{% endif %}
+
+
+
+{% set ind=0 %}
+{% for message in app.session.flashbag.get('success') %}
+    {% if ind==0 %}
+    <div id="msg-success" class="hidden" >
+    {% set ind=1 %}
+    {% endif %}
+    <p>{{ message }}</p>
+{% endfor %}
+
+{% if ind==1 %}
+</div>
+{% else %}
+<div id="msg-success" class="hidden"></div>
+{% endif %}

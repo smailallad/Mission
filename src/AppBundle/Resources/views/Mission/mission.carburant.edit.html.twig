@@ -1,0 +1,58 @@
+{% if ('M' in mission.code ) %}
+{% set m = 'mission' %}
+{% else %}
+{% set m = 'noteFrais' %}
+{% endif %}
+
+{% extends "base.html.twig" %}
+{% block title %}Depense Mission - {{ parent() }}{% endblock %}
+{% block detail %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4><a class="btn btn-primary mr-2" href="{{ path('mission_depense',{id: mission.id | Mycrypt})}}">
+                <i class="glyphicon glyphicon-list"></i>
+            </a>
+            {% if (m == 'mission') %}
+            Mission
+            {% else %}
+            Note de frais
+            {% endif %}
+        </h4>
+    </div>
+    <div class="panel-body">
+        {% include "@App/Mission/mission.detail.html.twig" %}
+    </div>
+</div>
+{% endblock %}
+
+{% block contenu %}
+{#{% include "@App/messages.html.twig" %}#}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4>Dépense</h4>
+    </div>
+    {{ form_start(formCarburant) }}
+    <div class="panel-body">
+        {{ form_widget(formCarburant) }}
+    </div>
+    <div class="panel-footer">
+        {% if (is_granted("ROLE_SUPER_COMPTABLE")) or
+        (is_granted("ROLE_COMPTABLE") and (not mission.vComptabilite)) or
+        (not mission.vComptabilite and not mission.vRollout and not mission.vEmploye)
+        %}
+        <button class="btn btn-primary" type="submit">Valider</button>
+        {% endif %}
+    </div>
+    {{ form_end(formCarburant) }}
+</div>
+
+{% endblock %}
+{% block js %}
+<script>
+    $(document).ready(function () {
+
+
+    })
+
+</script>
+{% endblock %}

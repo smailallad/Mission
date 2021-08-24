@@ -1,0 +1,31 @@
+{% extends "base.html.twig" %}
+{% form_theme form 'Form/bootstrap_3_layout.html.twig' %}
+{% block title %}Nouveau {{ parent() }}{% endblock %}
+
+{% block bodysaisie %}
+{{ form_start(form, {action: path('test')}) }}
+{{ form_widget(form) }}
+		<p>
+			<button class="btn btn-primary" type="submit">Créer</button>
+		</p>
+        {{ form_end(form) }}
+
+<hr>
+
+{% endblock %}
+{% block js %}
+<script>
+   const phoneInputField = document.querySelector("#personne_Phone");
+   const phoneInput = window.intlTelInput(phoneInputField, {
+     utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+   });
+
+function process(event) {
+ const phoneNumber = phoneInput.getNumber();
+
+ alert(phoneNumber);
+ 
+}
+
+</script>
+{% endblock %}

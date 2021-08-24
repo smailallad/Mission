@@ -1,0 +1,154 @@
+{% extends "base.html.twig" %}
+{% block title %}Groupes - {{ parent() }}{% endblock %}
+{% block bodysaisie %}
+{% include "@App/messages.html.twig" %}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4> Groupe </h4>
+    </div>
+    <div class="panel-body">
+        <table class="table table-hover record_properties">
+            <tbody>
+                <tr>
+                    <th scope="row">Id</th>
+                    <td>{{ groupes.id }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Groupname</th>
+                    <td>{{ groupes.groupname }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-footer">
+        <div class="btn-group record_actions">
+            <a class="btn btn-info" href="{{ path('admin_groups') }}">
+                <i class="glyphicon glyphicon-list"></i> Retour à la liste
+            </a>
+            <a class="btn btn-primary" href="{{ path('admin_groups_edit', {id: groupes.id | Mycrypt}) }}">
+                <i class="glyphicon glyphicon-edit"></i> Modifier
+            </a>
+              <!-- Bouton de déclenchement Suppression de la modale -->
+            <button class="btn btn-danger" data-toggle="modal" data-target="#ConfirmeSupprimeGroupe"><i class="glyphicon glyphicon-trash"></i> Supprimer</button>
+        </div>
+    </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4>Liste des rôles du groupe</h4>
+    </div>
+    <div class="panel-body">
+        <table class="table table-hover record_properties">
+            <tbody>
+                {% for role in groupes.roles %}
+                {% set delete = "#ConfirmeSupprimeGroupe_role_" ~  role  %}
+                    <tr>
+                        <td>
+                            <i class="glyphicon glyphicon-check"> </i> {{ role }}
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                <button class="btn btn-danger" data-toggle="modal" data-target="#ConfirmesupprimeRole" data-id="{{ groupes.id }}" data-role="{{ role }}"><i class="glyphicon glyphicon-trash"></i> Supprimer</button>
+                            </div>
+                        </td>
+                   </tr>
+                {% endfor%}
+            </tbody>
+        </table>
+    </div>
+       <div class="panel-footer">
+       <!-- Bouton de déclenchement Ajout Role de la modale -->
+        <button type="button" data-toggle="modal" data-target="#AjoutRole" class="btn btn-primary"><i class="glyphicon glyphicon-edit"></i> Ajouter un Role</button>
+    </div>
+</div>
+<!-- Modale Confirme Supprime Groupes -->
+<div id="ConfirmeSupprimeGroupe" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjoutRoleLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>Confirmer la suppression</h4>
+            </div>
+            <div class="modal-body">
+                <p>Vous êtes sur le point de supprimer ce Groupe, cette procédure est irréversible.</p>
+                <p>Voulez-vous poursuivre?</p>
+            </div>
+            <div class="modal-footer">
+                {{ form_start(delete_form) }}
+                {{ form_widget(delete_form) }}
+                    <button class="btn btn-danger" type="submit"><i class="glyphicon glyphicon-trash"></i> Oui</button>
+                    <button class="btn btn-primary" data-dismiss="modal">Non</button>
+                    <input name="modal" type="hidden" value="0">
+                {{ form_end(delete_form) }}
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modale Ajout Role-->
+<div id="AjoutRole" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjoutRoleLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h3 class="modal-title">Ajouter un rôle :</h4>
+            </div>
+            <div class="modal-body">
+                {{ form_start(formRole) }}
+                {{ form_widget(formRole) }}
+                <p>
+                    <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-edit"></i>Ajouter</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="glyphicon glyphicon-times"></i> Fermer</button>
+                </p>
+                {{ form_end(formRole) }}
+            </div>
+            <div class="modal-footer">
+            </div>
+         </div>
+    </div>
+</div>
+<!-- Modale Supprime Role-->
+<div id="ConfirmesupprimeRole" class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="ConfirmesupprimeRoleLabel" aria-hidden="true">
+  <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4>Confirmer la suppression</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Vous êtes sur le point de supprimer ce Role, cette procédure est irréversible.</p>
+                    <p>Voulez-vous poursuivre?</p>
+                </div>
+                <div class="modal-footer">
+                    <form name="form" id="FormConfirmeSupprimeRole" action="#" method="post">
+                        <button class="btn btn-danger" type="submit"><i class="glyphicon glyphicon-trash"></i> Supprimer</button>
+                        <button class="btn btn-primary" data-dismiss="modal">Non</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+</div>
+
+{% endblock %}
+
+{% block js %}
+<script> 
+$(document).ready(function() 
+{
+    $('#ConfirmesupprimeRole').on('show.bs.modal', function (event) 
+    {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        var id = button.data('id') // Extract info from data-* attributes
+        var role = button.data('role')
+        var cURL = Routing.generate('admin_groups_delete_roles' , { id : id , rolename : role });
+        //Routing.setBaseUrl('/app_dev.php');
+        //var cURL = Routing.generate('admin_groups_delete_roles')
+        //alert(cURL);
+        //alert(role);
+        $("#FormConfirmeSupprimeRole").attr('action', cURL);
+    })
+})
+</script>
+{% endblock %}

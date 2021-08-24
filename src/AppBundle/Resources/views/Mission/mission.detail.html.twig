@@ -1,0 +1,88 @@
+{% if ('M' in mission.code ) %}
+{% set m = 'mission' %}
+{% else %}
+{% set m = 'noteFrais' %}
+{% endif %}
+{% set appel_employe = app.session.get('appel_employe') %}
+
+<table class="table table-condensed ">
+    <tbody>
+        <tr>
+            <th scope="row">Code</th>
+            <td>{{ mission.code}}</td>
+        </tr>
+        <tr>
+            <th scope="row">
+                {% if (m == 'mission') %}
+                Départ
+                {% else %}
+                Du
+                {% endif %}
+            </th>
+            <td>{{ mission.depart | date("d/m/Y")}}</td>
+        </tr>
+        <tr>
+            <th scope="row">
+                {% if (m == 'mission') %}
+                Retour
+                {% else %}
+                Au
+                {% endif %}
+            </th>
+            <td>{{ mission.retour | date("d/m/Y")}}</td>
+        </tr>
+        <tr>
+            <th scope="row">
+                {% if (m == 'mission') %}
+                Chef de mission
+                {% else %}
+                Employe
+                {% endif %}
+            </th>
+            <td>{{ mission.user.nom }}</td>
+        </tr>
+        {% if (m == 'mission') %}
+        <tr>
+            <th scope="row">Destination</th>
+            <td>{% if destination is not null %}
+                {{ destination.destination }}
+                {% endif %}
+            </td>
+        </tr>
+        {% endif %}
+            <!-- appel_employe = 2 employe -->
+        {% if is_granted("ROLE_COMPTABLE") or appel_employe == "oui" %}
+            <tr><th scope="row"></th><td></td></tr>
+            <tr>
+                <th scope="row"></th>
+                <td></td>
+            </tr>
+            <tr class="info">
+                <th scope="row">Avance</th>
+                <td class="text-right"><b>{{ mission.avance | number_format(2, ',', ' ') }}</b></td>
+            </tr>      
+            <tr class="warning">
+                <th scope="row">Dépenses</th>
+                <td class="text-right"><b>{{ montantDepenseMission | number_format(2, ',', ' ') }}</b></td>
+            </tr>
+            <tr class="warning">
+                <th scope="row">Carburant</th>
+                <td class="text-right"><b>{{ montantCarburantMission | number_format(2, ',', ' ') }}</b></td>
+            </tr>
+            {% if (m == 'mission') %}
+            <tr class="warning">
+                <th scope="row">Frais de mission</th>
+                <td class="text-right"><b>{{ montantFmMission | number_format(2, ',', ' ') }}</b></td>
+            </tr>
+            <tr class="warning">
+                <th scope="row">Total</th>
+                <td class="text-right"><b>{{ (montantDepenseMission +  montantFmMission)  | number_format(2, ',', ' ') }}</b></td>
+            </tr>
+            {% endif %}
+            <tr class="danger">
+                <th scope="row">Solde</th>
+                <td class="text-right"><b>{{ (mission.avance - montantDepenseMission - montantFmMission - montantCarburantMission) | number_format(2, ',', ' ') }}</b></td>
+            </tr>
+        {% endif %}
+    </tbody>
+</table>

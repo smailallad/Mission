@@ -1,0 +1,13 @@
+#RewriteEngine on
+#RewriteBase /
+#RewriteRule "(.*)" web/app.php 
+
+#Options +SymLinksIfOwnerMatch 
+#RewriteEngine On 
+#RewriteCond %{REQUEST_FILENAME} !-f 
+#RewriteCond %{REQUEST_FILENAME} !-d
+#RewriteRule . /web/app.php [L]
+
+Redirect /rtie3.4/web/
+
+Options All -Indexes

@@ -1,0 +1,14 @@
+services:
+    my.cryptage:
+        class: AppBundle\Service\Cryptage
+        arguments: [%secret_key%,%secret_iv%]
+
+    AppBundle\twig\mycrypt_extension:
+        ressource : 'AppBundle/Twig/ExtensionMycryptExtension'
+        tag: ['twig.extension']
+
+    app.listener.doctrineevent:
+        class: AppBundle\Events\InterventionPostEvent
+        tags:
+            - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: preUpdate }

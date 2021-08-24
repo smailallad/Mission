@@ -1,0 +1,72 @@
+{% extends "base.html.twig" %}
+{% block title %}User - {{ parent() }}{% endblock %}
+{% block bodysaisie %}
+{#{% include "@App/messages.html.twig" %}#}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4> Utilisateur </h4>
+    </div>
+    <div class="panel-body">
+        <table class="table table-hover record_properties">
+            <tbody>
+                <tr>
+                    <th scope="row">Id</th>
+                    <td>{{ user.id }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Username</th>
+                    <td>{{ user.username }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Email</th>
+                    <td>{{ user.email }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Group</th>
+                    <td>{{ user.groupes.groupname }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Active</th>
+                    <td>{% if user.isActive %}<i class="glyphicon glyphicon-check"></i>{% endif %}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-footer">
+        <div class="btn-group record_actions">
+            <a class="btn btn-info" href="{{ path('admin_users') }}">
+                <i class="glyphicon glyphicon-list"></i> Retour à la liste
+            </a>
+            <a class="btn btn-primary" href="{{ path('admin_users_edit', {id: user.id | Mycrypt}) }}">
+                <i class="glyphicon glyphicon-edit"></i>Modifier
+            </a>
+            <button class="btn btn-danger" data-toggle="modal" data-target="#ConfirmeSupprimeUtilisateur"><i class="glyphicon glyphicon-trash-o"></i> Supprimer</button>
+        </div>
+    </div>
+</div>
+<!-- Modale delete Confirme-->
+   <div id="ConfirmeSupprimeUtilisateur" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjoutRoleLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4>Confirmer la suppression</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Vous êtes sur le point de supprimer un élément, cette procédure est irréversible.</p>
+                    <p>Voulez-vous poursuivre?</p>
+                </div>
+                <div class="modal-footer">
+                    {{ form_start(delete_form) }}
+                    {{ form_widget(delete_form) }}
+                        <button class="btn btn-danger" type="submit"><i class="glyphicon glyphicon-trash-o"></i> Oui</button>
+                        <button class="btn btn-primary" data-dismiss="modal">Non</button>
+                        <input name="modal" type="hidden" value="0">
+                    {{ form_end(delete_form) }}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

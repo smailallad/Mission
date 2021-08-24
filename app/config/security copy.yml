@@ -1,0 +1,45 @@
+# To get started with security, check out the documentation:
+# https://symfony.com/doc/current/security.html
+security:
+    encoders:
+        AppBundle\Entity\User:
+            algorithm: bcrypt
+
+    role_hierarchy:
+        ROLE_ROULOT: [ROLE_USER]
+        ROLE_SUPER_COMPT: [ROLE_COMPT]
+        ROLE_SUPER_ADMIN: [ROLE_ROULOT,ROLE_SUPER_COMPT,ROLE_GERANT, ROLE_ALLOWED_TO_SWITCH]
+
+    providers:
+        db_provider:
+            entity:
+                class: AppBundle:User
+#                property: username
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        main_login:
+            pattern: ^/(login$|register|resetting|logout)   # Les adresses de ces pages sont login, register et resetting
+            anonymous: true                                 # On autorise bien évidemment les anonymes sur ces pages 
+                                                            # Firewall principal pour le reste de notre site
+
+        main:
+            anonymous: ~
+            form_login:
+                login_path: login
+                check_path: login
+
+            logout:
+                path: /logout
+                target: /
+
+
+    access_control:
+        - { path: '^/login$', roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: '^/register', roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: '^/', roles: IS_AUTHENTICATED_FULLY }
+        - { path: '^/gerant', roles: ROLE_GERANT }
+        - { path: '^/compt', roles: ROLE_COMPT }

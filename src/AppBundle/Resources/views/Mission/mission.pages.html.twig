@@ -1,0 +1,85 @@
+{% if ('M' in mission.code ) %}
+{% set m = 'mission' %}
+{% else %}
+{% set m = 'noteFrais' %}
+{% endif %}
+{% set appel_employe = app.session.get('appel_employe') %}
+{# appel_employe = 1 non employe , appel_employe = 2 non employe #}
+
+{% if appel_employe == "non" %} <!-- Non Employe -->
+    <ul class="nav nav-tabs">
+    {% if m == 'mission' %}
+        {% if is_granted('ROLE_BUREAU') or is_granted('ROLE_COMPTABLE') %}
+            <li role="presentation" 
+            {% if (page == 'intervention') %} 
+                class="active" 
+            {% endif %} >
+                <a href="{{ path('mission_intervention',{id: mission.id | Mycrypt}) }}">Interventions</a></i></li>
+        {% endif %} 
+        {% if is_granted('ROLE_COMPTABLE') %}
+            <li role="presentation" 
+            {% if (page == 'depense') %} 
+                class="active" 
+            {% endif %} >
+            <a href="{{ path('mission_depense',{id: mission.id | Mycrypt}) }}">Dépenses</a></li>
+            <li role="presentation" 
+            {% if (page=='carburant' ) %} 
+                class="active" 
+            {% endif %}>
+            <a href="{{ path('mission_carburant',{id: mission.id | Mycrypt}) }}">Carburant</a>
+            </li>
+            <li role="presentation" 
+            {% if (page == 'fm') %} 
+                class="active" 
+            {% endif %} >
+            <a href="{{ path('mission_fm',{id: mission.id | Mycrypt}) }}">Frais de mission</a></li>
+        {% endif %}
+        {# <li role="presentation" 
+        {% if (page=='vehicule' ) %} 
+            class="active" 
+        {% endif %}>
+        <a href="#">Véhicule</a></li>
+        <li role="presentation" 
+        {% if (page=='trajet' ) %} 
+            class="active" 
+        {% endif %}>
+        <a href="#">Gestion trajet</a></li> #}
+    {% elseif is_granted('ROLE_COMPTABLE') %}
+        <li role="presentation" 
+        {% if (page=='depense' ) %} 
+            class="active" 
+        {% endif %}>
+        <a href="{{ path('mission_depense',{id: mission.id | Mycrypt}) }}">Dépenses</a>
+        </li>
+        <li role="presentation" 
+        {% if (page=='carburant' ) %} 
+            class="active" 
+        {% endif %}>
+        <a href="{{ path('mission_carburant',{id: mission.id | Mycrypt}) }}">Carburant</a>
+        </li>
+    {% endif %}
+    </ul>
+{% elseif appel_employe == "oui" %} <!-- Employe -->
+    <ul class="nav nav-tabs">
+        {% if m == 'mission' %}
+        <li role="presentation" {% if (page=='intervention' ) %} class="active" {% endif %}>
+            <a href="{{ path('mission_intervention',{id: mission.id | Mycrypt}) }}">Interventions</a></i>
+        </li>
+        <li role="presentation" {% if (page=='depense' ) %} class="active" {% endif %}>
+            <a href="{{ path('mission_depense',{id: mission.id | Mycrypt}) }}">Dépenses</a>
+        </li>
+        <li role="presentation" {% if (page=='carburant' ) %} class="active" {% endif %}>
+            <a href="{{ path('mission_carburant',{id: mission.id | Mycrypt}) }}">Carburant</a>
+        </li>
+        <li role="presentation" {% if (page=='fm' ) %} class="active" {% endif %}>
+            <a href="{{ path('mission_fm',{id: mission.id | Mycrypt}) }}">Frais de mission</a>
+        </li>
+        {# <li role="presentation" {% if (page=='vehicule' ) %} class="active" {% endif %}><a href="#">Véhicule</a></li> #}
+        {# <li role="presentation" {% if (page=='trajet' ) %} class="active" {% endif %}><a href="#">Gestion trajetwww</a></li> #}
+        {% else %}
+        <li role="presentation" {% if (page=='depense' ) %} class="active" {% endif %}>
+            <a href="{{ path('mission_depense',{id: mission.id | Mycrypt}) }}">Dépenses</a>
+        </li>
+        {% endif %}
+    </ul>
+{% endif %}

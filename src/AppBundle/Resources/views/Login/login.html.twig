@@ -1,0 +1,39 @@
+{% extends "base.html.twig" %}
+
+{% block title %}SNC RTIE{% endblock %}
+
+{% block bodysaisie %}
+<div class="row">
+    <div class="col-md-14"></div>
+    <div class="panel panel-default col-md-8">
+        <div class="panel-heading">
+            <h4>Connexion</h4>
+         </div>
+        <div class="panel-body">
+            {% if errors %}
+                <div class="alert alert-danger">
+                    {{ errors.messageKey |trans }}
+                </div>
+            {% endif %}
+            <form action="{{ path('login')}}" method="post">
+                <div class="form-group">
+                    <label for="username">Utilisateur :</label>
+                    <input type="text" name="_username" id="username" class="form-control" value="{{ username }}">
+                </div>
+                <div class="form-group">
+                    <label for="password">Mot de passe :</label>
+                    <input type="password" name="_password" id="password" class="form-control">
+                </div>
+
+                <a href="{{ path('register') }}" class="btn btn-default pull-right">Inscription</a>
+                <button class="btn btn-default"> connecter</button>
+
+            </form>
+        </div>
+
+    </div>  <div class="col-md-2"></div>
+</div>
+
+
+
+{% endblock %}

@@ -1,0 +1,56 @@
+{% if ('M' in mission.code ) %}
+{% set m = 'mission' %}
+{% else %}
+{% set m = 'noteFrais' %}
+{% endif %}
+
+{% extends "base.html.twig" %}
+{% form_theme edit_form 'Form/bootstrap_3_layout.html.twig' %}
+{% block title %}Modification - Mission{% endblock %}
+{% block detail %}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4> 
+            <a class="btn btn-primary mr-2" href="{{ path('mission_show', {id: mission.id | Mycrypt}) }}">
+                <i class="glyphicon glyphicon-list"></i>
+            </a>
+            {% if m == 'mission' %}
+                Mission
+            {% else %}
+                Note de frais
+            {% endif %}
+        </h4>
+    </div>
+    <div class="panel-body">
+        {% include "@App/Mission/mission.detail.html.twig" %}
+    </div>
+</div>
+{% endblock %}
+
+{% block contenu %}
+{#{% include "@App/messages.html.twig" %}#}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4>
+            {% if (m == 'mission') %}
+            Mission
+            {% else %}
+            Note de frais
+            {% endif %}
+        </h4>
+    </div>
+    {{ form_start(edit_form) }}
+    <div class="panel-body">
+        {{ form_widget(edit_form) }}
+    </div>
+    <div class="panel-footer">
+        <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-edit"></i> Valider</button>
+    </div>
+    {{ form_end(edit_form) }}
+</div>
+{% endblock %}
+{% block js %}
+<script>
+</script>
+{% endblock %}

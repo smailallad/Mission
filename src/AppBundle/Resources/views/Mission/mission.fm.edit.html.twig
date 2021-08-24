@@ -1,0 +1,47 @@
+{% extends "base.html.twig" %}
+{% block title %}frais de Mission - {{ parent() }}{% endblock %}
+{% block detail %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4><a class="btn btn-primary mr-2" href="{{ path('mission_fm',{id: mission.id | Mycrypt})}}">
+                <i class="glyphicon glyphicon-list"></i>
+            </a> Mission </h4>
+    </div>
+    <div class="panel-body">
+        {% include "@App/Mission/mission.detail.html.twig" %}
+    </div>
+</div>
+{% endblock %}
+
+{% block contenu %}
+{#{% include "@App/messages.html.twig" %}#}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4>Dépense mission</h4>
+    </div>
+    {{ form_start(formFm) }}
+    <div class="panel-body">
+        {{ form_widget(formFm) }}
+    </div>
+    <div class="panel-footer">
+        {% if (is_granted("ROLE_SUPER_COMPTABLE")) or
+        (is_granted("ROLE_COMPTABLE") and (not mission.vComptabilite)) or
+        (not mission.vComptabilite and not mission.vRollout and not mission.vEmploye)
+        %}
+        <button class="btn btn-primary" type="submit">Valider</button>
+        {% endif %}
+    </div>
+    {{ form_end(formFm) }}
+</div>
+
+
+{% endblock %}
+{% block js %}
+<script>
+    $(document).ready(function () {
+
+
+    })
+
+</script>
+{% endblock %}

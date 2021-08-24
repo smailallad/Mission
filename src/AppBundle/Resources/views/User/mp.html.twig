@@ -1,0 +1,97 @@
+{% extends "base.html.twig" %}
+{% form_theme form 'Form/bootstrap_3_layout.html.twig' %}
+{% block title %}Utilisateur - {{ parent() }}{% endblock %}
+{% block bodysaisie %}
+{#{% include "@App/messages.html.twig" %}#}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h2>Changement mot de passe</h2>
+    </div>
+    <div class="panel-body">
+        <table class="table table-condensed ">
+            <tbody>
+                <tr>
+                    <th scope="row">Nom</th>
+                    <td>{{ user.nom}}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Email</th>
+                    <td>{{ user.email}}</td>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <td> <p class="text-info"> <b>Nb:</b> <i> Un email sera envoye à cette adresse avec le noveau mot de passe.</i></p></td>
+                </tr>
+        
+            </tbody>
+        </table>
+        <hr>
+        {# {{ form_start(form) }}
+        {{ form_widget(form) }}
+            <p>#}
+          {#      <button class="btn btn-primary" type="submit">Créer</button>#}
+          {#  </p>
+        {{ form_end(form) }}
+        #}
+        {{ form_start(form) }}
+        <div class="form-group">
+            
+            {{ form_label(form.password) }}
+            
+            <div class="input-group">
+                {{ form_widget(form.password) }}
+                <span class="input-group-btn">
+                    <button id="newMp" class="btn btn-primary form-control">
+                        <i class="glyphicon glyphicon-refresh"></i>
+                    </button>
+                </span>
+                
+            </div>
+            {{ form_errors(form.password) }}
+        </div>
+        {{ form_end(form)}}
+
+    </div>
+    <div class="panel-footer">
+        <div class="btn-group record_actions">
+            <a class="btn btn-info" href="{{ path('admin_users') }}">
+                <i class="glyphicon glyphicon-list"></i> Retour à la liste
+            </a>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+<script>
+    $(document).ready(function () {
+        //alert("Ok");
+        function password(id) {
+            var possible = '';
+            possible += 'abcdefghijklmnopqrstuvwxyz';
+            possible += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            possible += '0123456789';
+            possible += '![]{}()%&*$#^<>~@|';
+            var text = '';
+            //console.log(possible);
+            for (var i = 0; i < id; i++) {
+                text += possible.charAt(Math.floor(Math.random() * possible.length));
+            }
+            return text;
+        }
+
+        $("#newMp").click(function (event) {
+            event.preventDefault();
+            var pw = password(10);
+            $('#user_mp_password').val(pw);
+
+        })
+
+
+
+
+
+    })
+</script>
+{% endblock %}

@@ -1,0 +1,25 @@
+    <?php
+    
+    class TestController extends Controller
+    {
+    /**
+     * @Route("/{id}/edit",name="client_edit")
+     * id : client
+     */
+    public function editAction($clid, Request $request)
+    {   
+        $client = $this->getDoctrine()->getRepository('AppBundle:Client')->find($clid);
+        $editForm = $this->createForm(MissionType::class, $client, array(
+            'action' => $this->generateUrl('client_edit', array('id' => $clid)),
+            'method' => 'PUT',
+        ));
+        if ($editForm->handleRequest($request)->isValid()) {
+                $this->getDoctrine()->getManager()->flush();
+                return $this->redirect($this->generateUrl('client_edit', array('id' => $cryptage->my_encrypt($id))));
+        }
+        return $this->render('@App/Client/edit.html.twig', array(
+            'client'          => $client,
+            'edit_form'     => $editForm->createView(),
+        ));
+    }
+}

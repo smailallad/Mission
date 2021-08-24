@@ -1,0 +1,98 @@
+{% if ('M' in mission.code ) %}
+{% set m = 'mission' %}
+{% else %}
+{% set m = 'noteFrais' %}
+{% endif %}
+
+{% extends "base.html.twig" %}
+{% form_theme avance_form 'Form/bootstrap_3_layout.html.twig' %}
+{% block title %}Modification - Mission{% endblock %}
+{% block detail %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4>
+            <a class="btn btn-primary mr-2" href="{{ path('mission_show', {id: mission.id | Mycrypt}) }}">
+                <i class="glyphicon glyphicon-list"></i>
+            </a>
+            {% if m == 'mission' %}
+            Mission
+            {% else %}
+            Note de frais
+            {% endif %}
+        </h4>
+    </div>
+    <div class="panel-body">
+        {% include "@App/Mission/mission.detail.html.twig" %}
+    </div>
+</div>
+{% endblock %}
+
+{% block contenu %}
+{#{% include "@App/messages.html.twig" %}#}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4> Avance</h4>
+    </div>
+    {{ form_start(avance_form) }}
+    <div class="panel-body">
+        <table class="table table-hover record_properties">
+            <tbody>
+                <tr>
+                    <th scope="row">Code</th>
+                    <td>{{ mission.code}}</td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        {% if (m == 'mission') %}
+                        Départ
+                        {% else %}
+                        Du
+                        {% endif %}
+                    </th>
+                    <td>{{ mission.depart | date("d/m/Y")}}</td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        {% if (m == 'mission') %}
+                        Retour
+                        {% else %}
+                        Au
+                        {% endif %}
+                    </th>
+                    <td>{{ mission.retour | date("d/m/Y")}}</td>
+                </tr>
+                <tr>
+                    <th scope="row">
+                        {% if (m == 'mission') %}
+                        Chef de mission
+                        {% else %}
+                        Employe
+                        {% endif %}
+                    </th>
+                    <td>{{ mission.user.nom }}</td>
+                </tr>
+                {% if (m == 'mission') %}
+                <tr>
+                    <th scope="row">Destination</th>
+                    <td>{% if destination is not null %}
+                        {{ destination.destination }}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+        <hr>
+        {{ form_widget(avance_form) }}
+    </div>
+    <div class="panel-footer">
+        <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-edit"></i> Valider</button>
+    </div>
+    {{ form_end(avance_form) }}
+</div>
+
+{% endblock %}
+{% block js %}
+<script>
+</script>
+{% endblock %}

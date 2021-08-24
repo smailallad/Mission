@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>{% block title %} SNC RTIE {% endblock %}</title>
+    {% block stylesheets %}{% endblock %}
+
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+    {#
+    <link rel="stylesheet" href="{{ asset('css/bootstrap-theme.min.css') }}">#}
+    {#
+    <link rel="stylesheet" href="{{ asset('css/bootstrap-treeview.min.css') }}">#}
+    {#
+    <link rel="stylesheet" href="{{ asset('css/bootstrap-datepicker.css') }}">#}
+    <link rel="stylesheet" href="{{ asset('css/mystyle.css') }}">
+
+
+    <link rel="stylesheet" href="{{ asset('css/flags.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"/>
+
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+</head>
+
+<body>
+
+    <div class="bg-lightsteelblue d-fixe-top">
+        <h1 class="text-center mt-0 pt-3">SNC RTIE <small>Etude et Realisation ALLAD &amp; Cie</small></h1>
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+        <nav class="navbar navbar-inverse mb-0">
+            <div>
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="{{ path('homepage')}}"> <span class="glyphicon glyphicon-home"></span>
+                    </a>
+                </div>
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        {% if is_granted('ROLE_ADMIN') %}
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                aria-haspopup="true" aria-expanded="false">Admin<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+
+                                <li role="separator" class="divider"></li>
+                                <li><a href="{{ path('admin_groups') }}">Gestion des Groupes</a></li>
+                                <li><a href="#">Gestion des Roles</a></li>
+                                <li><a href="{{ path('admin_users')}}">Gestion des Utilisateurs</a></li>
+                            </ul>
+                        </li>
+                        {% endif %}
+
+                        {% if is_granted('ROLE_BUREAU') or is_granted('ROLE_ADMINISTRATION') or
+                        is_granted('ROLE_COMPTABLE') %}
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                aria-haspopup="true" aria-expanded="false">Fichier<span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                {% if is_granted('ROLE_ADMINISTRATION') %}
+                                <li><a href="{{ path('fonction') }}">Fonctions</a></li>
+                                <li><a href="{{ path('employe')}}">Employés</a></li>
+                                {% endif %}
+                                {% if is_granted('ROLE_BUREAU') %}
+                                <li><a href="{{ path('site')}}">Sites</a></li>
+                                {% endif %}
+                                <!-- <li role="separator" class="divider"></li> -->
+                                {% if is_granted('ROLE_COMPTABLE') %}
+                                <li><a href="{{ path('familleDepense')}}">Famille des depenses</a></li>
+                                <li><a href="{{ path('depense')}}">Depenes</a></li>
+                                {% endif %}
+                                {% if is_granted('ROLE_GERANT') %}
+                                <li role="separator" class="divider"></li>
+                                <li><a href="{{ path ('projet')}}">Projet</a></li>
+                                <li><a href="{{ path ('sousProjet')}}">Sous Projet</a></li>
+                                <li><a href="{{ path ('prestation')}}">Prestation</a></li>
+                                {% endif %}
+                            </ul>
+                        </li>
+                        {% endif %}
+                        {% if is_granted('ROLE_ROLLOUT') or is_granted('ROLE_COMPTABLE') %}
+                        <li><a href="{{ path('mission_index')}}">Missions {% if is_granted('ROLE_COMPTABLE') %} & Avances {% endif %}</a></li>
+                        {% endif %}
+                        {% if is_granted('ROLE_BUREAU') %}
+                        <li><a href="{{ path('journal')}}">Journal</a></li>
+                        {% endif %}
+                        {% if is_granted('ROLE_BUREAU') %}
+                        <li><a href="{{ path('pointage_index')}}">Pointage</a></li>
+                        {% endif %}
+                        <li><a href="{{ path('mission_employe_index')}}">Mes notes de frais </a></li>
+                        {#<li><a href="#">Mes notes de frais</a></li>#}
+                        {#<li><a href="{{ path('search_prestation',{sousprojet: '1',nom: 'a',pagenum:0})}}">Test </a>
+                        </li>#}
+                        {#<li><a href="{{ path('search_site',{client: '3',site: 'c',pagenum:0})}}">Test </a></li>#}
+                        {% if is_granted('ROLE_ADMIN') %}
+                        <li><a href="{{ path('db')}}">Copier Table </a></li>
+                        <li><a href="{{ path('test_excel')}}">Test Excel </a></li>
+                        <li><a href="{{ path('test')}}">Test </a></li>
+                        {% endif %}
+
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <p class="navbar-text text-capitalize">Bonjour <strong> <em> {{ app.user.username|title }}
+                                </em></strong>
+                            <a href="{{ path ('updateMP',{id: app.user.id | Mycrypt})}}"> <span class="glyphicon glyphicon-cog ml-3 mr-3"> </span> </a>
+                            <a href="{{ path('logout')}}" title="Déconnectez-vous" class="navbar-link"> Déconnexion </a>
+                        </p>
+                    </ul>
+
+                </div>
+            </div>
+        </nav>
+        {% endif %}
+    </div>
+    {% include "@App/messages.html.twig" %}
+    <div class="row pt-header">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+            {% block bodysaisie %} {% endblock %}
+        </div>
+        <div class="col-md-3"></div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-2">
+                <table>
+                    <tr>
+                        <td>
+                            {% block detail %} {% endblock %}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-lg-10">
+                {% block contenu %} {% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            {% block bodyliste %} {% endblock %}
+        </div>
+    </div>
+
+ {#   <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            {% block bodyhome %} {% endblock %}
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+#}
+{% include "@App/modal.messages.html.twig" %}
+
+    {% block javascripts %}
+    <script src="{{ asset('jquery/jquery.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+    {# <script src="{{ asset('js/bootstrap-treeview.min.js') }}"></script>#}
+    {# <script src="{{ asset('js/main.js') }}"></script>#}
+    {# <script src="{{ asset('js/tree.js') }}"></script>#}
+    {# <script src="{{ asset('js/bootstrap-datepicker.js') }}"></script>#}
+    <script src="{{ asset('bundles/fosjsrouting/js/router.min.js') }}"></script>
+    <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
+
+
+    <script src="{{ asset('js/message_flash.js')}}"></script>
+    <script src="{{ asset('js/jquery.flagstrap.min.js')}}"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    {% endblock %}
+
+    {% block js %} {% endblock %}
+
+</body>
+
+</html>

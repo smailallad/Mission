@@ -1,0 +1,33 @@
+{% extends "base.html.twig" %}
+{% form_theme form 'Form/bootstrap_3_layout.html.twig' %}
+{% block title %}Nouveau Prestation - {{ parent() }}{% endblock %}
+{% block bodysaisie %}
+{#{% include "@App/messages.html.twig" %}#}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h2>Nouveau Prestation</h2>
+    </div>
+    <div class="panel-body">
+        {{ form_start(form, {action: path('prestation_new')}) }}
+        {{ form_widget(form) }}
+            <p>
+                <button class="btn btn-primary" type="submit">Créer</button>
+            </p>
+        {{ form_end(form) }}
+    </div>
+    <div class="panel-footer">
+        <div class="btn-group record_actions">
+            <a class="btn btn-info" href="{{ path('prestation') }}">
+                <i class="glyphicon glyphicon-list"></i> Retour
+            </a>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+<script>
+
+</script>
+{% endblock %}

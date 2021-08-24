@@ -1,0 +1,24 @@
+{% set appel_employe = app.session.get('appel_employe') %}
+{% if appel_employe == "non" %} <!-- Non Employe -->
+<ul class="nav nav-tabs">
+    {% if is_granted('ROLE_BUREAU') or is_granted('ROLE_COMPTABLE') %}
+    <li role="presentation" {% if (page=='mission' ) %} class="active" {% endif %}>
+        <a href="{{ path('mission_index') }}">Missions</a></i>
+    </li>
+    {% endif %}
+    {% if is_granted('ROLE_COMPTABLE') %}
+    <li role="presentation" {% if (page=='noteFrais' ) %} class="active" {% endif %}>
+        <a href="{{ path('note_frais_index') }}">Note de frais</a>
+    </li>
+    {% endif %}
+</ul>
+{% elseif appel_employe == "oui" %} <!-- Employe-->
+<ul class="nav nav-tabs">
+    <li role="presentation" {% if (page=='mission' ) %} class="active" {% endif %}>
+        <a href="{{ path('mission_employe_index') }}">Missions</a></i>
+    </li>
+    <li role="presentation" {% if (page=='noteFrais' ) %} class="active" {% endif %}>
+        <a href="{{ path('note_frais_employe_index') }}">Note de frais</a>
+    </li>
+</ul>
+{% endif %}

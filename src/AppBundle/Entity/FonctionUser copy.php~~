@@ -1,0 +1,102 @@
+<?php
+namespace AppBundle\Entity;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+/**
+ * Fonction
+ *
+ * @ORM\Table(name="fonctionUser")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\FonctionUserRepository")
+ * @UniqueEntity(fields={"user","datefonction"},message="Une fonction attribuer déja à cette date.")
+ */
+class FonctionUser
+{
+    /**
+     * @ORM\Id
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     *
+     */
+    private $user;
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="string")
+     */
+    private $datefonction;
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Fonction")
+     */
+    private $fonction;
+    /**
+     * Get datefonction
+     *
+     * @return string
+     */
+    public function getDatefonction()
+    {
+        //return $this->datefonction;
+        dump($this->datefonction);
+        return \DateTime::createFromFormat('Y-m-d', $this->datefonction);
+    }
+    /**
+     * Set datefonction
+     *
+     * @param string $datefonction
+     *
+     * @return FonctionUser
+     */
+    public function setDatefonction($datefonction)
+    {   dump($datefonction);
+        $this->datefonction = $datefonction->format('Y-m-d');
+        dump($this);
+        return $this;
+    }
+    /**
+     * @param \DateTime $date
+     */
+    public function __construct(\DateTime $datefonction)
+    {
+        //$this->datefonction = $datefonction->format('Y-m-d');
+    }
+    /**
+     * Set fonction
+     *
+     * @param \AppBundle\Entity\Fonction $fonction
+     *
+     * @return FonctionUser
+     */
+    public function setFonction(\AppBundle\Entity\Fonction $fonction)
+    {
+        $this->fonction = $fonction;
+        return $this;
+    }
+    /**
+     * Get fonction
+     *
+     * @return \AppBundle\Entity\Fonction
+     */
+    public function getFonction()
+    {
+        return $this->fonction;
+    }
+    /**
+     * Set user
+     *
+     * @param \AppBundle\Entity\User $user
+     *
+     * @return FonctionUser
+     */
+    public function setUser(\AppBundle\Entity\User $user)
+    {
+        $this->user = $user;
+        return $this;
+    }
+    /**
+     * Get user
+     *
+     * @return \AppBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+}

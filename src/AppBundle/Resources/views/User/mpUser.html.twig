@@ -1,0 +1,43 @@
+{% extends "base.html.twig" %}
+{% form_theme form 'Form/bootstrap_3_layout.html.twig' %}
+{% block title %}Utilisateur - {{ parent() }}{% endblock %}
+{% block bodysaisie %}
+{#{% include "@App/messages.html.twig" %}#}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h2>Changement mot de passe</h2>
+    </div>
+    <div class="panel-body">
+        <table class="table table-condensed ">
+            <tbody>
+                <tr>
+                    <th scope="row">Nom</th>
+                    <td>{{ user.nom}}</td>
+                </tr>
+        
+            </tbody>
+        </table>
+        <hr>
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+            <p>
+          {#      <button class="btn btn-primary" type="submit">Créer</button>#}
+            </p>
+        {{ form_end(form) }}
+    </div>
+    <div class="panel-footer">
+        <div class="btn-group record_actions">
+            <a class="btn btn-info" href="{{ path('homepage') }}">
+                <i class="glyphicon glyphicon-list"></i> Annuler
+            </a>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+<script>
+
+</script>
+{% endblock %}

@@ -1,0 +1,450 @@
+<?php
+namespace AppBundle\Command;
+use DateTime;
+use AppBundle\Entity\User;
+use AppBundle\Entity\Zone;
+use AppBundle\Entity\Groupes;
+use AppBundle\Entity\Projet;
+use AppBundle\Entity\Depense;
+use AppBundle\Entity\Mission;
+use AppBundle\Entity\Vehicule;
+use AppBundle\Entity\Prestation;
+use AppBundle\Entity\SousProjet;
+use AppBundle\Entity\FraisMission;
+use AppBundle\Entity\Intervention;
+use AppBundle\Entity\DepenseMission;
+use AppBundle\Entity\FamilleDepense;
+use AppBundle\Entity\TarifPrestation;
+use AppBundle\Entity\CarburantMission;
+use AppBundle\Entity\InterventionUser;
+use AppBundle\Entity\JustificationDepense;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+
+class RestoreCommand extends ContainerAwareCommand
+{  // php bin/console restore
+    protected function configure()
+    {
+        $this
+            ->setName('restore')
+            ->setDescription('...')
+            ->addArgument('argument', InputArgument::OPTIONAL, 'Argument description')
+            ->addOption('option', null, InputOption::VALUE_NONE, 'Option description')
+        ;
+    }
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $argument = $input->getArgument('argument');
+        $output->writeln($argument);
+        if ($input->getOption('option')) {
+            // ...
+        }
+        $dbs = new \PDO("mysql:host=localhost;dbname=rtie;charset=utf8", "root", "ads2160396");
+        $manager = $this->getContainer()->get('doctrine')->getManager();
+        $repository = $this->getContainer()->get('doctrine');
+        $encoder = $this->getContainer()->get('security.password_encoder');
+
+        //*** Zone
+/*        $reqs = $dbs->prepare("SELECT * FROM zone Order By zone");
+        $reqs->execute();
+        $ress = $reqs->fetchAll();
+        $i = 1;
+        foreach ($ress as $recs)
+        {
+            $reqd = $dbd->prepare('INSERT INTO zone (nom) VALUES(?)');
+            $reqd->execute(array("Zone ".$i));
+            $i++;
+        }
+        //*** Fin Zone
+        //*** Client
+        $reqs = $dbs->prepare("SELECT * FROM client Order By id_client");
+        $reqs->execute();
+        $ress = $reqs->fetchAll();
+        foreach ($ress as $recs)
+        {
+            $reqd = $dbd->prepare('INSERT INTO client (nom) VALUES(?)');
+            $reqd->execute(array($recs["nom_client"]));
+        }
+*/        //*** Fin Zone
+        //*** Site
+/*        $reqs = $dbs->prepare("SELECT * FROM site Order By code_site");
+        $reqs->execute();
+        $ress = $reqs->fetchAll();
+        foreach ($ress as $recs)
+        {
+            $reqd = $dbd->prepare('INSERT INTO site (code,nom,wilaya_id,nouveau,client_id) VALUES(?,?,?,?,?)');
+            $reqd->execute(array($recs["code_site"],$recs["nom_site"],$recs["code_wilaya"],$recs["nouveau"],$recs["id_client"]));
+        }
+        //*** Fin Site
+*/
+       //*** User
+        $group = $repository->getRepository('AppBundle:Groupes')->find(2);
+        $reqs = $dbs->prepare("SELECT * FROM employe Order By code_employe ASC");
+        $reqs->execute();
+        $ress = $reqs->fetchAll();
+        foreach ($ress as $recs)
+        {   
+            $output->writeln('Employe : '.$recs["IDemploye"]);
+            $email = $recs["IDemploye"].'@rtie-dz.com';
+            $email= strtolower($email);
+            $output->writeln('Email: '.$email);
+            $user = new User();
+            $user   ->setUsername($recs["IDemploye"])
+                    ->setId($recs["code_employe"])
+                    ->setEmail("smail.allad@gmail.com")
+                    ->setPassword($encoder->encodePassword($user, 'pass'))
+                    ->setActive($recs["active"])
+                    ->setMission($recs["active_mission"])
+                    ->setGroups($group)
+                    //->setNaissance($recs["date_nais"])
+                    ->setNaissance(new DateTime($recs["date_nais"]))
+                    ->setNom($recs["nom_employe"])
+                    ;
+            //$output->writeln($recs["date_nais"]);
+            $manager->persist($user);
+
+        }
+        $manager->flush();
+//*** Mission
+/*        $group = $repository->getRepository('AppBundle:Groupes')->find(40);
+        $reqs = $dbs->prepare("SELECT * FROM mission Order By code_mission ASC");
+        $reqs->execute();
+        $ress = $reqs->fetchAll();
+        foreach ($ress as $recs)
+        {
+            $user = $repository->getRepository("AppBundle:User")->find($recs["code_employe"]);
+            $mission    = new Mission();
+            $mission    ->setCode($recs["code_mission"])
+                        ->setDepart(new DateTime($recs["date_depart"]))
+                        ->setRetour(new DateTime($recs["date_retour"]))
+                        ->setvEmploye($recs["validation_employe"])
+                        ->setvRollout($recs["validation_rollout"])
+                        ->setvComptabilite($recs["validation_comp"])
+                        ->setAvance($recs["mon_avance"])
+                        //->setNaissance($recs["date_nais"])
+                        ->setUser($user)
+                        ;
+            $output->writeln($recs["code_mission"]);
+            $manager->persist($mission);
+
+        }
+        $manager->flush();
+*/
+
+//*** Vehicule
+       //$group = $repository->getRepository('AppBundle:Groupes')->find(40);
+/*        $reqs = $dbs->prepare("SELECT * FROM vehicule Order By id ASC");
+        $reqs->execute();
+        $ress = $reqs->fetchAll();
+        foreach ($ress as $recs)
+        {
+            //$user = $repository->getRepository("AppBundle:User")->find($recs["code_employe"]);
+            $vehicule    = new Vehicule();
+            $vehicule    ->setNom($recs["nom"])
+                        ->setActive($recs["active"])
+                        ;
+            $output->writeln($recs["nom"]);
+            $manager->persist($vehicule);
+
+        }
+        $manager->flush();
+*/
+//*** Projet
+       //$group = $repository->getRepository('AppBundle:Groupes')->find(40);
+/*        $reqs = $dbs->prepare("SELECT * FROM projet Order By code_projet ASC");
+        $reqs->execute();
+        $ress = $reqs->fetchAll();
+        foreach ($ress as $recs)
+        {
+            //$user = $repository->getRepository("AppBundle:User")->find($recs["code_employe"]);
+            $projet    = new Projet();
+            $projet    ->setNom($recs["des_projet"])
+                        ;
+            $output->writeln($recs["des_projet"]);
+            $manager->persist($projet);
+
+        }
+        $manager->flush();
+*/
+//*** Sous Projet
+/*        $reqs = $dbs->prepare("SELECT * FROM sous_projet as s,projet as p WHERE (s.code_projet=p.code_projet) Order By s.code_sous_projet ASC");
+        $reqs->execute();
+        $ress = $reqs->fetchAll();
+        foreach ($ress as $recs)
+        {
+            //$user = $repository->getRepository("AppBundle:User")->find($recs["code_employe"]);
+            $projet = $repository->getRepository('AppBundle:Projet')->findOneBy(['nom' => $recs['des_projet']]);
+            $destination    = new SousProjet();
+            $destination    ->setNom($recs["des_sous_projet"])
+                            ->setProjet($projet)
+                        ;
+            $output->writeln($recs["des_sous_projet"]);
+            $manager->persist($destination);
+
+        }
+        $manager->flush();
+*/
+//*** Prestation
+// Enlever Cle ID, ajout Method SetId()
+/*        $reqs = $dbs->prepare("SELECT * FROM prestation as p,sous_projet as s WHERE (p.code_sous_projet=s.code_sous_projet) Order By p.code_prestation ASC");
+        $reqs->execute();
+        $ress = $reqs->fetchAll();
+        foreach ($ress as $recs)
+        {
+            //$user = $repository->getRepository("AppBundle:User")->find($recs["code_employe"]);
+            $sousProjet = $repository->getRepository('AppBundle:SousProjet')->findOneBy(['nom' => $recs['des_sous_projet']]);
+            $destination    = new Prestation();
+            $destination    ->setId($recs["code_prestation"])
+                            ->setNom($recs["des_prestation"])
+                            ->setSousProjet($sousProjet)
+                        ;
+            $output->writeln($recs["des_prestation"]);
+            $manager->persist($destination);
+
+        }
+        $manager->flush();
+*/
+//*** Intervention
+// Enlever Cle ID, ajout Method SetId()
+/*        $reqs = $dbs->prepare("SELECT * FROM intervention Order By code_intervention ASC");
+        $reqs->execute();
+        $ress = $reqs->fetchAll();
+        foreach ($ress as $recs)
+        {
+            //$mission = $repository->getRepository('AppBundle:Mission')->findOneBy(['code_mission' => $recs['code_mission']]);
+            $mission = $repository->getRepository('AppBundle:Mission')->findOneBy(['code' => $recs['code_mission']]);
+            $site = $repository->getRepository('AppBundle:Site')->findOneBy(['code' => $recs['code_site']]);
+            $prestation = $repository->getRepository('AppBundle:Prestation')->find($recs['code_prestation']);
+            $vehicule = $repository->getRepository('AppBundle:Vehicule')->find($recs['id_vehicule']);
+
+            $destination    = new Intervention();
+            $destination    ->setId($recs["code_intervention"])
+                            ->setMission($mission)
+                            ->setSite($site)
+                            ->setPrestation($prestation)
+                            ->setDateReception(new DateTime($recs['date_reception_tache']))
+                            ->setDateIntervention(new DateTime($recs['date_intervention']))
+                            ->setDesignation($recs['des_intervention'])
+                            ->setQuantite($recs['quantite'])
+                            ->setVehicule($vehicule)
+                            ->setTarif(0)
+
+                        ;
+            $output->writeln($recs["code_intervention"]);
+            $manager->persist($destination);
+
+        }
+        $manager->flush();
+*/
+//*** Famille depense
+/*        //$group = $repository->getRepository('AppBundle:Groupes')->find(40);
+        $reqs = $dbs->prepare("SELECT * FROM famille_dep Order By code_fam_dep ASC");
+        $reqs->execute();
+        $ress = $reqs->fetchAll();
+        foreach ($ress as $recs)
+        {
+            $destination    = new FamilleDepense();
+            $destination    ->setNom($recs["des_fam_dep"])
+                        ;
+            $output->writeln($recs["des_fam_dep"]);
+            $manager->persist($destination);
+
+        }
+        $manager->flush();
+*/
+
+//*** Depense
+// Enlever Cle ID, ajout Method SetId()
+/*        $reqs = $dbs->prepare("SELECT * FROM table_depense Order By code_depense ASC");
+        $reqs->execute();
+        $ress = $reqs->fetchAll();
+        foreach ($ress as $recs)
+        {   $familleDepense = $repository->getRepository('AppBundle:FamilleDepense')->find($recs['code_fam_dep']);
+            $destination    = new Depense();
+            $destination    ->setId($recs['code_depense'])
+                            ->setNom($recs["des_depense"])
+                            ->setNouveau($recs['nouveau'])
+                            ->setFamilleDepense($familleDepense)
+                        ;
+            $output->writeln($recs["des_depense"]);
+            $manager->persist($destination);
+
+        }
+        $manager->flush();
+*/
+
+//*** Justification Depense
+/*        $reqs = $dbs->prepare("SELECT * FROM jus_depense Order By code_jus ASC");
+        $reqs->execute();
+        $ress = $reqs->fetchAll();
+        foreach ($ress as $recs)
+        {   //$familleDepense = $repository->getRepository('AppBundle:FamilleDepense')->find($recs['code_fam_dep']);
+            $destination    = new JustificationDepense();
+            $destination    ->setNom($recs["des_jus"])
+                        ;
+            $output->writeln($recs["des_jus"]);
+            $manager->persist($destination);
+
+        }
+        $manager->flush();
+*/
+
+//*** DepenseMission
+// Enlever Cle ID, ajout Method SetId()
+        // 2 : sans plan,   3 : gas-oil,    4 : essance
+        // 1 : gas-oil ,    2 : essance ,   3 : sans plan
+       /* if ( 1 == 2){
+            $reqs = $dbs->prepare("SELECT * FROM depense Order By id_depense ASC");
+            $reqs->execute();
+            $ress = $reqs->fetchAll();
+            foreach ($ress as $recs)
+            {   $depense = $repository->getRepository('AppBundle:Depense')->find($recs['code_depense']);
+                //dump($depense);
+                //dump($recs);
+                //$mission = $repository->getRepository('AppBundle:Mission')->findOneBy(["code" => $recs["code_mission"]]);
+                //$justification = $repository->getRepository('AppBundle:JustificationDepense')->find($recs['code_jus']);
+                $val = $recs['code_depense'];
+                
+                if (in_array($val, ['2','3','4'])) {
+                    $output->writeln('in: ' . $recs["id_depense"].'  === ' . $recs['code_depense']);
+                }else{
+                    $output->writeln('not in: ' . $recs["id_depense"].'  === ' . $recs['code_depense']);
+                    //$destination    = new DepenseMission();
+                    //$destination    ->setId($recs['id_depense'])
+                    //                ->setDepense($depense)
+                    //                ->setMission($mission)
+                    //                ->setJustificationDepense($justification)
+                    //                ->setDate(new Datetime($recs['date_depense']))
+                    //                ->setMontant($recs["mon_depense"])
+                    //                ->setObs($recs["obs_depense"])
+                    //            ;
+                }
+                //$output->writeln($recs["id_depense"]);
+                //$manager->persist($destination);
+
+            }
+            //$manager->flush();
+        }*/
+
+        // 2 eme methode
+       /* $i = 1;
+        $depenses = $repository->getRepository('AppBundle:DepenseMission')->getCarburant();
+        foreach ($depenses as $depense ){
+            $carburantMission = new CarburantMission();
+            $carburantMission->setMission($depense->getMission());
+            $carburantMission->setDate($depense->getDateDep());
+            $carburantMission->setMontant($depense->getMontant());
+            $carburantMission->setJustificationDepense($depense->getJustificationDepense());
+            $carburantMission->setObs($depense->getObs());
+            $carburantMission->setKms(0);
+            
+            //dump($depense->getDepense()->getNom());
+            $carburant = $repository->getRepository('AppBundle:Carburant')->findOneBy(['designation' => $depense->getDepense()->getNom()]);
+            //dump($carburant);
+            $carburantMission->setCarburant($carburant);
+
+            //$intervention = $repository->getRepository('AppBundle:Intervention')->findByMission($depense->getMission());
+            $interventions = $repository->getRepository('AppBundle:Intervention')->getIntervention2($depense);
+            
+            //foreach ($interventions as $intervention) {
+            //   dump("Depense: " . $depense->getId() . " => ". $intervention->getVehicule()->getNom());
+            //   dump($intervention->getdateIntervention());
+            //}
+            if (count($interventions) >0 ){
+                $carburantMission->setVehicule($interventions[0]->getVehicule());
+                //dump($i . ": 1 Depense: " . $depense->getId() . " => ". $interventions[0]->getVehicule()->getNom());
+            }else {
+                $interventions = $repository->getRepository('AppBundle:Intervention')->getIntervention3($depense);
+                if (count($interventions) >0 ){
+                    $carburantMission->setVehicule($interventions[0]->getVehicule());
+                    //dump($i . ": 2 Depense: " . $depense->getId() . " => ". $interventions[0]->getVehicule()->getNom());
+                }else {
+                    if ($carburant->getId() == 1 ){
+                        $vehicule =  $repository->getRepository('AppBundle:Vehicule')->find(1);
+                        $carburantMission->setVehicule($vehicule);
+                    }else {
+                        $vehicule =  $repository->getRepository('AppBundle:Vehicule')->find(2);
+                        $carburantMission->setVehicule($vehicule);
+                    }
+                    //dump($i . ": Vide : " . $depense->getId() . " => " . $depense->getMission()->getCode());
+                    //$i++;
+                }
+            }
+            
+            dump($i);
+            $manager->persist($carburantMission);
+            $manager->remove($depense);
+            $i++;
+            
+        }
+        $manager->flush();*/
+
+//*** Frais Mission
+/*        $reqs = $dbs->prepare("SELECT * FROM frais_mission Order By id_frais_mission ASC");
+        $reqs->execute();
+        $ress = $reqs->fetchAll();
+        foreach ($ress as $recs)
+        {   $mission = $repository->getRepository('AppBundle:Mission')->findOneBy(["code" => $recs['code_mission']]);
+            $user = $repository->getRepository('AppBundle:User')->find($recs['code_employe']);
+            $destination    = new FraisMission();
+            $destination    ->setDate(new DateTime($recs["date_frais_mission"]))
+                            ->setMontant($recs["mon_frais_mission"])
+                            ->setMission($mission)
+                            ->setUser($user)
+                        ;
+            $output->writeln($user->getNom());
+            $manager->persist($destination);
+
+        }
+        $manager->flush();
+*/
+
+//*** Intervention user
+ /*       $reqs = $dbs->prepare("SELECT * FROM realisateur_intervention ");
+        $reqs->execute();
+        $ress = $reqs->fetchAll();
+        foreach ($ress as $recs)
+        {   $intervention = $repository->getRepository('AppBundle:Intervention')->find($recs['code_intervention']);
+            $user = $repository->getRepository('AppBundle:User')->find($recs['code_employe']);
+            $interventionUser   = new InterventionUser();
+            $interventionUser   ->setIntervention($intervention)
+                                ->setUser($user)
+                        ;
+            $output->writeln($recs['code_intervention']);
+            $manager->persist($interventionUser);
+
+        }
+        $manager->flush();
+*/
+
+//*** Tarif Prestation
+/*        $reqs = $dbs->prepare("SELECT * FROM tarif_prestation Order By zone ASC, code_prestation ASC");
+        $reqs->execute();
+        $ress = $reqs->fetchAll();
+        $output->writeln("Nbr = " . count($ress));
+        foreach ($ress as $recs)
+        {   $prestation = $repository->getRepository('AppBundle:Prestation')->find($recs['code_prestation']);
+            $zone = $repository->getRepository('AppBundle:Zone')->find($recs['zone']);
+            $tarifPrestation    = new TarifPrestation();
+            $tarifPrestation    ->setPrestation($prestation)
+                                ->setZone($zone)
+                                ->setMontant($recs["tarif_prestation"])
+                        ;
+            $output->writeln($recs['zone'] ." => ".$recs['code_prestation'] . ' =>  ' . $recs['tarif_prestation'] );
+            $manager->persist($tarifPrestation);
+
+        }
+        $manager->flush();
+*/
+
+
+        $output->writeln('');
+        $output->writeln('********************************');
+        $output->writeln('****** Fin de Traitement *******');
+        $output->writeln('********************************');
+        $output->writeln('');
+    }
+}

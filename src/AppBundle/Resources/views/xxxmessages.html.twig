@@ -1,0 +1,53 @@
+{% set ind=0 %}
+{% for message in app.session.flashbag.get('danger') %}
+    {% if ind==0 %}
+    <div class="alert alert-danger">
+    {% set ind=1 %}
+    {% endif %}
+    <p>{{ message }}</p>
+{% endfor %}
+
+{% if ind==1 %}
+</div>
+{% endif %}
+
+{% set ind=0 %}
+{% for message in app.session.flashbag.get('warning') %}
+    {% if ind==0 %}
+    <div class="alert alert-warning">
+    {% set ind=1 %}
+    {% endif %}
+    <p>{{ message }}</p>
+{% endfor %}
+
+{% if ind==1 %}
+</div>
+{% endif %}
+
+{% set ind=0 %}
+{% for message in app.session.flashbag.get('info') %}
+    {% if ind==0 %}
+    <div class="alert alert-info">
+    {% set ind=1 %}
+    {% endif %}
+    <p>{{ message }}</p>
+{% endfor %}
+
+{% if ind==1 %}
+</div>
+{% endif %}
+
+
+
+{% set ind=0 %}
+{% for message in app.session.flashbag.get('success') %}
+    {% if ind==0 %}
+    <div class="alert alert-success">
+    {% set ind=1 %}
+    {% endif %}
+    <p>{{ message }}</p>
+{% endfor %}
+
+{% if ind==1 %}
+</div>
+{% endif %}

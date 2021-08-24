@@ -1,0 +1,162 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
+
+/**
+ * Recrutement
+ *
+ * @ORM\Table(name="recrutement")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\RecrutementRepository")
+ * @UniqueEntity(fields={"employe_id","recrutement"},message="Valeur existe déjà sur la base de donnée.")
+ */
+class Recrutement
+{
+    /**
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\JoinColumn(nullable=false) */
+    private $employe;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="recruter", type="datetime")
+     */
+    private $recruter;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="licenciement", type="datetime",nullable=true)
+     */
+    private $licenciement;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="motif", type="string", length=255, nullable=true)
+     */
+    private $motif;
+
+
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set recruter
+     *
+     * @param \DateTime $recruter
+     *
+     * @return Recrutement
+     */
+    public function setRecruter($recruter)
+    {
+        $this->recruter = $recruter;
+
+        return $this;
+    }
+
+    /**
+     * Get recruter
+     *
+     * @return \DateTime
+     */
+    public function getRecruter()
+    {
+        return $this->recruter;
+    }
+
+    /**
+     * Set licenciement
+     *
+     * @param \DateTime $licenciement
+     *
+     * @return Recrutement
+     */
+    public function setLicenciement($licenciement)
+    {
+        $this->licenciement = $licenciement;
+
+        return $this;
+    }
+
+    /**
+     * Get licenciement
+     *
+     * @return \DateTime
+     */
+    public function getLicenciement()
+    {
+        return $this->licenciement;
+    }
+
+    /**
+     * Set motif
+     *
+     * @param string $motif
+     *
+     * @return Recrutement
+     */
+    public function setMotif($motif)
+    {
+        $this->motif = $motif;
+
+        return $this;
+    }
+
+    /**
+     * Get motif
+     *
+     * @return string
+     */
+    public function getMotif()
+    {
+        return $this->motif;
+    }
+
+    /**
+     * Set employe
+     *
+     * @param \AppBundle\Entity\User $employe
+     *
+     * @return Recrutement
+     */
+    public function setEmploye(\AppBundle\Entity\User $employe)
+    {
+        $this->employe = $employe;
+
+        return $this;
+    }
+
+    /**
+     * Get employe
+     *
+     * @return \AppBundle\Entity\User
+     */
+    public function getEmploye()
+    {
+        return $this->employe;
+    }
+}

@@ -1,0 +1,28 @@
+{% extends "base.html.twig" %}
+{% block title %}Liste missions - {{ parent() }}{% endblock %}
+
+{% block bodyliste %}
+    <h3>Liste Missions</h3>
+    {{ knp_pagination_render(paginator) }}
+    <table class="table table-striped table-hover table-bordered records_list">
+        <tbody>
+            {% for value in paginator %}
+            <tr>
+            <td>
+            {{ value.code }}
+            </td>
+            <td>
+            {{ value.destination }}
+            </td>
+            </tr>
+            {% endfor %}
+                
+        </tbody>
+    </table>
+    
+    {{ knp_pagination_render(paginator) }}
+</div>
+{% endblock %}
+{% block js %}
+
+{% endblock %}

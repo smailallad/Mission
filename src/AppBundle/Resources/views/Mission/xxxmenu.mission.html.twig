@@ -1,0 +1,64 @@
+{% if ('M' in mission.code ) %}
+{% set m = 'mission' %}
+{% else %}
+{% set m = 'noteFrais' %}
+{% endif %}
+{% set appel_employe = app.session.get('appel_employe') %}
+{% set appel_mission = app.session.get('appel_mission') %}
+{% set appel_journal = app.session.get('appel_journal') %}
+
+employe : {{ appel_employe }}
+mission : {{ appel_mission }}
+journal : {{ appel_journal }}
+<h4>
+    {% if appel_mission == 'oui'%}
+        {% if (m == 'mission') %}
+            {% if appel_employe == "non" %}
+                <a class="btn btn-primary mr-2" href="{{ path('mission_index') }}">
+                    <i class="glyphicon glyphicon-list"></i>
+                </a>
+            {% elseif appel_employe == "oui" %}
+                <a class="btn btn-primary mr-2" href="{{ path('mission_employe_index') }}">
+                    <i class="glyphicon glyphicon-list"></i>
+                </a>
+            {% endif %}
+            Mission
+        {% else %}
+            {% if appel_employe == "non" %}
+                <a class="btn btn-primary mr-2" href="{{ path('note_frais_index') }}">
+                    <i class="glyphicon glyphicon-list"></i>
+                </a>
+            {% elseif appel_employe == "oui" %}
+                <a class="btn btn-primary mr-2" href="{{ path('note_frais_employe_index') }}">
+                    <i class="glyphicon glyphicon-list"></i>
+                </a>
+            {% endif %}
+            Note de frais retour:{{ appel_mission == 'journal' }}
+        {% endif %}
+    {% else %}
+        {% if (m == 'mission') %}
+            {% if appel_employe == "non" %}
+                <a class="btn btn-primary mr-2" href="{{ path('journal') }}">
+                    <i class="glyphicon glyphicon-list"></i>
+                </a>
+            {% elseif appel_employe == "oui" %}
+                <a class="btn btn-primary mr-2" href="{{ path('journal') }}">
+                    <i class="glyphicon glyphicon-list"></i>
+                </a>
+            {% endif %}
+            Mission
+        {% else %}
+            {% if appel_employe == "non" %}
+                <a class="btn btn-primary mr-2" href="{{ path('journal') }}">
+                    <i class="glyphicon glyphicon-list"></i>
+                </a>
+            {% elseif appel_employe == "oui" %}
+                <a class="btn btn-primary mr-2" href="{{ path('jornal') }}">
+                    <i class="glyphicon glyphicon-list"></i>
+                </a>
+            {% endif %}
+            Note de frais retour:{{ appel_mission == 'journal' }}
+        {% endif %}
+
+    {% endif %}
+</h4>

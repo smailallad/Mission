@@ -1,0 +1,8 @@
+<?php
+/*namespace AppBundle\Events;
+final class InterventionEvents
+{
+  const onInterventionPost = 'mission.post_intervention';
+  // Vos autres évènements…
+}
+*/

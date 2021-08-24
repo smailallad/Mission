@@ -1,0 +1,57 @@
+{% extends "base.html.twig" %}
+{% form_theme form 'Form/bootstrap_3_layout.html.twig' %}
+{% block title %}Nouvelle Mission - {{ parent() }}{% endblock %}
+{% block bodysaisie %}
+{#{% include "@App/messages.html.twig" %}#}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h2>Nouvelle Mission</h2>
+    </div>
+    <div class="panel-body">
+        {{ form_start(form, {action: path('mission_new')}) }}
+        {{ form_widget(form) }}
+            <p>
+                <button class="btn btn-primary" type="submit">Créer</button>
+            </p>
+        {{ form_end(form) }}
+    </div>
+    <div class="panel-footer">
+        <div class="btn-group record_actions">
+            <a class="btn btn-primary" href="{{ path('mission_index') }}">
+                <i class="glyphicon glyphicon-list"></i> Liste
+            </a>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+<script>
+$(document).ready(function()
+{
+    // au chargement de la page initialiser code mission
+    initialiserCode();    
+    function initialiserCode()
+    {   var  annee = $('#mission_annee').val();
+        var cURL = Routing.generate('mission_next',{ annee : annee });
+       
+        //alert(cURL);
+        $.post(
+            cURL,
+            function(data)
+            {
+                //console.log(data.code); 
+                $('#mission_code').val(data.code);
+            }
+        )
+    }
+    $('#mission_annee').change(function()
+    { initialiserCode()
+    })
+    ;
+    
+
+})
+</script>
+{% endblock %}

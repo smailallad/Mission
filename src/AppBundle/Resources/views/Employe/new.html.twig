@@ -1,0 +1,67 @@
+{% extends "base.html.twig" %}
+{% form_theme form 'Form/bootstrap_3_layout.html.twig' %}
+{% block title %}Nouveau Employe - {{ parent() }}{% endblock %}
+{% block bodysaisie %}
+{#{% include "@App/messages.html.twig" %}#}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h2>Nouveau Employe</h2>
+    </div>
+    <div class="panel-body">
+        {{ form_start(form, {action: path('employe_new')}) }}
+        {{ form_widget(form) }}
+            <p>
+                <button class="btn btn-primary" type="submit">Créer</button>
+            </p>
+        {{ form_end(form) }}
+    </div>
+    <div class="panel-footer">
+        <div class="btn-group record_actions">
+            <a class="btn btn-primary" href="{{ path('employe') }}">
+                <i class="glyphicon glyphicon-list"></i> Retour
+            </a>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+<script>
+    $(document).ready(function() {
+        //alert("Ok");
+        function password(id){
+            var possible = '';
+            possible += 'abcdefghijklmnopqrstuvwxyz';
+            possible += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            possible += '0123456789';
+            possible += '![]{}()%&*$#^<>~@|';
+            var text = '';
+            console.log(possible);
+            for(var i=0; i < id; i++) {
+              text += possible.charAt(Math.floor(Math.random() * possible.length));
+            }
+            return text;
+        }
+
+        $("#employe_nom").change(function(){
+            var str = $("#employe_nom").val();
+            str = str.toLowerCase();
+            str = str.replace(/[\s]{2,}/g," "); // Enlève les espaces doubles, triples, etc.
+            str = str.replace(/^[\s]/, ""); // Enlève les espaces au début
+            str = str.replace(/[\s]$/,""); // Enlève les espaces à la fin
+            str = str.replace(/ /g,".");
+            var pw = password(10);
+
+            $('#employe_username').val(str);
+            $('#employe_password').val(pw);
+
+        })
+
+
+
+
+
+    })
+</script>
+{% endblock %}

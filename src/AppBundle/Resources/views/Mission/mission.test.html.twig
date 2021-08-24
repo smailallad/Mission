@@ -1,0 +1,27 @@
+{% extends "base.html.twig" %}
+{% block title %}Liste missions - {{ parent() }}{% endblock %}
+
+
+{% block bodyliste %}
+    <div class="col-md-10">
+    {#{% include "@App/messages.html.twig" %}#}
+    <h4>Liste Missions</h4>
+
+    
+    <table class="table table-striped table-hover records_list">
+        <tbody>
+            {% for mission in paginator %}
+                <tr> 
+                    <td>{{ mission.nom }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+
+  </div>
+{% endblock %}
+{% block js %}
+
+{% endblock %}

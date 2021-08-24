@@ -1,0 +1,54 @@
+# To get started with security, check out the documentation:
+# https://symfony.com/doc/current/security.html
+security:
+    encoders:
+        AppBundle\Entity\User:
+            algorithm: bcrypt
+
+    role_hierarchy:
+        ROLE_BUREAU: [ROLE_USER]
+        ROLE_ROLLOUT: [ROLE_BUREAU]
+        ROLE_ADMINISTRATION: [ROLE_USER]
+        ROLE_COMPTABLE: [ROLE_USER]
+        ROLE_SUPER_COMPTABLE: [ROLE_COMPTABLE]
+        ROLE_GERANT: [ROLE_SUPER_COMPTABLE,ROLE_ROLLOUT,ROLE_BUREAU,ROLE_ADMINISTRATION]
+        ROLE_ADMIN: [ROLE_GERANT,ROLE_ALLOWED_TO_SWITCH]
+
+    providers:
+        db_provider:
+            entity:
+                class: AppBundle:User
+#                property: username
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+#        sanssecurite:
+#            pattern: ^/(login$|register|resetting|logout)  # Les adresses de ces pages sont login, register et resetting
+#            anonymous: true                         # On autorise bien évidemment les anonymes sur ces pages # Firewall principal pour le reste de notre site
+
+        main:
+            anonymous: ~
+            form_login:
+                login_path: login
+                check_path: login
+
+            logout:
+                path: /logout
+                target: /
+            logout_on_user_change: true 
+            switch_user: true
+
+
+    access_control:
+        - { path: '^/login', roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: '^/register', roles: IS_AUTHENTICATED_ANONYMOUSLY }
+#        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
+#        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
+#        - { path: ^/logout$, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+#        - { path: ^/resetting, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: '^/admin/', roles: ROLE_ADMIN }
+        - { path: '^/gerant', roles: ROLE_GERANT }
+        - { path: '^/', roles: ROLE_USER }

@@ -1,0 +1,73 @@
+{% extends "base.html.twig" %}
+{% block title %}Site - {{ parent() }}{% endblock %}
+{% block bodysaisie %}
+{#{% include "@App/messages.html.twig" %}#}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4> Site </h4>
+    </div>
+    <div class="panel-body">
+        <table class="table table-hover record_properties">
+            <tbody>
+                <tr>
+                    <th scope="row">Nom</th>
+                    <td>{{ site.nom }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Wilaya</th>
+                    <td>{{ site.wilaya }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Client</th>
+                    <td>{{ site.client }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Nouveau</th>
+                    <td>{{ site.nouveau }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-footer">
+        <div class="btn-group record_actions">
+            <a class="btn btn-info" href="{{ path('site') }}">
+                <i class="glyphicon glyphicon-list"></i> Retour à la liste
+            </a>
+            <a class="btn btn-primary" href="{{ path('site_edit', {id: site.id | Mycrypt}) }}">
+                <i class="glyphicon glyphicon-edit"></i>Modifier
+            </a>
+            <button class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteSite"><i class="glyphicon glyphicon-trash"></i> Supprimer</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modale delete Site-->
+   <div id="modalDeleteSite" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjoutRoleLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4>Confirmer la suppression</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Veuillez confimer la suppression </p>
+                </div>
+                <div class="modal-footer">
+                    {{ form_start(delete_form) }}
+                    {{ form_widget(delete_form) }}
+                        <button class="btn btn-danger" type="submit"><i class="glyphicon glyphicon-trash-o"></i> Oui</button>
+                        <button class="btn btn-primary" data-dismiss="modal">Non</button>
+                        <input name="modal" type="hidden" value="0">
+                    {{ form_end(delete_form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}
+{% block js %}
+<script> 
+
+</script>
+{% endblock %}

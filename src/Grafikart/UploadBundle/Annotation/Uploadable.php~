@@ -1,0 +1,15 @@
+<?php
+
+namespace Grafikart\UploadBundle\Annotation;
+
+use Dictrine\common\Annotaions\Annotation\Target;
+
+/**
+* @Annotation
+* @Target("CLASS")
+*/
+
+class Uploadable {
+
+
+}

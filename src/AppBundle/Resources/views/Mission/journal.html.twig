@@ -1,0 +1,251 @@
+{% extends "base.html.twig" %}
+{% form_theme form 'Form/bootstrap_3_layout.html.twig' %}
+{% block title %}{{ parent() }}{% endblock %}
+
+{% macro thead(name, field, label) %}
+{% spaceless %}
+{% set sort = app.session.get('sort.' ~ name) %}
+{% if sort and sort.field == field %}
+{% if sort.type == 'DESC' %}
+<a href="{{ path('journal_sort', {field: field, type: 'ASC'}) }}">{{ label }} <i
+        class="glyphicon glyphicon-sort-by-attributes-alt"></i></a>
+{% elseif sort.type == 'ASC' %}
+<a href="{{ path('journal_sort', {field: field, type: 'DESC'}) }}">{{ label }} <i
+        class="glyphicon glyphicon-sort-by-attributes"></i></a>
+{% endif %}
+{% else %}
+<a href="{{ path('journal_sort', {field: field, type: 'ASC'}) }}">{{ label }} <i
+        class="glyphicon glyphicon-sort"></i></a>
+{% endif %}
+{% endspaceless %}
+{% endmacro %}
+
+{% from _self import thead %}
+{% block detail %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4>
+            <a class="mr-2" href="{{ path('excel_journal')}}">
+                <img src="{{ asset('icones/Excel-icon.png') }}" title="Exporter vers excel.">
+            </a>
+            Filtre
+        </h4>
+    </div>
+    <div class="panel-body">
+        {% include '@App/Mission/filter.html.twig' with {form: form} %}
+    </div>
+</div>
+
+{% endblock %}
+
+{% block contenu %}
+{#{% include "@App/messages.html.twig" %}#}
+{#{% include "@App/Mission/note.frais.pages.html.twig" %}#}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h5>Journal de travail</h5> 
+        <div class="col-md-8">{{ knp_pagination_render(paginator) }}</div>
+    </div>
+    <div class="panel-body">
+
+        <table class="table table-striped table-hover records_list">
+            <thead>
+                <tr>
+                    <th scope="col">{{ thead('journal', 'dateIntervention', 'Date') }}</th>
+                    <th scope="col">{{ thead('journal', 'mission', 'Mission') }}</th>
+                    <th scope="col">{{ thead('journal', 'site', 'Code site') }}</th>
+                    <th scope="col">{{ thead('journal', 'site.nom', 'Nom site') }}</th>
+                    <th scope="col">{{ thead('journal', 'mission.user', 'Chef de Mission') }}</th>
+                    <th scope="col">{{ thead('journal', 'prestation.nom', 'Intervention') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for intervention in paginator %}
+                <tr>
+                    <td>{{ intervention.dateIntervention | date('d/m/Y') }}</td>
+                    <td> <a href="{{path('mission_intervention',{id: intervention.mission.id | Mycrypt})}}">{{
+                            intervention.mission.code }}</a>
+                    </td>
+                    <td> <a href="{{ path('mission_intervention_show',{id: intervention.id | Mycrypt}) }}">{{
+                            intervention.site.code }}</a>
+                    </td>
+                    <td>{{ intervention.site.nom }}</td>
+                    <td>{{ intervention.mission.user }}</td>
+                    <td>{{ intervention.prestation.nom }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modale Validation Employe-->
+<div id="modalve" data-id="id" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalveLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>Confirmer!</h4>
+            </div>
+            <div class="modal-body">
+                <p id="msgvemploye">Validée cette intervention ?.</p>
+            </div>
+            <div class="modal-footer">
+                <button id="btnvemploye" class="btn btn-primary" data-dismiss="modal">
+                    <i class="glyphicon glyphicon-check"></i>Oui
+                </button>
+                <button class="btn btn-primary" data-dismiss="modal">Non</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modale Validation Rollout-->
+<div id="modalvr" data-id="id" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalvrLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>Confirmer!</h4>
+            </div>
+            <div class="modal-body">
+                <p id="msgvrollout">Validée cette intervention ?.</p>
+            </div>
+            <div class="modal-footer">
+                <button id="btnvrollout" class="btn btn-primary" data-dismiss="modal">
+                    <i class="glyphicon glyphicon-check"></i>Oui
+                </button>
+                <button class="btn btn-primary" data-dismiss="modal">Non</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modale Validation Comptabilite-->
+<div id="modalvc" data-id="id" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalvcLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>Confirmer!</h4>
+            </div>
+            <div class="modal-body">
+                <p id="msgvcomptabilite">Validée cette intervention ?.</p>
+            </div>
+            <div class="modal-footer">
+                <button id="btnvcomptabilite" class="btn btn-primary" data-dismiss="modal">
+                    <i class="glyphicon glyphicon-check"></i>Oui
+                </button>
+                <button class="btn btn-primary" data-dismiss="modal">Non</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modale delete Mission-->
+<div id="modalDeleteMission" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalDeleteMissionLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>Confirmer la suppression</h4>
+            </div>
+            <div class="modal-body">
+                <p>Vous êtes sur le point de supprimer cette Mission, cette procédure est irréversible.</p>
+                <p>Voulez-vous poursuivre?</p>
+            </div>
+            <div class="modal-footer">
+                <form name="form" id="modalDeleteMissionForm" action="#" method="post">
+                    <button class="btn btn-danger" type="submit"><i class="glyphicon glyphicon-trash"></i>
+                        Supprimer</button>
+                    <button class="btn btn-primary" data-dismiss="modal">Non</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% endblock %}
+
+    {% block js %}
+    <script>
+        $(document).ready(function () {
+            $('#btnvemploye').click(function () {
+                var id = $("#modalve").data("id");
+                var cURL = Routing.generate('mission_validation_employe', { id: id });
+                $.post(
+                    cURL,
+                    function (data) {
+                        location.reload(true);
+                    }
+                )
+
+            })
+
+            $('#btnvrollout').click(function () {
+                var id = $("#modalvr").data("id");
+                var cURL = Routing.generate('mission_validation_rollout', { id: id });
+                $.post(
+                    cURL,
+                    function (data) {
+                        location.reload(true);
+                    }
+                )
+            })
+
+            $('#btnvcomptabilite').click(function () {
+                var id = $("#modalvc").data("id");
+                var cURL = Routing.generate('mission_validation_comptabilite', { id: id });
+                $.post(
+                    cURL,
+                    function (data) {
+                        location.reload(true);
+                    }
+                )
+            })
+            $('#modalDeleteMission').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget) // Button that triggered the modal
+                var id = button.data('id') // Extract info from data-* attributes
+                var cURL = Routing.generate('mission_delete_index', { id: id });
+                //alert(cURL);
+                $("#modalDeleteMissionForm").attr('action', cURL);
+            })
+        })
+
+        function valideremploye(intervention, v) {
+            $("#modalve").data("id", intervention);
+            if (v == 0) {
+                $("#msgvemploye").html("Valider cette intervention coté employé ?");
+            } else {
+                $("#msgvemploye").html("Invalider cette intervention coté employé ?");
+            }
+            $("#modalve").modal('show');
+        }
+
+        function validerrollout(intervention, v) {
+            $("#modalvr").data("id", intervention);
+            if (v == 0) {
+                $("#msgvrollout").html("Valider cette intervention coté rollout ?");
+            } else {
+                $("#msgvrollout").html("Invalider cette intervention coté rollout ?");
+            }
+            $("#modalvr").modal('show');
+        }
+
+        function validercomptabilite(intervention, v) {
+            $("#modalvc").data("id", intervention);
+            if (v == 0) {
+                $("#msgvcomptabilite").html("Valider cette intervention coté comptabilite ?");
+            } else {
+                $("#msgvcomptabilite").html("Invalider cette intervention coté comptabilite ?");
+            }
+            $("#modalvc").modal('show');
+        }
+
+
+    </script>
+    {% endblock %}

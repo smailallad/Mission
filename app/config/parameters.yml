@@ -1,0 +1,12 @@
+# This file is auto-generated during the composer install
+parameters:
+    database_host: 127.0.0.1
+    database_port: null
+    database_name: rtie3.4
+    database_user: smail
+    database_password: Ads2160396!
+    mailer_transport: gmail
+    mailer_host: null
+    mailer_user: smailallad@gmail.com
+    mailer_password: InesSilya
+    secret: 939ac14fa98c6a2cf0a8825bdcbac8df685a3872

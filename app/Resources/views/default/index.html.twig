@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block bodysaisie %}
+{# {% include "@App/messages2.html.twig" %} #}
+{#<h4> Listes des alertes :</h4>#}
+{% if is_granted('ROLE_ROLLOUT') or is_granted('ROLE_ADMINISTRATION') or is_granted('ROLE_COMPTABLE') or is_granted('ROLE_BUREAU') %}
+<div class="panel panel-info">
+    <div class="panel-heading">
+        <h4>Info</h4>
+    </div>
+    <div class="panel-body">
+        <ul class="list-group">
+            <li class="list-group-item text-info">
+                <span class="glyphicon glyphicon-hand-right"> </span>
+                Message 1
+            </li>
+            <li class="list-group-item text-info">
+                <span class="glyphicon glyphicon-hand-right"></span>
+                Message 2
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="panel panel-danger">
+  <div class="panel-heading"><h4>Mission</h4></div>
+  <div class="panel-body">
+    <ul class="list-group">
+        <li class="list-group-item text-danger">
+            <span class="glyphicon glyphicon-hand-right"> </span>
+            <span class="badge alert-danger"> <b>14</b></span>
+            Mission non validée par Employé
+        </li>
+        <li class="list-group-item text-danger">
+            <span class="glyphicon glyphicon-hand-right"></span>
+            <span class="badge alert-danger"> <b>15</b></span>
+            Mission non validée par Rollout
+        </li>
+        <li class="list-group-item text-danger">
+            <span class="glyphicon glyphicon-hand-right"></span>
+            <span class="badge alert-danger"> <b>16</b></span>
+            Mission non validée par Comptabilité
+        </li>
+
+    </ul>
+  </div>
+</div>
+
+<div class="panel panel-danger">
+    <div class="panel-heading">
+        <h4>Fichies à vérifier</h4>
+    </div>
+    <div class="panel-body">
+        <ul class="list-group">
+            <li class="list-group-item text-danger">
+                <span class="glyphicon glyphicon-hand-right"> </span>
+                <span class="badge alert-danger"> <b>14</b></span>
+                Dépenses non validée par la Comptabilité
+            </li>
+            <li class="list-group-item text-danger">
+                <span class="glyphicon glyphicon-hand-right"></span>
+                <span class="badge alert-danger"> <b>15</b></span>
+                Sites non validé par Rollout
+            </li>
+
+        </ul>
+    </div>
+</div>
+{% endif %}
+{# {% include "@App/modal.message.html.twig" %} #}
+
+{% endblock %}
+
+{% block js %}
+<script>
+    
+</script>
+{% endblock %}
