@@ -76,4 +76,9 @@ class Pointage
 
         return $this;
     }
+    public function __toString()
+    {
+        return $this->designation;
+    }
+
 }

@@ -21,6 +21,8 @@ class PointageFilterType extends AbstractType
             'label'     => 'Date',
             'widget'    => 'single_text',
             'html5'     => true,
+            'required'  => true,
+            'data' => new \DateTime("now"),
             )
         )
         ->add('user',EntityType::Class, array(

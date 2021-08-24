@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
 use AppBundle\Entity\PointageUser;
+use AppBundle\Form\PointageUserType;
 use AppBundle\Form\PointageFilterType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,7 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 /**
 * @Route("/pointage")
-* @Security("has_role('ROLE_ADMIN')")
+* @Security("has_role('ROLE_ROLLOUT')")
 */
 
 class PointageController extends Controller
@@ -22,7 +23,7 @@ class PointageController extends Controller
      */
     public function newAction()
     {
-        return $this->render('@App/Pointage/new.html.twig', array(
+        return $this->render('@App/PointageUser/new.html.twig', array(
             // ...
         ));
     }
@@ -32,7 +33,7 @@ class PointageController extends Controller
      */
     public function showAction()
     {
-        return $this->render('@App/Pointage/show.html.twig', array(
+        return $this->render('@App/PointageUser/show.html.twig', array(
             // ...
         ));
     }
@@ -40,17 +41,23 @@ class PointageController extends Controller
     /**
      * @Route("/index",name="pointage_index")
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $manager = $this->getDoctrine()->getManager();
         $form = $this->createForm(PointageFilterType::class);
         if (!is_null($response = $this->saveFilter($form, 'pointage', 'pointage_index'))) {
             return $response;
         }
-        $qb = $manager->getRepository('AppBundle:PointageUser')->createQueryBuilder('p');
+        //$qb = $manager->getRepository('AppBundle:PointageUser')->createQueryBuilder('p');
+        if (is_null($values = $this->getFilter('pointage'))) {
+            $qb = $manager->getRepository('AppBundle:PointageUser')->getPointages(1);
+        }else{
+            $qb = $manager->getRepository('AppBundle:PointageUser')->getPointages();
+        }
+        
         $paginator = $this->filter($form, $qb, 'pointage');
         $forme=$form->createView();
-        return $this->render('@App/Pointage/index.html.twig', array(
+        return $this->render('@App/PointageUser/index.html.twig', array(
             'form'      => $form->createView(),
             'paginator' => $paginator,
         
@@ -58,25 +65,25 @@ class PointageController extends Controller
     }
     /**
      * @Route("/{id}/edit",name="pointage_edit")
-     * id : site
+     * id : pointage
      */
     public function editAction($id, Request $request)
     {   $cryptage = $this->container->get('my.cryptage');
-       /* $id = $cryptage->my_decrypt($id);
-        $site = $this->getDoctrine()->getRepository('AppBundle:Site')->find($id);
-        $editForm = $this->createForm(SiteType::class, $site, array(
-            'action' => $this->generateUrl('site_edit', array('id' => $cryptage->my_encrypt($site->getId()))),
+       $id = $cryptage->my_decrypt($id);
+        $pointageUser = $this->getDoctrine()->getRepository('AppBundle:PointageUser')->find($id);
+        $editForm = $this->createForm(PointageUserType::class, $pointageUser, array(
+            'action' => $this->generateUrl('pointage_edit', array('id' => $cryptage->my_encrypt($pointageUser->getId()))),
             'method' => 'PUT',
         ));
         if ($editForm->handleRequest($request)->isValid()) {
             $this->getDoctrine()->getManager()->flush();
             $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
-            return $this->redirect($this->generateUrl('site_edit', array('id' => $cryptage->my_encrypt($id))));
+            return $this->redirect($this->generateUrl('pointage_edit', array('id' => $cryptage->my_encrypt($id))));
         }
-        return $this->render('@App/Site/edit.html.twig', array(
-            'site'          => $site,
+        return $this->render('@App/PointageUser/edit.html.twig', array(
+            'site'          => $pointageUser,
             'edit_form'     => $editForm->createView(),
-        ));*/
+        ));
     }
 
     //*********************************************************************************//
@@ -127,7 +134,8 @@ class PointageController extends Controller
         }
     }
     protected function filter(FormInterface $form, QueryBuilder $qb, $name)
-    {   
+    {   dump($qb);
+        dump($form);
         if (!is_null($values = $this->getFilter($name))) {
             if ($form->submit($values)->isValid()) {
                 $this->get('lexik_form_filter.query_builder_updater')->addFilterConditions($form, $qb);
@@ -145,13 +153,43 @@ class PointageController extends Controller
     {   $request = $this->container->get('request_stack')->getCurrentRequest();
         return $request->getSession()->get('filter.' . $name);
     }
+    protected function fAlias(QueryBuilder $qb, $name){
+        $joints = current($qb->getDQLPart('join'));
+        //dump($qb);
+        //dump($joints);
+        if ($joints !== false) {
+            foreach($joints as $joint){
+                $valeur = explode(".",$joint->getJoin());
+                if ($valeur[1] === $name){
+                    return $joint->getAlias();
+                }
+            }
+        }else{
+            return false;
+        }
+    }
+    protected function addQueryBuilderSort(QueryBuilder $qb, $name)
+    {   
+        $alias = current($qb->getDQLPart('from'))->getAlias();
+        if (is_array($order = $this->getOrder($name))) {
+            $field= $order['field'];
+            $field = explode(".",$field);
+
+            if (count($field)>1){
+                $qb->orderBy($this->fAlias($qb,$field[0]) . '.' . $field[1], $order['type']);
+            }else{
+                $qb->orderBy($alias . '.' . $order['field'], $order['type']);
+            }
+        }
+    }
+    /*
     protected function addQueryBuilderSort(QueryBuilder $qb, $name)
     {
         $alias = current($qb->getDQLPart('from'))->getAlias();
         if (is_array($order = $this->getOrder($name))) {
             $qb->orderBy($alias . '.' . $order['field'], $order['type']);
         }
-    }
+    }*/
     protected function getOrder($name)
     {
         $request = $this->container->get('request_stack')->getCurrentRequest();

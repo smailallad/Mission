@@ -20,7 +20,7 @@
 
 {% block bodyliste %}
     <div class="col-md-2">
-    {% include '@App/Pointage/filter.html.twig' with {form: form} %}
+    {% include '@App/PointageUser/filter.html.twig' with {form: form} %}
     </div>
     <div class="col-md-10">
     {#{% include "@App/messages.html.twig" %}#}
@@ -29,18 +29,24 @@
     <table class="table table-striped table-hover table-bordered records_list">
         <thead>
             <tr>
-                <th scope="col"></th>
                 <th scope="col">{{ thead('pointage', 'date', 'Date') }}</th>
                 <th scope="col">{{ thead('pointage', 'user.nom', 'Nom') }}</th>
+                <th>Désignation</th>
+                <th class= "text-center">Heures de route</th>
+                <th class= "text-center">Heures de travail</th>
+                <th class= "text-center">Heures de supp</th>
                 <th scope="col">Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for pointage in paginator %}
                 <tr>
-                    <td><a href="{{ path('pointage_show', {id: pointage.id | Mycrypt}) }}">{{ pointage.id }}</a></td>
                     <td>{{ pointage.date | date('d/m/Y') }}</td>
                     <td>{{ pointage.user.nom }}</td>
+                    <td>{{ pointage.pointage.designation }}</td>
+                    <td class= "text-center">{{ pointage.hRoute }}</td>
+                    <td class= "text-center">{{ pointage.hTravail }}</td>
+                    <td class= "text-center">{{ pointage.hSup }}</td>
                     <td>
                         <div class="btn-group">
                             <a class="btn btn-default btn-sm" href="{{ path('pointage_show', {id: pointage.id | Mycrypt}) }}">

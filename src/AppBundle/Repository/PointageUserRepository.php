@@ -10,4 +10,18 @@ namespace AppBundle\Repository;
  */
 class PointageUserRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getPointages($v = null)
+    {   
+        $q = $this->createQueryBuilder('p');
+        $q  ->join('p.user','u')
+            ;
+        if ($v==1)
+        {
+            $d = new \DateTime("now");
+            $q->where('p.date = :d');
+            $q->setParameter('d', $d);
+        }
+            
+        return $q;//->getQuery()->getResult();
+    }
 }
