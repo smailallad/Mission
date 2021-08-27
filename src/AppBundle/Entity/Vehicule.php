@@ -3,6 +3,8 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+//use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Vehicule
@@ -30,18 +32,56 @@ class Vehicule
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="matricule", type="string", length=255, unique=true, nullable=true)
+     * @Assert\Regex(
+     * pattern="/[\d]+[\-][0-9]{3}[\-][0-9]{2}/",
+     * message="Matricule incorrecte au format 00000-000-00."
+     * )
+     * @ORM\Column(type="string", length=15,unique=true,nullable=false)
      */
     private $matricule;
 
     /**
      * @var bool
      *
-     * @ORM\Column(name="active", type="boolean")
+     * @ORM\Column(type="boolean")
      */
     private $active;
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Marque")
+     * @Assert\NotNull(message = "Entrer une valeur.")
+     * @ORM\JoinColumn(nullable=true)
+    */
+	private $marque;
+    /**
+	* @Assert\Range(
+    *      min = 7,
+	*	   max =90,
+    *      minMessage = "Valeur Minimal : {{ limit }} jours",
+	*	   maxMessage = "Valeur Maximal : {{ limit }} jours",)
+	* @ORM\Column(type="integer",nullable=true)
+    */
+    private $nbrjAlertRelever;
 
+	/**
+	* @Assert\Range(
+    *      min = 1,
+    *      minMessage = "Valeur Minimal : {{ limit }}")
+	* @ORM\Column(type="integer",nullable=true)
+    */
+    private $kmsRelever;
+
+	/**
+ 	 * @Assert\Date(message="Date incorrecte.")
+     * @ORM\Column(type="date",nullable=true)
+     */
+    private $dateRelever;
+
+    public function __construct()
+    {
+        $this->dateRelever = new \Datetime();
+	    $this->kmsRelever=0;
+    }
 
     /**
      * Get id
@@ -141,5 +181,101 @@ class Vehicule
         $this->id = $id;
 
         return $this;
+    }
+
+    /**
+     * Set nbrjAlertRelever.
+     *
+     * @param int|null $nbrjAlertRelever
+     *
+     * @return Vehicule
+     */
+    public function setNbrjAlertRelever($nbrjAlertRelever = null)
+    {
+        $this->nbrjAlertRelever = $nbrjAlertRelever;
+
+        return $this;
+    }
+
+    /**
+     * Get nbrjAlertRelever.
+     *
+     * @return int|null
+     */
+    public function getNbrjAlertRelever()
+    {
+        return $this->nbrjAlertRelever;
+    }
+
+    /**
+     * Set kmsRelever.
+     *
+     * @param int|null $kmsRelever
+     *
+     * @return Vehicule
+     */
+    public function setKmsRelever($kmsRelever = null)
+    {
+        $this->kmsRelever = $kmsRelever;
+
+        return $this;
+    }
+
+    /**
+     * Get kmsRelever.
+     *
+     * @return int|null
+     */
+    public function getKmsRelever()
+    {
+        return $this->kmsRelever;
+    }
+
+    /**
+     * Set dateRelever.
+     *
+     * @param \DateTime|null $dateRelever
+     *
+     * @return Vehicule
+     */
+    public function setDateRelever($dateRelever = null)
+    {
+        $this->dateRelever = $dateRelever;
+
+        return $this;
+    }
+
+    /**
+     * Get dateRelever.
+     *
+     * @return \DateTime|null
+     */
+    public function getDateRelever()
+    {
+        return $this->dateRelever;
+    }
+
+    /**
+     * Set marque.
+     *
+     * @param \AppBundle\Entity\Marque|null $marque
+     *
+     * @return Vehicule
+     */
+    public function setMarque(\AppBundle\Entity\Marque $marque = null)
+    {
+        $this->marque = $marque;
+
+        return $this;
+    }
+
+    /**
+     * Get marque.
+     *
+     * @return \AppBundle\Entity\Marque|null
+     */
+    public function getMarque()
+    {
+        return $this->marque;
     }
 }

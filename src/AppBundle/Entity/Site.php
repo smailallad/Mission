@@ -34,7 +34,7 @@ class Site
      */
     private $nom;
     /**
-    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Wilaya")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Wilaya")
      * @Assert\NotNull(message = "Entrer une valeur.")
      * @ORM\JoinColumn(nullable=false)
     */
@@ -46,8 +46,8 @@ class Site
      */
     private $nouveau;
     /**
-    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Client",inversedBy="sites")
-    * @JoinColumn(name="client_id", referencedColumnName="id",nullable=false)
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Client",inversedBy="sites")
+     * @JoinColumn(name="client_id", referencedColumnName="id",nullable=false)
      * @Assert\NotNull(message = "Entrer une valeur.")
     */
     private $client;

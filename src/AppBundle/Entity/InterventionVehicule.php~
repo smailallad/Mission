@@ -4,18 +4,19 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+
 /**
- * Pointage
- *
- * @ORM\Table(name="pointage")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\PointageRepository")
+ * @ORM\Table()
+ * @ORM\Entity(repositoryClass="AppBundle\Entity\InterventionVehiculeRepository")
+ * @UniqueEntity(fields="designation", message="La designation existe déjà avec ce nom.")
  */
-class Pointage
+class InterventionVehicule
 {
     /**
-     * @var int
+     * @var integer
      *
-     * @ORM\Column(name="id", type="integer")
+     * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      */
@@ -24,10 +25,16 @@ class Pointage
     /**
      * @var string
      *
-     * @ORM\Column(name="designation", type="string", length=255, unique=true)
+     * @ORM\Column(type="string", length=255)
      */
     private $designation;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", length=50)
+     */
+    private $unite;
 
     /**
      * Get id.
@@ -44,7 +51,7 @@ class Pointage
      *
      * @param string $designation
      *
-     * @return Pointage
+     * @return InterventionVehicule
      */
     public function setDesignation($designation)
     {
@@ -64,21 +71,26 @@ class Pointage
     }
 
     /**
-     * Set id.
+     * Set unite.
      *
-     * @param int $id
+     * @param string $unite
      *
-     * @return Pointage
+     * @return InterventionVehicule
      */
-    public function setId($id)
+    public function setUnite($unite)
     {
-        $this->id = $id;
+        $this->unite = $unite;
 
         return $this;
     }
-    public function __toString()
-    {
-        return $this->designation;
-    }
 
+    /**
+     * Get unite.
+     *
+     * @return string
+     */
+    public function getUnite()
+    {
+        return $this->unite;
+    }
 }

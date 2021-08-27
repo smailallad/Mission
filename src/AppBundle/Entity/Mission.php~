@@ -75,7 +75,7 @@ class Mission
      * @ORM\Column(name="avance", type="float")
      * @Assert\Range(
      *      min = 0,
-     *      minMessage = "Le montant doit être égal ou supperieur à {{ value }}"
+     *      minMessage = "Le montant doit être égal ou supperieur à 0"
      *      )
      */
     private $avance;
