@@ -4,13 +4,14 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Pointage
  *
  * @ORM\Table(name="pointageUser")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\PointageUserRepository")
- * @UniqueEntity(fields={"date","user","pointage"},errorPath="date",message="Pointage déja effectuer pour cette employé à a cette date.")
+ * @UniqueEntity(fields={"date","user"},errorPath="date",message="Pointage déja effectuer pour cette employé à a cette date.")
  */
 class PointageUser
 {
@@ -22,7 +23,12 @@ class PointageUser
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
+    
+    /**
+    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+    */
+    private $user;
+    
     /**
      * @var date
      *
@@ -32,6 +38,12 @@ class PointageUser
 
     /**
      * @ORM\Column(name="hTravail", type="smallint")
+     * * @Assert\Range(
+     *      min = 0,
+     *      max = 8,
+     *      minMessage = "Le montant doit être égal ou supperieur à 0 ",
+     *      maxMessage = "Le montant doit être égal ou inferieur à 8 "
+     *      )
      */
     private $hTravail;
 
@@ -50,11 +62,7 @@ class PointageUser
      * @ORM\Column(name="obs", type="string", length=255,nullable=true)
      */
     private $obs;
-    /**
-    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
-    */
-    private $user;
-
+    
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Pointage")
      */

@@ -21,10 +21,21 @@ class PointageController extends Controller
     /**
      * @Route("/new",name="pointage_new")
      */
-    public function newAction()
-    {
+    public function newAction(Request $request)
+    {   $pointageUser = new PointageUser();
+        $form = $this->createForm(PointageUserType::class, $pointageUser);
+        if ($form->handleRequest($request)->isValid())
+        {
+            $manager = $this->getDoctrine()->getManager();
+            $manager->persist($pointageUser);
+            $manager->flush();
+            //$this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
+            $cryptage = $this->container->get('my.cryptage');
+            return $this->redirect($this->generateUrl('pointage_new'));
+        }
         return $this->render('@App/PointageUser/new.html.twig', array(
-            // ...
+            'pointageUser' => $pointageUser,
+            'form' => $form->createView(),
         ));
     }
 
@@ -33,10 +44,11 @@ class PointageController extends Controller
      */
     public function showAction()
     {
+        
         return $this->render('@App/PointageUser/show.html.twig', array(
             // ...
         ));
-    }
+   }
 
     /**
      * @Route("/index",name="pointage_index")

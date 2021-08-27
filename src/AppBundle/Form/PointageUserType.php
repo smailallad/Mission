@@ -6,6 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class PointageUserType extends AbstractType
 {
@@ -20,12 +21,13 @@ class PointageUserType extends AbstractType
                 'widget'    => 'single_text',
                 'html5'     => true,
             ))
+            ->add('user')
+            ->add('pointage')
             ->add('hTravail')
             ->add('hRoute')
             ->add('hSup')
-            ->add('obs')
-            ->add('user')
-            ->add('pointage')
+            ->add('obs',TextareaType::Class)
+            
             ;
     }/**
      * {@inheritdoc}

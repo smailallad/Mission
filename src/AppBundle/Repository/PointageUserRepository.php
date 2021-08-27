@@ -14,6 +14,7 @@ class PointageUserRepository extends \Doctrine\ORM\EntityRepository
     {   
         $q = $this->createQueryBuilder('p');
         $q  ->join('p.user','u')
+            ->join('p.pointage','pp')
             ;
         if ($v==1)
         {

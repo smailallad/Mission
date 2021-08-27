@@ -1,7 +1,7 @@
 services:
     my.cryptage:
         class: AppBundle\Service\Cryptage
-        arguments: [%secret_key%,%secret_iv%]
+        arguments: ['%secret_key%','%secret_iv%']
 
     AppBundle\twig\mycrypt_extension:
         ressource : 'AppBundle/Twig/ExtensionMycryptExtension'

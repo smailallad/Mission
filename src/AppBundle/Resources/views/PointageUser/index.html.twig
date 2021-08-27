@@ -31,10 +31,11 @@
             <tr>
                 <th scope="col">{{ thead('pointage', 'date', 'Date') }}</th>
                 <th scope="col">{{ thead('pointage', 'user.nom', 'Nom') }}</th>
-                <th>Désignation</th>
+                <th scope="col">{{ thead('pointage','pointage.designation','Désignation')}}</th>
                 <th class= "text-center">Heures de route</th>
                 <th class= "text-center">Heures de travail</th>
                 <th class= "text-center">Heures de supp</th>
+                <th class= "text-center">Obs</th>
                 <th scope="col">Actions</th>
             </tr>
         </thead>
@@ -47,6 +48,7 @@
                     <td class= "text-center">{{ pointage.hRoute }}</td>
                     <td class= "text-center">{{ pointage.hTravail }}</td>
                     <td class= "text-center">{{ pointage.hSup }}</td>
+                    <td class= "text-center">{{ pointage.obs }}</td>
                     <td>
                         <div class="btn-group">
                             <a class="btn btn-default btn-sm" href="{{ path('pointage_show', {id: pointage.id | Mycrypt}) }}">
