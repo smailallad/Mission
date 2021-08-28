@@ -10,7 +10,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * Assurance
  *
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="AppBundle\Entity\AssuranceRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\AssuranceRepository")
  * @UniqueEntity(fields={"dateDebut","vehicule"}, message="Assurance de ce vehicule existe déjà avec cette date.")
  */
 class Assurance
@@ -39,8 +39,8 @@ class Assurance
      */
     private $dateFin;
 
-     /**
-      * @ORM\Column(type="integer",nullable=true)
+    /**
+     * @ORM\Column(type="integer",nullable=true)
      */
     private $dernier;
 

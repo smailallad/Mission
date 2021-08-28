@@ -10,7 +10,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  *EntretienVehicule
  *
  * @ORM\Table(uniqueConstraints={@ORM\UniqueConstraint(name="idxUnique", columns={"date", "vehicule_id"})})
- * @ORM\Entity(repositoryClass="AppBundle\Entity\EntretienVehiculeRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\EntretienVehiculeRepository")
  * @UniqueEntity(fields={"date","vehicule"}, message="Entretien de ce vehicule existe déjà avec cette date.")
  */
 class EntretienVehicule

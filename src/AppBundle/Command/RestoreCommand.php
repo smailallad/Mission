@@ -65,7 +65,8 @@ class RestoreCommand extends ContainerAwareCommand
             // ...
         }
         $dbs = new \PDO("mysql:host=localhost;dbname=dbrtie;charset=utf8", "smil", "ads2160396");
-        $dbd = new \PDO("mysql:host=localhost;dbname=rtie3.4;charset=utf8", "smil", "ads2160396");
+        //$dbd = new \PDO("mysql:host=localhost;dbname=rtie3.4;charset=utf8", "smil", "ads2160396");
+        $dbv = new \PDO("mysql:host=localhost;dbname=dbvehicule;charset=utf8", "smil", "ads2160396");
         $manager = $this->getContainer()->get('doctrine')->getManager();
         $repository = $this->getContainer()->get('doctrine');
         $encoder = $this->getContainer()->get('security.password_encoder');
@@ -100,8 +101,6 @@ class RestoreCommand extends ContainerAwareCommand
         //$output->writeln('<comment>===>  Supprimer les prestation "142" , "143" , "144" , "145" </comment>');
         //$output->writeln('<comment>===>  Créeer "Contraintes de clé étrangère" entre "prestation" et "sous_projet"</comment>');
         //$output->writeln('<comment>===>  Executer la commande : php bin/console restore <comment>');
-        
-
               
         $i=1;
   
@@ -1181,6 +1180,34 @@ class RestoreCommand extends ContainerAwareCommand
             }
 
         } //*** Fin */ 
+
+
+        //*** Gestion des vehicules Marque***************************************************************************************************************
+        $i++;
+        $output->writeln('');
+        $output->writeln('<question>' . $i . ' : Marque : </question>');
+        $update = $dbd->prepare('ALTER TABLE marque CHANGE id id INT NOT NULL');
+        $update->execute();
+        $reqs = $dbv->prepare("SELECT * FROM marque Order By id ASC");
+        $reqs->execute();
+        $ress = $reqs->fetchAll();
+
+        foreach ($ress as $recs)
+        {   $marque     = new Marque();
+            $marque     ->setId($recs['id'])
+                        ->setNom($recs['nom'])
+                        ;
+            $manager->persist($marque);
+            $output->write('<comment>#</comment>');
+        }
+
+        try {
+            $manager->flush();
+        } catch (\Throwable $th) {
+            $output->writeln('');
+            $output->writeln('<error>Erreur: '. $th->getMessage() .'</error>');
+            $manager = $this->getContainer()->get('doctrine')->resetManager();
+        }
 
 
         $output->writeln('');

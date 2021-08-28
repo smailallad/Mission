@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
- * @ORM\Entity(repositoryClass="AppBundle\Entity\KmsInterventionVehiculeRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\KmsInterventionVehiculeRepository")
  * @UniqueEntity(fields={"interventionVehicule","marque"},message="Marque ajouter déja.")
  */
 class KmsInterventionVehicule

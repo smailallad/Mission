@@ -8,7 +8,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Table()
- * @ORM\Entity(repositoryClass="AppBundle\Entity\InterventionVehiculeRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\InterventionVehiculeRepository")
  * @UniqueEntity(fields="designation", message="La designation existe déjà avec ce nom.")
  */
 class InterventionVehicule
