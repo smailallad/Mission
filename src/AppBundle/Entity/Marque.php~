@@ -58,4 +58,18 @@ class Marque
     {
         return $this->nom;
     }
+
+    /**
+     * Set id.
+     *
+     * @param int $id
+     *
+     * @return Marque
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 }

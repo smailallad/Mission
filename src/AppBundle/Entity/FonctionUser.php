@@ -112,4 +112,18 @@ class FonctionUser
     {
         return $this->id;
     }
+
+    /**
+     * Set id.
+     *
+     * @param int $id
+     *
+     * @return FonctionUser
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 }

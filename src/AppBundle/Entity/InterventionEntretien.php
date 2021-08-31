@@ -28,7 +28,7 @@ class InterventionEntretien
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\InterventionVehicule")
 	 * @ORM\JoinColumn(nullable=false)
     */
-    private $interventionVehicule;
+    private $interventionVehicule; 
         
     /**
      * @var integer
@@ -152,5 +152,19 @@ class InterventionEntretien
     public function getInterventionVehicule()
     {
         return $this->interventionVehicule;
+    }
+
+    /**
+     * Set id.
+     *
+     * @param int $id
+     *
+     * @return InterventionEntretien
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
     }
 }

@@ -90,15 +90,16 @@
                         {#<li><a href="{{ path('search_prestation',{sousprojet: '1',nom: 'a',pagenum:0})}}">Test </a>
                         </li>#}
                         {#<li><a href="{{ path('search_site',{client: '3',site: 'c',pagenum:0})}}">Test </a></li>#}
-                        {% if is_granted('ROLE_VEHICULE') %}
+                        {% if is_granted('ROLE_CHEF-PARK') %}
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                 aria-haspopup="true" aria-expanded="false">Gestion vehicule<span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li><a href="{{ path('employe')}}">Liste des vehicules</a></li>
-                                <li><a href="{{ path('employe')}}">Liste des interventions</a></li>
+                                <li><a href="{{ path('employe')}}">Vehicules</a></li>
+                                <li><a href="{{ path('employe')}}">Interventions</a></li>
                                 <li role="separator" class="divider"></li>
-                                <li><a href="{{ path('entretien_index') }}">Lite des entretiens</a></li>
+                                <li><a href="{{ path('entretien_index') }}">Entretiens</a></li>
+                                <li><a href="{{ path('entretien_index') }}">Detail des entretiens</a></li>
                             </ul>
                         </li>
                         {% endif %}

@@ -93,4 +93,18 @@ class InterventionVehicule
     {
         return $this->unite;
     }
+
+    /**
+     * Set id.
+     *
+     * @param int $id
+     *
+     * @return InterventionVehicule
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 }

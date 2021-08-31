@@ -94,4 +94,18 @@ class Recrutement
     {
         return $this->user;
     }
+
+    /**
+     * Set id.
+     *
+     * @param int $id
+     *
+     * @return Recrutement
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 }

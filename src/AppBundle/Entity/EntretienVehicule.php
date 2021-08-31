@@ -189,4 +189,18 @@ class EntretienVehicule
     {
         return $this->user;
     }
+
+    /**
+     * Set id.
+     *
+     * @param int $id
+     *
+     * @return EntretienVehicule
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 }

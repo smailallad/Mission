@@ -56,7 +56,19 @@ class Assurance
 	}
 
 
+    /**
+     * Set id.
+     *
+     * @param int $id
+     *
+     * @return Assurance
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
 
+        return $this;
+    }
 
     /**
      * Get id.
@@ -167,11 +179,11 @@ class Assurance
     /**
      * Set vehicule.
      *
-     * @param \rtie\vehiculeBundle\Entity\Vehicule|null $vehicule
+     * @param \AppBundle\Entity\Vehicule|null $vehicule
      *
      * @return Assurance
      */
-    public function setVehicule(\rtie\vehiculeBundle\Entity\Vehicule $vehicule = null)
+    public function setVehicule(\AppBundle\Entity\Vehicule $vehicule = null)
     {
         $this->vehicule = $vehicule;
 
@@ -181,7 +193,7 @@ class Assurance
     /**
      * Get vehicule.
      *
-     * @return \rtie\vehiculeBundle\Entity\Vehicule|null
+     * @return \AppBundle\Entity\Vehicule|null
      */
     public function getVehicule()
     {

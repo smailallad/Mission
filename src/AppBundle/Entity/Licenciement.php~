@@ -121,4 +121,18 @@ class Licenciement
     {
         return $this->recrutement;
     }
+
+    /**
+     * Set id.
+     *
+     * @param int $id
+     *
+     * @return Licenciement
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 }

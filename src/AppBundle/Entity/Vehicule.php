@@ -36,7 +36,7 @@ class Vehicule
      * pattern="/[\d]+[\-][0-9]{3}[\-][0-9]{2}/",
      * message="Matricule incorrecte au format 00000-000-00."
      * )
-     * @ORM\Column(type="string", length=15,unique=true,nullable=false)
+     * @ORM\Column(type="string", length=15,unique=true,nullable=true)
      */
     private $matricule;
 

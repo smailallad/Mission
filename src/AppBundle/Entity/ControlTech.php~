@@ -184,4 +184,18 @@ class ControlTech
     {
         return $this->vehicule;
     }
+
+    /**
+     * Set id.
+     *
+     * @param int $id
+     *
+     * @return ControlTech
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 }

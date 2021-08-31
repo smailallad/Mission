@@ -22,7 +22,7 @@ class KmsInterventionVehicule
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Marque")
 	 * @ORM\JoinColumn(nullable=false)
     */
-    private $marque;
+    private $marque; 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\InterventionVehicule")
 	 * @ORM\JoinColumn(nullable=false)
@@ -44,6 +44,21 @@ class KmsInterventionVehicule
 	 * @ORM\Column(type="string", length=255, nullable=true)		 
     */
     private $obs;
+
+
+    /**
+     * Set id.
+     *
+     * @param int $id
+     *
+     * @return KmsInterventionVehicule
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 
     /**
      * Get id.

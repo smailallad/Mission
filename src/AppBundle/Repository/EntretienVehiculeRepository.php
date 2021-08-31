@@ -9,5 +9,14 @@ namespace AppBundle\Repository;
  * repository methods below.
  */
 class EntretienVehiculeRepository extends \Doctrine\ORM\EntityRepository
-{
+{   public function getEntretiens()
+    {   
+        $q = $this->createQueryBuilder('e');
+        $q  ->join('e.user','u')
+            ->join('e.vehicule','v')
+            ;
+        
+            
+        return $q;//->getQuery()->getResult();
+    }
 }

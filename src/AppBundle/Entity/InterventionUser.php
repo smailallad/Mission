@@ -95,4 +95,18 @@ class InterventionUser
     {
         return $this->user;
     }
+
+    /**
+     * Set id.
+     *
+     * @param int $id
+     *
+     * @return InterventionUser
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 }

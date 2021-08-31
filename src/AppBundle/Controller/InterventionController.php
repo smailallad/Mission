@@ -7,7 +7,8 @@ use AppBundle\Form\JournalFilterType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+//use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 
 class InterventionController extends Controller
 {       

@@ -9,7 +9,8 @@ use AppBundle\Form\PointageFilterType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+//use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 /**
 * @Route("/pointage")
@@ -65,7 +66,7 @@ class PointageController extends Controller
             $qb = $manager->getRepository('AppBundle:PointageUser')->getPointages(1);
         }else{
             $qb = $manager->getRepository('AppBundle:PointageUser')->getPointages();
-        }
+        } 
         
         $paginator = $this->filter($form, $qb, 'pointage');
         $forme=$form->createView();
@@ -146,8 +147,7 @@ class PointageController extends Controller
         }
     }
     protected function filter(FormInterface $form, QueryBuilder $qb, $name)
-    {   dump($qb);
-        dump($form);
+    {   
         if (!is_null($values = $this->getFilter($name))) {
             if ($form->submit($values)->isValid()) {
                 $this->get('lexik_form_filter.query_builder_updater')->addFilterConditions($form, $qb);
@@ -167,8 +167,6 @@ class PointageController extends Controller
     }
     protected function fAlias(QueryBuilder $qb, $name){
         $joints = current($qb->getDQLPart('join'));
-        //dump($qb);
-        //dump($joints);
         if ($joints !== false) {
             foreach($joints as $joint){
                 $valeur = explode(".",$joint->getJoin());
