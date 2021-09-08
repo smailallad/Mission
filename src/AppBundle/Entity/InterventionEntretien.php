@@ -8,7 +8,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\InterventionEntretienRepository")
- * @UniqueEntity(fields={"interventionVehicule","entretien"},message="Ligne intervention saisie déja.")
+ * @UniqueEntity(fields={"interventionVehicule","entretienVehicule"},message="Ligne intervention saisie déja.")
  */
 class InterventionEntretien
 {
@@ -154,17 +154,5 @@ class InterventionEntretien
         return $this->interventionVehicule;
     }
 
-    /**
-     * Set id.
-     *
-     * @param int $id
-     *
-     * @return InterventionEntretien
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
-    }
+    
 }

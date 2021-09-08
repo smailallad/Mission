@@ -149,19 +149,21 @@ class DefaultController extends Controller
 
     
     /**
-     * @Route("test",name="test")
+     * @Route("test1",name="test1")
      */
-    public function testAction(Request $request){
-
+    public function testAction(Request $request)
+    {
+        $entretien = $this->getDoctrine()->getRepository('AppBundle:EntretienVehicule')->find(1);
+        $interventions = $this->getDoctrine()->getRepository('AppBundle:InterventionEntretien')->getNotInterventionEntretien($entretien);
+        dump($interventions->getQuery()->getResult());
        
         $form = $this->createForm(DemoType::class);
         
         return $this->render('@App/Default/test.html.twig', array(
             'form' => $form->createView(),
         ));
-        return $this->render("@App/Default/test.html.twig", array(
-            
-        ));
+        
+
         //
         //$manager = $this->getDoctrine()->getManager();
         //$qb = $manager->getRepository('AppBundle:DepenseMission')->test();

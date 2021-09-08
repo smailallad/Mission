@@ -34,9 +34,8 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
 
 
     }
-    public function getNotRealisateursIntervention($intervention){
-
-
+    public function getNotRealisateursIntervention($intervention)
+    {
         $qb1 = $this->getEntityManager()->createQueryBuilder();
         $qb1    ->select('IDENTITY(iu.user)')
                 ->from('AppBundle:InterventionUser', 'iu')

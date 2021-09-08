@@ -9,7 +9,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class InterventionUserType extends AbstractType {
- 
+  
     /**
      * {@inheritdoc}
      */

@@ -29,32 +29,23 @@
     <table class="table table-striped table-hover table-bordered records_list">
         <thead>
             <tr>
+                <th scope="col">{{ thead('entretien', 'id', 'Id') }}</th>
                 <th scope="col">{{ thead('entretien', 'date', 'Date') }}</th>
                 <th scope="col">{{ thead('entretien', 'vehicule.nom', 'Vehicule') }}</th>
                 <th scope="col">{{ thead('entretien', 'user.nom', 'Chauffeur') }}</th>
                 <th scope="col">{{ thead('entretien', 'kms', 'Kms') }}</th>
                 <th scope="col">{{ thead('entretien', 'obs', 'Obs') }}</th>
-                <th scope="col">Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for entretien in paginator %}
                 <tr>
-                    <td><a href="{{ path('entretien_show', {id: entretien.id | Mycrypt}) }}">{{ entretien.date | date('d/m/Y') }}</a></td>
+                    <td><a href="{{ path('entretien_show', {id: entretien.id | Mycrypt}) }}">{{ entretien.id  }}</a></td>
+                    <td>{{ entretien.date | date('d/m/Y') }}</td>
                     <td>{{ entretien.vehicule.nom }}</td>
                     <td>{{ entretien.user.nom }}</td>
-                    <td>{{ entretien.kms }}</td>
+                    <td class="text-right">{{ entretien.kms | number_format(0, ' ',' ') }}</td>
                     <td>{{ entretien.obs }}</td>
-                    <td>
-                        <div class="btn-group">
-                            <a class="btn btn-default btn-sm" href="{{ path('entretien_show', {id: entretien.id | Mycrypt}) }}">
-                                <i class="glyphicon glyphicon-file"></i>voir
-                            </a>
-                            <a class="btn btn-default btn-sm" href="{{ path('entretien_edit', {id: entretien.id | Mycrypt}) }}">
-                                <i class="glyphicon glyphicon-edit"></i>modifier
-                            </a>
-                        </div>
-                    </td>
                 </tr>
             {% endfor %}
         </tbody>

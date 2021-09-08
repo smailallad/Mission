@@ -2,6 +2,9 @@
 
 namespace AppBundle\Repository;
 
+use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\Form\FormInterface;
+
 /**
  * InterventionEntretienRepository
  *
@@ -9,5 +12,46 @@ namespace AppBundle\Repository;
  * repository methods below.
  */
 class InterventionEntretienRepository extends \Doctrine\ORM\EntityRepository
-{
+{   public function getInterventions()
+    {   
+        $q = $this->createQueryBuilder('i');
+        $q  ->join('i.entretienVehicule','ev')
+            ->join('ev.user','u')
+            ->join('i.interventionVehicule','iv')
+            ->join('ev.vehicule','v')
+            ;
+        
+            
+        return $q;//->getQuery()->getResult();
+    }
+    public function addFilter(QueryBuilder $qb, FormInterface $form)
+    {
+        $id                     = $form->get('id')->getData();
+        $vehicule               = $form->get('vehicule')->getData();
+        //$depart               = ($form->get('depart')->getData() !== null) ? $form->get('depart')->getData()['left_date'] : null;
+        //$retour               = ($form->get('depart')->getData() !== null) ? $form->get('depart')->getData()['right_date'] : null;
+        $user                   = $form->get('user')->getData();
+        $interventionVehicule   = $form->get('interventionVehicule')->getData();
+
+        if ($id !== null){
+            $qb->andWhere('ev.id = :id');
+            $qb->setParameter('id',$id);
+        }
+        if ($user !== null){
+            $qb->andWhere('ev.user = :user');
+            $qb->setParameter('user',$user);
+        }
+        if ($vehicule !== null){
+            $qb->andWhere('ev.vehicule = :vehicule');
+            $qb->setParameter('vehicule',$vehicule);
+        }
+        if ($interventionVehicule !== null){
+            $qb->andWhere('i.interventionVehicule = :interventionVehicule');
+            $qb->setParameter('interventionVehicule',$interventionVehicule);
+        }
+
+        return $qb;
+
+    }
+    
 }

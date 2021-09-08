@@ -16,7 +16,7 @@ class FraisMissionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {   
         $builder
-                    ->add('dateFm',DateType::Class, array(
+                ->add('dateFm',DateType::Class, array(
                     'label'     => 'Date',
                     'widget'    => 'single_text',
                     'html5'     => true,

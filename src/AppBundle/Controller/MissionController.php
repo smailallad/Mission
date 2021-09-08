@@ -598,8 +598,8 @@ class MissionController extends Controller
         $cryptage = $this->container->get('my.cryptage');
         $manager = $this->getDoctrine()->getManager();
         $id = $cryptage->my_decrypt($id);
-        $mission                = $this->getDoctrine()->getRepository('AppBundle:Mission')->find($id);
-
+        $mission = $this->getDoctrine()->getRepository('AppBundle:Mission')->find($id);
+ 
         $depenseMission = new DepenseMission();
         $depenseMission->setMission($mission);
         $formDepense = $this->createForm(DepenseMissionType::class, $depenseMission, array(
@@ -2796,7 +2796,7 @@ class MissionController extends Controller
         } elseif ($request->query->has('reset-filter')) {
             $request->getSession()->set('filter.' . $name, null);
             return $this->redirect($url);
-        }
+        } 
     }
     protected function filter(FormInterface $form,$name, QueryBuilder $qb,$qbAvance = null,$qbDepense = null,$qbFM = null,$qbCarburant = null, $paginer = true){   
         // t = M : Mission

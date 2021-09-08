@@ -9,5 +9,31 @@ namespace AppBundle\Repository;
  * repository methods below.
  */
 class InterventionVehiculeRepository extends \Doctrine\ORM\EntityRepository
-{
+{ 
+    public function getNotInterventionEntretien($entretien)
+    {
+        $qb1 = $this->getEntityManager()->createQueryBuilder();
+        $qb1    ->select('IDENTITY(ie.interventionVehicule)')
+                ->from('AppBundle:InterventionEntretien', 'ie')
+                ->where('ie.entretienVehicule = :v1')
+                //->setParameter('v1',$entretien)
+                ;
+
+        //return $qb1;//->getQuery()->getResult(); 
+
+        $qb2 = $this->getEntityManager()->createQueryBuilder();
+        $qb2    ->select('iv')
+                ->from('AppBundle:InterventionVehicule', 'iv')
+                //->where('u.active = true')
+                //->andWhere('u.mission = true')
+                ->where($qb1->expr()->notIn('iv', $qb1->getDQL()))
+                ->orderBy('iv.designation')
+                ->setParameter('v1',$entretien)
+        ;
+        //dump($qb2);
+        //throw new \Exception('Message');
+        return $qb2;
+        //return $qb2->getQuery()->getResult();
+       
+    }
 }

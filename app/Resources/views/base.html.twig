@@ -16,8 +16,8 @@
     <link rel="stylesheet" href="{{ asset('css/mystyle.css') }}">
 
 
-    <link rel="stylesheet" href="{{ asset('css/flags.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"/>
+    {#<link rel="stylesheet" href="{{ asset('css/flags.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css"/>#}
 
     <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
 </head>
@@ -99,14 +99,14 @@
                                 <li><a href="{{ path('employe')}}">Interventions</a></li>
                                 <li role="separator" class="divider"></li>
                                 <li><a href="{{ path('entretien_index') }}">Entretiens</a></li>
-                                <li><a href="{{ path('entretien_index') }}">Detail des entretiens</a></li>
+                                <li><a href="{{ path('interventionEntretien_index') }}">Detail des entretiens</a></li>
                             </ul>
                         </li>
                         {% endif %}
                         {% if is_granted('ROLE_ADMIN') %}
                         <li><a href="{{ path('db')}}">Copier Table </a></li>
                         <li><a href="{{ path('test_excel')}}">Test Excel </a></li>
-                        <li><a href="{{ path('test')}}">Test </a></li>
+                        <li><a href="{{ path('test1')}}">Test </a></li>
                         {% endif %}
 
                     </ul>
@@ -176,10 +176,10 @@
     <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
 
 
-    <script src="{{ asset('js/message_flash.js')}}"></script>
+    {#<script src="{{ asset('js/message_flash.js')}}"></script>
     <script src="{{ asset('js/jquery.flagstrap.min.js')}}"></script>
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>#}
     {% endblock %}
 
     {% block js %} {% endblock %}

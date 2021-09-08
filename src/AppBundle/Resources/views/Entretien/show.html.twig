@@ -2,6 +2,7 @@
 {% block title %}Entretien - {{ parent() }}{% endblock %}
 {% block bodysaisie %}
 {#{% include "@App/messages.html.twig" %}#}
+<p id="erreur">{{erreur}}</p>
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4> Entretien </h4>
@@ -9,6 +10,10 @@
     <div class="panel-body">
         <table class="table table-hover record_properties">
             <tbody>
+                <tr>
+                    <th scope="row">Id</th>
+                    <td>{{ entretien.id }}</td>
+                </tr>
                 <tr>
                     <th scope="row">Date</th>
                     <td>{{ entretien.date | date('d/m/Y') }}</td>
@@ -43,11 +48,11 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4>Interventions</h4>
-    </div>
+    </div> 
     <div class="panel-body">
         <table class="table table-hover record_properties">
             <tbody>
-                {% for intervention in interventions %}
+               {% for intervention in interventions %}
                 <tr>
                     <td> <i class="glyphicon glyphicon-hand-right"> {{ intervention.interventionVehicule.designation }}</i></td>
                     <td> {{ intervention.qte }}</td>
@@ -58,8 +63,12 @@
                             href="{{ path('homepage', {id: intervention.interventionVehicule.id | Mycrypt}) }}">
                             <i class="glyphicon glyphicon-edit"></i>
                         </a>
-                        <button class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteIntervention"  data-user="{{ intervention.id }}" data-intervention="{{ intervention.id }}"><i
-                                class="glyphicon glyphicon-trash"></i></button>
+                        <a class="btn btn-primary" href="#" onclick="edit('{{ intervention.id }}',1);return false;"><i
+                                        class="glyphicon glyphicon-edit"></i>
+                        </a>
+                        <button class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteIntervention" data-id="{{ intervention.id }}"><i
+                                class="glyphicon glyphicon-trash"></i>
+                        </button>
                     </td>
                 </tr>
                 {% endfor %}
@@ -69,39 +78,117 @@
     
     <div class="panel-footer">
         <div class="btn-group record_actions">
-            <a class="btn btn-primary" href="{{ path('homepage',{id: entretien.id | Mycrypt}) }}">
-                <i class="glyphicon glyphicon-plus"></i> Nouveau
-            </a>
+            <button class="btn btn-primary" data-toggle="modal" data-target="#modalAddIntervention"
+                            data-id="{{ entretien.id }}">
+                            <i class="glyphicon glyphicon-plus"></i>Nouveau
+            </button>
+
+            
         </div>
     </div>
 </div>
 <!-- Modale delete Entretien-->
-   <div id="modalDeleteEntretien" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjoutRoleLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4>Confirmer la suppression</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Veuillez confimer la suppression </p>
-                </div>
-                <div class="modal-footer">
-                    {{ form_start(delete_form) }}
-                    {{ form_widget(delete_form) }}
-                        <button class="btn btn-danger" type="submit"><i class="glyphicon glyphicon-trash-o"></i> Oui</button>
-                        <button class="btn btn-primary" data-dismiss="modal">Non</button>
-                        <input name="modal" type="hidden" value="0">
-                    {{ form_end(delete_form) }}
-                </div>
+<div id="modalDeleteEntretien" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjoutRoleLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>Confirmer la suppression</h4>
+            </div>
+            <div class="modal-body">
+                <p>Veuillez confimer la suppression </p>
+            </div>
+            <div class="modal-footer">
+                {{ form_start(delete_form) }}
+                {{ form_widget(delete_form) }}
+                    <button class="btn btn-danger" type="submit"><i class="glyphicon glyphicon-trash-o"></i> Oui</button>
+                    <button class="btn btn-primary" data-dismiss="modal">Non</button>
+                    <input name="modal" type="hidden" value="0">
+                {{ form_end(delete_form) }}
             </div>
         </div>
     </div>
+</div>
+<!-- Modale add Intervention -->
+<div id="modalAddIntervention" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalAddInterventionLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>Ajouter une intervention:</h4>
+            </div>
+            <div class="modal-body">
+                {{ form_start(form) }}
+                {{ form_widget(form) }}
+                <p>
+                    <button class="btn btn-primary" type="submit">Valider</button>
+                </p>
+                {{ form_end(form) }}
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" data-dismiss="modal">Annuler</button>
+            </div>
+        </div>
+    </div>
+</div>
 
+<!-- Modale delete Intervention-->
+<div id="modalDeleteIntervention" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="modalDeleteInterventionLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>Confirmer la suppression</h4>
+            </div>
+            <div class="modal-body">
+                <p>Vous êtes sur le point de supprimer cet élément, cette procédure est irréversible.</p>
+                <p>Voulez-vous poursuivre?</p>
+            </div>
+            <div class="modal-footer">
+                <form name="form" id="modalDeleteInterventionForm" action="#" method="post">
+                    <button class="btn btn-danger" type="submit"><i class="glyphicon glyphicon-trash"></i>
+                        Supprimer</button>
+                    <button class="btn btn-primary" data-dismiss="modal">Annuler</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %}
 {% block js %}
 <script> 
+$(document).ready(function () {
+    $('#modalDeleteIntervention').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        var id = button.data('id') // Extract info from data-* attributes
+        var cURL = Routing.generate('intervention_entretien_delete', { id: id });
+        //alert(cURL);
+        $("#modalDeleteInterventionForm").attr('action', cURL);
+    })
+
+    var erreur = $('#erreur').html();
+    if (erreur == 1){
+        $("#modalAddIntervention").modal('show');
+    }
+
+})
+
+function edit(id) {
+        /*$("#modalve").data("id", mission);
+        if (v == 0) {
+            $("#msgvemploye").html("Valider cette mission coté employé ?");
+        } else {
+            $("#msgvemploye").html("Invalider cette mission coté employé ?");
+        }*/
+        $('#intervention_entretien_qte').val('1000');
+        //intervention_entretien
+        //alert($("#form_add").attr('name'));
+        $("#form_add").attr('method', 'GET');
+        $("#modalAddIntervention").modal('show');
+    }
 
 </script>
 {% endblock %}

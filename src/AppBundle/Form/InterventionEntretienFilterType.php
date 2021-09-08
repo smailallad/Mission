@@ -5,9 +5,10 @@ namespace AppBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class EntretienFilterType extends AbstractType
+class InterventionEntretienFilterType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -15,6 +16,11 @@ class EntretienFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+        ->add('id',NumberType::class,array(
+            'label'         =>'Entretien',
+            'required'      => false,
+            )
+        )
         ->add('vehicule',EntityType::Class, array(
             'label'         =>'Vehicule',
             'class'         => 'AppBundle:Vehicule',
@@ -39,6 +45,18 @@ class EntretienFilterType extends AbstractType
                             },
             )
         )
+        ->add('interventionVehicule',EntityType::Class, array(
+            'label'         => 'Intervention',
+            'class'         => 'AppBundle:InterventionVehicule',
+            'choice_name'   => 'designation',
+            'multiple'      => false,
+            'required'      => false,
+            'placeholder'   => '-Choisir une intervention-',
+            'query_builder' => function(\Doctrine\ORM\EntityRepository $i)
+                            {   return $i->createQueryBuilder('i');
+                            },
+            )
+        )
         ;
     }/**
      * {@inheritdoc}
@@ -46,7 +64,7 @@ class EntretienFilterType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'        => 'AppBundle\Entity\EntretienVehicule',
+            'data_class'        => null,
             'csrf_protection'   => false,
             'validation_groups' => array('filter'),
             'method'            => 'GET',
@@ -58,7 +76,7 @@ class EntretienFilterType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'entretien_filter';
+        return 'intevention_entretien_filter';
     }
 
 

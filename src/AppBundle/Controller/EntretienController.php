@@ -1,18 +1,20 @@
 <?php
 
 namespace AppBundle\Controller;
+use Doctrine\ORM\QueryBuilder;
 use AppBundle\Entity\EntretienVehicule;
 use AppBundle\Form\EntretienFilterType;
-use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\Form\FormInterface;
+use AppBundle\Entity\InterventionEntretien;
+use AppBundle\Form\InterventionEntretienType;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-//use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Config\Definition\Exception\DuplicateKeyException;
 
 /**
- * @Route("/entretion")
+ * @Route("/entretien")
  * @Security("has_role('ROLE_CHEF-PARK')")
  */
 class EntretienController extends Controller
@@ -40,27 +42,95 @@ class EntretienController extends Controller
      * @Route("/{id}/show",name="entretien_show")
      * id : entretien
      */
-    public function showAction($id)
-    {   $cryptage = $this->container->get('my.cryptage');
+    public function showAction($id, Request $request)
+    {   
+        $manager = $this->getDoctrine()->getManager();
+        $cryptage = $this->container->get('my.cryptage');
         $id = $cryptage->my_decrypt($id);
         $entretien = $this->getDoctrine()->getRepository('AppBundle:EntretienVehicule')->find($id);
         $interventions = $this->getDoctrine()->getRepository('AppBundle:InterventionEntretien')->findByEntretienVehicule($entretien);
-        dump($interventions);
         $deleteForm = $this->createDeleteForm($id, 'entretien_delete');
+        $deleteInterventionForm = $this->createDeleteForm($id, 'intervention_entretien_delete');
+        $interventionEntretien = new InterventionEntretien();
+        $interventionEntretien->setEntretienVehicule($entretien);
+        $form = $this->createForm(InterventionEntretienType::class, $interventionEntretien, array(
+            'action'    => $this->generateUrl('entretien_show', array('id' => $cryptage->my_encrypt($id))),
+            'method'    => 'PUT',
+            'entretien' => $entretien,
+        ));
+        $form->handleRequest($request);
+        $erreur = false;
+        if ($form->isSubmitted()) {
+            if ($form->isValid()){
+                //dump($interventionEntretien);
+                dump($request);
+                throw new \Exception('Message');
+                
+                $manager->persist($interventionEntretien);
+                $this->getDoctrine()->getManager()->flush();
+                $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
+                return $this->redirect($this->generateUrl('entretien_show', array('id' => $cryptage->my_encrypt($id))));
+            }else{
+                $erreur = true;
+            }
+        }
+
+        $form_edit = $this->createForm(InterventionEntretienType::class, $interventionEntretien, array(
+            'action'    => $this->generateUrl('entretien_show', array('id' => $cryptage->my_encrypt($id))),
+            'method'    => 'PUT',
+            'entretien' => $entretien,
+            
+        ));
+        
         return $this->render('@App/Entretien/show.html.twig', array(
-            'entretien'         => $entretien,
-            'interventions'     => $interventions,
-            'delete_form'       => $deleteForm->createView()));
+            'entretien'                 => $entretien,
+            'interventions'             => $interventions,
+            'delete_form'               => $deleteForm->createView(),
+            'delete_intervention_form'  => $deleteInterventionForm->createView(),
+            'form'                      => $form->createView(),
+            'erreur'    => $erreur,
+        ));
     }
 
     /**
      * @Route("/new",name="entretien_new")
      */
-    public function newAction()
-    {
-        return $this->render('@App/Entretien/new.html.twig', array(
-            // ...
+    public function newAction(Request $request)
+    {/*
+        $site = new Site();
+        $form = $this->createForm(SiteType::class, $site);
+        if ($form->handleRequest($request)->isValid())
+        {
+            $manager = $this->getDoctrine()->getManager();
+            $manager->persist($site);
+            $manager->flush();
+            //$this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
+            $cryptage = $this->container->get('my.cryptage');
+            return $this->redirect($this->generateUrl('site_show', array('id' => $cryptage->my_encrypt($site->getId()))));
+        }
+        return $this->render('@App/Site/new.html.twig', array(
+            'site' => $site,
+            'form' => $form->createView(),
         ));
+
+
+        $cryptage = $this->container->get('my.cryptage');
+        $id = $cryptage->my_decrypt($id);
+        $site = $this->getDoctrine()->getRepository('AppBundle:Site')->find($id);
+        $editForm = $this->createForm(SiteType::class, $site, array(
+            'action' => $this->generateUrl('site_edit', array('id' => $cryptage->my_encrypt($site->getId()))),
+            'method' => 'PUT',
+        ));
+        if ($editForm->handleRequest($request)->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+            $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
+            return $this->redirect($this->generateUrl('site_edit', array('id' => $cryptage->my_encrypt($id))));
+        }
+        return $this->render('@App/Site/edit.html.twig', array(
+            'site'          => $site,
+            'edit_form'     => $editForm->createView(),
+        ));
+        */
     }
 
     /**
@@ -74,15 +144,45 @@ class EntretienController extends Controller
     }
 
     /**
-     * @Route("/delete",name="entretien_delete")
-     */
-    public function deleteAction()
+     * @Route("/{id}/intervention/entretien/delete",name="intervention_entretien_delete",options = { "expose" = true })
+     * id 
+     */ 
+    public function InterventiontEntretienDeleteAction($id)
     {
-        return $this->render('@App/Entretien/delete.html.twig', array(
-            // ...
-        ));
+        $cryptage = $this->container->get('my.cryptage');
+        $manager = $this->getDoctrine()->getManager();
+        dump($id);
+        //$id = $cryptage->my_decrypt($id);
+        dump($id);
+        $intervention = $this->getDoctrine()->getRepository('AppBundle:InterventionEntretien')->find($id);
+        dump($intervention);
+        $entretien = $intervention->getEntretienVehicule()->getId();
+        $manager->remove($intervention);
+        $manager->flush();
+        return $this->redirect($this->generateUrl('entretien_show',array('id' => $cryptage->my_encrypt($entretien))));
     }
 
+/**
+     * @Route("/{id}/entretiendelete",name="entretien_delete",options = { "expose" = true })
+     * id : entretien
+     */
+    public function EntretienVehiculeDeleAction($id,request $request){
+       /*    
+        $manager = $this->getDoctrine()->getManager();
+        $cryptage = $this->container->get('my.cryptage');
+        $id = $cryptage->my_decrypt($id);
+        if ($form->handleRequest($request)->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+            $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
+            return $this->redirect($this->generateUrl('site_edit', array('id' => $cryptage->my_encrypt($id))));
+        }
+
+       
+        //$realisateurs = $manager->getRepository("AppBundle:Intervention")->getRealisateursIntervention($id);
+
+        return $this->redirect($this->generateUrl('entretien_show', array('id' => $cryptage->my_encrypt($id))));
+*/
+    }
     //*********************************************************************************//
     /**
     * @route("/{field}/{type}/sort",name="entretien_sort",requirements={ "type"="ASC|DESC" })

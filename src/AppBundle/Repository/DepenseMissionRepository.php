@@ -49,7 +49,7 @@ class DepenseMissionRepository extends \Doctrine\ORM\EntityRepository
     }
 public function addFilterTotalDepenseMissions($q,$code,$depart,$retour,$user,$vEmploye,$vRollout,$vComptabilite){
         
-        if ($code !== null){
+        if ($code !== null){ 
             $q->andWhere($q->expr()->like('m.code', $q->expr()->literal($code .'%')));
         }
         if ($depart !== null){

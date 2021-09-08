@@ -36,9 +36,9 @@ class EmployeController extends Controller
         $user = new User();
         $manager = $this->getDoctrine()->getManager();
         $groupe = $this->getDoctrine()->getRepository('AppBundle:Groupes')->findOneBy(['groupname' =>'USER']);
-        dump($groupe);
+        //dump($groupe);
         $user->setGroupes($groupe);
-        dump($user);
+        //dump($user);
 
         $form = $this->createForm(EmployeType::class, $user);
         $form->handleRequest($request); 
