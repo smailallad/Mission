@@ -5,7 +5,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use AppBundle\Repository\InterventionVehiculeRepository;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class InterventionEntretienType extends AbstractType
 {
@@ -35,6 +37,15 @@ class InterventionEntretienType extends AbstractType
             'label'         => 'Quantité',
             )
         )
+        ->add('obs',TextareaType::class, array(
+            'label'         => 'Obs',
+            'required'      => false,
+            )
+        )
+        ->add('id_old',HiddenType::class,array(
+            'mapped'    => false,
+            'data'      => null,
+        ))
 
         ;
     }/**

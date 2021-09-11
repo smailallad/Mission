@@ -58,30 +58,45 @@ class EntretienController extends Controller
             'method'    => 'PUT',
             'entretien' => $entretien,
         ));
+        //dump($form);
+        //dump($request);
+        dump($interventionEntretien);
         $form->handleRequest($request);
+        dump($interventionEntretien);
         $erreur = false;
         if ($form->isSubmitted()) {
             if ($form->isValid()){
                 //dump($interventionEntretien);
-                dump($request);
-                throw new \Exception('Message');
+                //dump($request->request->get('intervention_entretien'));
+                $id_old = $request->request->get('intervention_entretien')['id_old'];
+                if ($id_old !="")
+                {   $interventionEntretienEdit = $this->getDoctrine()->getRepository('AppBundle:InterventionEntretien')->find($id_old);
+                    //dump($interventionEntretien);
+                    $intervention = $this->getDoctrine()->getRepository('AppBundle:InterventionVehicule')->find($id_old);
+                    $interventionEntretienEdit->setQte($interventionEntretien->getQte());
+                    $interventionEntretienEdit->setObs($interventionEntretien->getObs());
+                    $interventionEntretienEdit->setInterventionVehicule($interventionEntretien->getInterventionVehicule());
+                    //dump($interventionEntretienEdit);
+                    $manager->persist($interventionEntretienEdit);
+                    //$this->getDoctrine()->getManager()->flush();
+                    //return $this->redirect($this->generateUrl('entretien_show', array('id' => $cryptage->my_encrypt($id))));
+                }else{
+                    $manager->persist($interventionEntretien);
+                    //$this->getDoctrine()->getManager()->flush();
+                    //$this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
+                    //return $this->redirect($this->generateUrl('entretien_show', array('id' => $cryptage->my_encrypt($id))));
+                }
+                //throw new \Exception('Message');
+                //dump($methode);
                 
-                $manager->persist($interventionEntretien);
-                $this->getDoctrine()->getManager()->flush();
-                $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
-                return $this->redirect($this->generateUrl('entretien_show', array('id' => $cryptage->my_encrypt($id))));
+                
             }else{
+                //dump($form);
+                //dump($request);
                 $erreur = true;
             }
         }
-
-        $form_edit = $this->createForm(InterventionEntretienType::class, $interventionEntretien, array(
-            'action'    => $this->generateUrl('entretien_show', array('id' => $cryptage->my_encrypt($id))),
-            'method'    => 'PUT',
-            'entretien' => $entretien,
-            
-        ));
-        
+      
         return $this->render('@App/Entretien/show.html.twig', array(
             'entretien'                 => $entretien,
             'interventions'             => $interventions,
@@ -90,6 +105,28 @@ class EntretienController extends Controller
             'form'                      => $form->createView(),
             'erreur'    => $erreur,
         ));
+    }
+
+    /**
+     * @Route("/{entretien}/selectInterventionVehicule/{intervention}",name="select_intervention_vehicule",options = { "expose" = true })
+     */
+    public function selectInterventionVehicule($entretien,$intervention=null)
+    {
+        //$manager = $this->getDoctrine()->getManager();
+        
+        //$intervention = $manager->getRepository("AppBundle:In")->getPrestations($sousprojet,$prestation,$startRow,$maxRows);
+        $entretien = $this->getDoctrine()->getRepository('AppBundle:EntretienVehicule')->find($entretien);
+        $intervention = $this->getDoctrine()->getRepository('AppBundle:InterventionVehicule')->find($intervention);
+        $interventions = $this->getDoctrine()->getRepository('AppBundle:InterventionVehicule')->getNotInterventionEntretien($entretien,$intervention);
+        //$interventions = $this->getDoctrine()->getRepository('AppBundle:InterventionVehicule')->getNotInterventionEntretien($entretien,$inter);
+
+        $intervention = $interventions->getQuery()->getResult();
+        $interventions =  $this->get('serializer')->serialize($intervention, 'json');
+        //return $interventions;
+        return $this->json(["interventions"     => $interventions,
+                            "autres"            =>'Autres',
+                            ],
+                            200);
     }
 
     /**

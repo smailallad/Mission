@@ -230,12 +230,13 @@
 
     })
 
-    function listesites(cURL) {
+    function listesites(cURL) { 
         $.post(
             cURL,
             function (data) {
                 $('#listeSiteTable tbody > tr').remove();
-                ligne = '';
+                ligne = '';alert("og");
+                console.log(data);
                 if (data.pagenum != 0) {
                     ligne += '<button id="firstsite" data-pagenum="' + data.pagenum + '" data-totalpages="' + data.totalpages + '" onclick="firstsite()" class="ml-2 btn btn-primary glyphicon glyphicon-fast-backward">  </button>';
                 }

@@ -59,13 +59,16 @@
                     <td> {{ intervention.interventionVehicule.unite }}</td>
                     <td> {{ intervention.obs }}</td>
                     <td class="text-right">
-                        <a class="btn btn-primary"
-                            href="{{ path('homepage', {id: intervention.interventionVehicule.id | Mycrypt}) }}">
+                        <a class="btn btn-primary" href="#" onclick='edit_intervention( "{{ entretien.id }}",
+                                                                                        "{{ intervention.id }}",
+                                                                                        "{{ intervention.interventionVehicule.id }}",
+                                                                                        "{{ intervention.interventionVehicule.designation }}",
+                                                                                        "{{ intervention.qte }}",
+                                                                                        "{{ intervention.obs }}");
+                                                                                        return false;'>
                             <i class="glyphicon glyphicon-edit"></i>
                         </a>
-                        <a class="btn btn-primary" href="#" onclick="edit('{{ intervention.id }}',1);return false;"><i
-                                        class="glyphicon glyphicon-edit"></i>
-                        </a>
+                        
                         <button class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteIntervention" data-id="{{ intervention.id }}"><i
                                 class="glyphicon glyphicon-trash"></i>
                         </button>
@@ -78,10 +81,10 @@
     
     <div class="panel-footer">
         <div class="btn-group record_actions">
-            <button class="btn btn-primary" data-toggle="modal" data-target="#modalAddIntervention"
-                            data-id="{{ entretien.id }}">
-                            <i class="glyphicon glyphicon-plus"></i>Nouveau
-            </button>
+            <a class="btn btn-primary" href="#" onclick="new_intervention(null,null,null,null,null);return false;">
+                <i class="glyphicon glyphicon-plus">Nouveau</i>
+            </a>
+
 
             
         </div>
@@ -116,7 +119,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4>Ajouter une intervention:</h4>
+                <h4 id = "titre_add">Ajouter une intervention:</h4>
             </div>
             <div class="modal-body">
                 {{ form_start(form) }}
@@ -176,19 +179,52 @@ $(document).ready(function () {
 
 })
 
-function edit(id) {
-        /*$("#modalve").data("id", mission);
-        if (v == 0) {
-            $("#msgvemploye").html("Valider cette mission coté employé ?");
-        } else {
-            $("#msgvemploye").html("Invalider cette mission coté employé ?");
-        }*/
-        $('#intervention_entretien_qte').val('1000');
-        //intervention_entretien
-        //alert($("#form_add").attr('name'));
-        $("#form_add").attr('method', 'GET');
-        $("#modalAddIntervention").modal('show');
-    }
+function edit_intervention(entretien,id_old,intervention,des,qte,obs) {
+    //console.log(intervention);
+    $('#intervention_entretien_interventionVehicule').empty();
+    $('#intervention_entretien_qte').val(qte);
+    $('#intervention_entretien_obs').val(obs);
+    $('#intervention_entretien_id_old').val(id_old);
+    //alert(des);
+    $('#titre_add').html('Modification: <small>' + des + '</small>');
+    var cURL = Routing.generate('select_intervention_vehicule', { entretien: entretien, intervention: intervention });
+    $.post(
+            cURL,
+            function (data) {
+                //console.log(typeof data.interventions);
+                var intervention_ajx = JSON.parse(data.interventions);
+                //console.log(data.interventions.length);
+                //console.log(data.autres);
+                for (i = 0; i < intervention_ajx.length; i++) {
+                    //ligne = '';
+                    //console.log(intervention_ajx[i]['designation']);
+                    var id = intervention_ajx[i]['id'];
+                    var des = intervention_ajx[i]['designation'];
+                    if (id == intervention){
+                        $('#intervention_entretien_interventionVehicule').append($('<option selected="selected"></option>').val(id).html(des));
+                    }else{
+                        $('#intervention_entretien_interventionVehicule').append($('<option></option>').val(id).html(des));
+                    }
+                    
+                }
+                //$('#intervention_entretien_interventionVehicule').val(intervention);
+            }
+        )
+
+    $("#modalAddIntervention").modal('show');
+}
+
+function new_intervention(id) {
+    
+    $('#intervention_entretien_interventionVehicule').val('');
+    $('#intervention_entretien_qte').val('');
+    $('#intervention_entretien_obs').val('');
+    $('#intervention_entretien_id_old').val(null);
+    $('#titre_add').html('Ajouter');
+
+    $("#modalAddIntervention").modal('show');
+}
+
 
 </script>
 {% endblock %}

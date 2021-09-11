@@ -154,9 +154,18 @@ class DefaultController extends Controller
     public function testAction(Request $request)
     {
         $entretien = $this->getDoctrine()->getRepository('AppBundle:EntretienVehicule')->find(1);
-        $interventions = $this->getDoctrine()->getRepository('AppBundle:InterventionEntretien')->getNotInterventionEntretien($entretien);
+        $inter = $this->getDoctrine()->getRepository('AppBundle:InterventionVehicule')->find(5);
+        $interventions = $this->getDoctrine()->getRepository('AppBundle:InterventionVehicule')->getNotInterventionEntretien($entretien,$inter);
         dump($interventions->getQuery()->getResult());
        
+        $client =1;
+        $site =null;
+        $startRow = 1;
+        $maxRows = 10;
+        $sites = $this->getDoctrine()->getRepository("AppBundle:Site")->getSites($client,$site,$startRow,$maxRows);
+        dump($sites->getQuery()->getResult());
+
+
         $form = $this->createForm(DemoType::class);
         
         return $this->render('@App/Default/test.html.twig', array(

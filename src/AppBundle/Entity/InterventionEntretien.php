@@ -8,7 +8,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\InterventionEntretienRepository")
- * @UniqueEntity(fields={"interventionVehicule","entretienVehicule"},message="Ligne intervention saisie déja.")
+ * @UniqueEntity(fields={"interventionVehicule","entretienVehicule"},message="Intervention saisie déja.")
  */
 class InterventionEntretien
 {
