@@ -39,61 +39,50 @@ class EntretienController extends Controller
         
     }
     /**
-     * @Route("/{id}/show",name="entretien_show")
+     * @Route("/{id}/show/{interventionEntretien}",name="entretien_show")
      * id : entretien
      */
-    public function showAction($id, Request $request)
+    public function showAction($id,$interventionEntretien = null , Request $request)
     {   
+        $interventionEntretienParam = $interventionEntretien;
         $manager = $this->getDoctrine()->getManager();
         $cryptage = $this->container->get('my.cryptage');
         $id = $cryptage->my_decrypt($id);
         $entretien = $this->getDoctrine()->getRepository('AppBundle:EntretienVehicule')->find($id);
+        $intervention = null;
         $interventions = $this->getDoctrine()->getRepository('AppBundle:InterventionEntretien')->findByEntretienVehicule($entretien);
+        if ($interventionEntretien <> null) {
+            $interventionEntretien = $cryptage->my_decrypt($interventionEntretien);
+            $interventionEntretien = $this->getDoctrine()->getRepository('AppBundle:InterventionEntretien')->find($interventionEntretien);
+            $intervention = $interventionEntretien->getInterventionVehicule();
+            $methode = 'Edit';
+        }else{
+            $interventionEntretien = new InterventionEntretien();
+            $interventionEntretien->setEntretienVehicule($entretien);
+            $methode = 'Post';
+        }
+        
         $deleteForm = $this->createDeleteForm($id, 'entretien_delete');
         $deleteInterventionForm = $this->createDeleteForm($id, 'intervention_entretien_delete');
-        $interventionEntretien = new InterventionEntretien();
-        $interventionEntretien->setEntretienVehicule($entretien);
+        //dump($interventionEntretien);
         $form = $this->createForm(InterventionEntretienType::class, $interventionEntretien, array(
-            'action'    => $this->generateUrl('entretien_show', array('id' => $cryptage->my_encrypt($id))),
-            'method'    => 'PUT',
-            'entretien' => $entretien,
+            'action'        => $this->generateUrl('entretien_show', array(
+                                                                            'id' => $cryptage->my_encrypt($id),
+                                                                            'interventionEntretien' => $interventionEntretienParam,
+                                                                        )),
+
+            'method'        => 'PUT',
+            'entretien'     => $entretien,
+            'intervention'  => $intervention,
         ));
-        //dump($form);
-        //dump($request);
-        dump($interventionEntretien);
         $form->handleRequest($request);
-        dump($interventionEntretien);
-        $erreur = false;
         if ($form->isSubmitted()) {
             if ($form->isValid()){
-                //dump($interventionEntretien);
-                //dump($request->request->get('intervention_entretien'));
-                $id_old = $request->request->get('intervention_entretien')['id_old'];
-                if ($id_old !="")
-                {   $interventionEntretienEdit = $this->getDoctrine()->getRepository('AppBundle:InterventionEntretien')->find($id_old);
-                    //dump($interventionEntretien);
-                    $intervention = $this->getDoctrine()->getRepository('AppBundle:InterventionVehicule')->find($id_old);
-                    $interventionEntretienEdit->setQte($interventionEntretien->getQte());
-                    $interventionEntretienEdit->setObs($interventionEntretien->getObs());
-                    $interventionEntretienEdit->setInterventionVehicule($interventionEntretien->getInterventionVehicule());
-                    //dump($interventionEntretienEdit);
-                    $manager->persist($interventionEntretienEdit);
-                    //$this->getDoctrine()->getManager()->flush();
-                    //return $this->redirect($this->generateUrl('entretien_show', array('id' => $cryptage->my_encrypt($id))));
-                }else{
-                    $manager->persist($interventionEntretien);
-                    //$this->getDoctrine()->getManager()->flush();
-                    //$this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
-                    //return $this->redirect($this->generateUrl('entretien_show', array('id' => $cryptage->my_encrypt($id))));
-                }
+                $manager->persist($interventionEntretien);
+                $this->getDoctrine()->getManager()->flush();
+                //$this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
+                return $this->redirect($this->generateUrl('entretien_show', array('id' => $cryptage->my_encrypt($id))));
                 //throw new \Exception('Message');
-                //dump($methode);
-                
-                
-            }else{
-                //dump($form);
-                //dump($request);
-                $erreur = true;
             }
         }
       
@@ -103,30 +92,8 @@ class EntretienController extends Controller
             'delete_form'               => $deleteForm->createView(),
             'delete_intervention_form'  => $deleteInterventionForm->createView(),
             'form'                      => $form->createView(),
-            'erreur'    => $erreur,
+            'methode'                   => $methode,
         ));
-    }
-
-    /**
-     * @Route("/{entretien}/selectInterventionVehicule/{intervention}",name="select_intervention_vehicule",options = { "expose" = true })
-     */
-    public function selectInterventionVehicule($entretien,$intervention=null)
-    {
-        //$manager = $this->getDoctrine()->getManager();
-        
-        //$intervention = $manager->getRepository("AppBundle:In")->getPrestations($sousprojet,$prestation,$startRow,$maxRows);
-        $entretien = $this->getDoctrine()->getRepository('AppBundle:EntretienVehicule')->find($entretien);
-        $intervention = $this->getDoctrine()->getRepository('AppBundle:InterventionVehicule')->find($intervention);
-        $interventions = $this->getDoctrine()->getRepository('AppBundle:InterventionVehicule')->getNotInterventionEntretien($entretien,$intervention);
-        //$interventions = $this->getDoctrine()->getRepository('AppBundle:InterventionVehicule')->getNotInterventionEntretien($entretien,$inter);
-
-        $intervention = $interventions->getQuery()->getResult();
-        $interventions =  $this->get('serializer')->serialize($intervention, 'json');
-        //return $interventions;
-        return $this->json(["interventions"     => $interventions,
-                            "autres"            =>'Autres',
-                            ],
-                            200);
     }
 
     /**
@@ -188,11 +155,11 @@ class EntretienController extends Controller
     {
         $cryptage = $this->container->get('my.cryptage');
         $manager = $this->getDoctrine()->getManager();
-        dump($id);
+        //dump($id);
         //$id = $cryptage->my_decrypt($id);
-        dump($id);
+        //dump($id);
         $intervention = $this->getDoctrine()->getRepository('AppBundle:InterventionEntretien')->find($id);
-        dump($intervention);
+        //dump($intervention);
         $entretien = $intervention->getEntretienVehicule()->getId();
         $manager->remove($intervention);
         $manager->flush();
@@ -204,21 +171,24 @@ class EntretienController extends Controller
      * id : entretien
      */
     public function EntretienVehiculeDeleAction($id,request $request){
-       /*    
         $manager = $this->getDoctrine()->getManager();
-        $cryptage = $this->container->get('my.cryptage');
-        $id = $cryptage->my_decrypt($id);
-        if ($form->handleRequest($request)->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-            $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
-            return $this->redirect($this->generateUrl('site_edit', array('id' => $cryptage->my_encrypt($id))));
+        $entretienVehicule = $this->getDoctrine()->getRepository('AppBundle:EntretienVehicule')->find($id);
+        $manager->remove($entretienVehicule);
+        try {
+            $manager->flush();
+        } catch(\Doctrine\DBAL\DBALException $e) {
+            
+            //$this->get('session')->getFlashBag()->add('danger', 'Impossible de supprimer cet element.');
+            $this->addFlash('danger', 'Impossible de supprimer cet element.');
+            $cryptage = $this->container->get('my.cryptage');
+            //$id = $entretienVehicule->getId();
+            $id = $cryptage->my_encrypt($id);
+            //throw new \Exception('Message');
+            return $this->redirect($this->generateUrl('entretien_show', array('id' => $id)));
         }
+        $this->get('session')->getFlashBag()->add('success', 'Suppression avec succès.');
+        return $this->redirect($this->generateUrl('entretien_index'));
 
-       
-        //$realisateurs = $manager->getRepository("AppBundle:Intervention")->getRealisateursIntervention($id);
-
-        return $this->redirect($this->generateUrl('entretien_show', array('id' => $cryptage->my_encrypt($id))));
-*/
     }
     //*********************************************************************************//
     /**

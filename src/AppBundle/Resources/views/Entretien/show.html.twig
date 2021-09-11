@@ -2,7 +2,6 @@
 {% block title %}Entretien - {{ parent() }}{% endblock %}
 {% block bodysaisie %}
 {#{% include "@App/messages.html.twig" %}#}
-<p id="erreur">{{erreur}}</p>
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4> Entretien </h4>
@@ -45,6 +44,32 @@
         </div>
     </div>
 </div>
+{{ form_start(form) }}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4>{% if (methode == 'Post') %}Nouveau {% else %} Modifier {% endif %}</h4>
+    </div> 
+    <div class="panel-body">
+        <table class="table ">
+            <tbody>
+               <tr>
+                    <td>{{ form_widget(form.interventionVehicule)}} {{ form_errors(form.interventionVehicule)}}</td>
+                    <td>{{ form_widget(form.qte)}} {{ form_errors(form.qte)}}</td>
+                    <td>{{ form_widget(form.obs)}} {{ form_errors(form.obs)}}</td>
+                </tr>               
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-footer">
+        <div class="btn-group record_actions">
+        <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-ok"></i> Valider </button>
+        <a class="btn btn-primary" href="{{ path('entretien_show', {id: entretien.id | Mycrypt}) }}" >
+                <i class="glyphicon glyphicon-plus">Nouveau</i>
+        </a>
+        </div>
+    </div>
+</div>
+ {{ form_end(form)}}
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4>Interventions</h4>
@@ -68,26 +93,15 @@
                                                                                         return false;'>
                             <i class="glyphicon glyphicon-edit"></i>
                         </a>
+                        <a class="btn btn-primary" href="{{ path('entretien_show', {id: entretien.id | Mycrypt,interventionEntretien: intervention.id | Mycrypt}) }}"> <i class="glyphicon glyphicon-edit"></i></a>
                         
-                        <button class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteIntervention" data-id="{{ intervention.id }}"><i
-                                class="glyphicon glyphicon-trash"></i>
+                        <button class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteIntervention" data-id="{{ intervention.id }}"><i class="glyphicon glyphicon-trash"></i>
                         </button>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-    </div>
-    
-    <div class="panel-footer">
-        <div class="btn-group record_actions">
-            <a class="btn btn-primary" href="#" onclick="new_intervention(null,null,null,null,null);return false;">
-                <i class="glyphicon glyphicon-plus">Nouveau</i>
-            </a>
-
-
-            
-        </div>
     </div>
 </div>
 <!-- Modale delete Entretien-->
@@ -108,29 +122,6 @@
                     <button class="btn btn-primary" data-dismiss="modal">Non</button>
                     <input name="modal" type="hidden" value="0">
                 {{ form_end(delete_form) }}
-            </div>
-        </div>
-    </div>
-</div>
-<!-- Modale add Intervention -->
-<div id="modalAddIntervention" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalAddInterventionLabel"
-    aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 id = "titre_add">Ajouter une intervention:</h4>
-            </div>
-            <div class="modal-body">
-                {{ form_start(form) }}
-                {{ form_widget(form) }}
-                <p>
-                    <button class="btn btn-primary" type="submit">Valider</button>
-                </p>
-                {{ form_end(form) }}
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" data-dismiss="modal">Annuler</button>
             </div>
         </div>
     </div>
@@ -178,52 +169,6 @@ $(document).ready(function () {
     }
 
 })
-
-function edit_intervention(entretien,id_old,intervention,des,qte,obs) {
-    //console.log(intervention);
-    $('#intervention_entretien_interventionVehicule').empty();
-    $('#intervention_entretien_qte').val(qte);
-    $('#intervention_entretien_obs').val(obs);
-    $('#intervention_entretien_id_old').val(id_old);
-    //alert(des);
-    $('#titre_add').html('Modification: <small>' + des + '</small>');
-    var cURL = Routing.generate('select_intervention_vehicule', { entretien: entretien, intervention: intervention });
-    $.post(
-            cURL,
-            function (data) {
-                //console.log(typeof data.interventions);
-                var intervention_ajx = JSON.parse(data.interventions);
-                //console.log(data.interventions.length);
-                //console.log(data.autres);
-                for (i = 0; i < intervention_ajx.length; i++) {
-                    //ligne = '';
-                    //console.log(intervention_ajx[i]['designation']);
-                    var id = intervention_ajx[i]['id'];
-                    var des = intervention_ajx[i]['designation'];
-                    if (id == intervention){
-                        $('#intervention_entretien_interventionVehicule').append($('<option selected="selected"></option>').val(id).html(des));
-                    }else{
-                        $('#intervention_entretien_interventionVehicule').append($('<option></option>').val(id).html(des));
-                    }
-                    
-                }
-                //$('#intervention_entretien_interventionVehicule').val(intervention);
-            }
-        )
-
-    $("#modalAddIntervention").modal('show');
-}
-
-function new_intervention(id) {
-    
-    $('#intervention_entretien_interventionVehicule').val('');
-    $('#intervention_entretien_qte').val('');
-    $('#intervention_entretien_obs').val('');
-    $('#intervention_entretien_id_old').val(null);
-    $('#titre_add').html('Ajouter');
-
-    $("#modalAddIntervention").modal('show');
-}
 
 
 </script>

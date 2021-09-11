@@ -1,0 +1,35 @@
+
+ $intervention = $interventions->getQuery()->getResult();
+        $interventions =  $this->get('serializer')->serialize($intervention, 'json');
+        //return $interventions;
+        return $this->json(["interventions"     => $interventions,
+                            "autres"            =>'Autres',
+                            ],
+                            200);
+    }
+=============================================================================================
+var cURL = Routing.generate('select_intervention_vehicule', { entretien: entretien, intervention: intervention });
+    $.post(
+            cURL,
+            function (data) {
+                //console.log(typeof data.interventions);
+                var intervention_ajx = JSON.parse(data.interventions);
+                //console.log(data.interventions.length);
+                //console.log(data.autres);
+                for (i = 0; i < intervention_ajx.length; i++) {
+                    //ligne = '';
+                    //console.log(intervention_ajx[i]['designation']);
+                    var id = intervention_ajx[i]['id'];
+                    var des = intervention_ajx[i]['designation'];
+                    if (id == intervention){
+                        $('#intervention_entretien_interventionVehicule').append($('<option selected="selected"></option>').val(id).html(des));
+                    }else{
+                        $('#intervention_entretien_interventionVehicule').append($('<option></option>').val(id).html(des));
+                    }
+                    
+                }
+                //$('#intervention_entretien_interventionVehicule').val(intervention);
+            }
+        )
+
+    $("#modalAddIntervention").modal('show');

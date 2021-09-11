@@ -1,5 +1,5 @@
 {% set ind=0 %}
-{% for message in app.session.flashbag.get('danger') %}
+{% for message in app.flashes('danger') %}
     {% if ind==0 %}
     <div id="msg-danger" class="hidden">
     {% set ind=1 %}
