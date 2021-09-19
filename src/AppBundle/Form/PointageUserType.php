@@ -27,7 +27,8 @@ class PointageUserType extends AbstractType
                 'class'         => 'AppBundle:User',
                 'label'         => 'Employe',
                 'placeholder'   => '-Choisir-',
-                'multiple'      => true,
+                'multiple'      => false,
+                //'expanded'      => true,
                 'query_builder' => function(\Doctrine\ORM\EntityRepository $u)
                                     {
                                         return $u   ->createQueryBuilder('u')
@@ -57,7 +58,9 @@ class PointageUserType extends AbstractType
                     'max' => 12
                     ]]
                     )
-            ->add('obs',TextareaType::Class)
+            ->add('obs',TextareaType::Class,array(
+                'required'      => false
+            ))
             
             ;
     }/**

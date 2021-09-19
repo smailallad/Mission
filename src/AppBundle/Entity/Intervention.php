@@ -392,4 +392,30 @@ class Intervention
 
         return $this;
     }
+
+    /**
+     * Add interventionUser.
+     *
+     * @param \AppBundle\Entity\InterventionUser $interventionUser
+     *
+     * @return Intervention
+     */
+    public function addInterventionUser(\AppBundle\Entity\InterventionUser $interventionUser)
+    {
+        $this->interventionUsers[] = $interventionUser;
+
+        return $this;
+    }
+
+    /**
+     * Remove interventionUser.
+     *
+     * @param \AppBundle\Entity\InterventionUser $interventionUser
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeInterventionUser(\AppBundle\Entity\InterventionUser $interventionUser)
+    {
+        return $this->interventionUsers->removeElement($interventionUser);
+    }
 }

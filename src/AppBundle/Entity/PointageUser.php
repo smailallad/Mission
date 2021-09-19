@@ -2,9 +2,10 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Pointage
@@ -68,6 +69,9 @@ class PointageUser
      */
     private $pointage;
 
+    public function __construct(){
+        $this->date= new DateTime(date('Y-m-d'));
+    }
     /**
      * Get id.
      *
@@ -199,30 +203,6 @@ class PointageUser
     }
 
     /**
-     * Set user.
-     *
-     * @param \AppBundle\Entity\User|null $user
-     *
-     * @return PointageUser
-     */
-    public function setUser(\AppBundle\Entity\User $user = null)
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * Get user.
-     *
-     * @return \AppBundle\Entity\User|null
-     */
-    public function getUser()
-    {
-        return $this->user;
-    }
-
-    /**
      * Set pointage.
      *
      * @param \AppBundle\Entity\Pointage|null $pointage
@@ -258,5 +238,29 @@ class PointageUser
         $this->id = $id;
 
         return $this;
+    }
+
+    /**
+     * Set user.
+     *
+     * @param \AppBundle\Entity\User|null $user
+     *
+     * @return PointageUser
+     */
+    public function setUser(\AppBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user.
+     *
+     * @return \AppBundle\Entity\User|null
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }
