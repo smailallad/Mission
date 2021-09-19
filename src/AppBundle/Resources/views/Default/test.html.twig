@@ -3,6 +3,17 @@
 {% block title %}Nouveau {{ parent() }}{% endblock %}
 
 {% block bodysaisie %}
+{% if var|length > 0 %}
+<div>
+Compétences utilisées dans cet article :
+<ul>
+{% for articleCompetence in var %}
+<li>{{ articleCompetence.user.id }} : {{articleCompetence.user.nom }}</li>
+{% endfor %}
+</ul>
+</div>
+{% endif %}
+{#
 {{ form_start(form, {action: path('test')}) }}
 {{ form_widget(form) }}
 		<p>
@@ -10,8 +21,7 @@
 		</p>
         {{ form_end(form) }}
 
-<hr>
-
+<hr> #}
 {% endblock %}
 {% block js %}
 <script>

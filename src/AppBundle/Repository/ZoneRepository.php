@@ -13,7 +13,7 @@ class ZoneRepository extends \Doctrine\ORM\EntityRepository
     public function getAddZone($prestation){
 
         $qb1 = $this->getEntityManager()->createQueryBuilder();
-        $qb1    ->select('IDENTITY(tp.zone)')
+        $qb1    ->select('DISTINCT(tp.zone)')
                 ->from('AppBundle:TarifPrestation', 'tp')
                 ->where('tp.prestation = :v1')
                 ;

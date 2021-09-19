@@ -16,6 +16,8 @@ class InterventionUserType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $id     = $options['id'];
+        $date   = $options['date'];
+        $mission= $options['mission'];
         $builder
         ->add('User',EntityType::class, array(
             'label'         => 'Realisateur',
@@ -23,9 +25,9 @@ class InterventionUserType extends AbstractType {
             'choice_name'   => 'nom',
             'multiple'      => true,
             'attr' => array('size' => '20'),
-            'query_builder' => function(UserRepository $er) use($id)
+            'query_builder' => function(UserRepository $er) use($id,$date,$mission)
                                     {
-                                       return $er->getNotRealisateursIntervention($id);
+                                       return $er->getNotRealisateursIntervention($id,$date,$mission);
                                     },
             )
         )
@@ -39,7 +41,9 @@ class InterventionUserType extends AbstractType {
     {
         $resolver->setDefaults(array(
             'data_class' => 'AppBundle\Entity\InterventionUser',
-            'id'         => null
+            'id'         => null,
+            'date'       => null,
+            'mission'    => null
         ));
     }
 

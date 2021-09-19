@@ -52,17 +52,20 @@
         <table class="table table-striped table-hover records_list">
             <thead>
                 <tr>
+                    <th scope="col">{{ thead('journal', 'id', 'Num') }}</th>
                     <th scope="col">{{ thead('journal', 'dateIntervention', 'Date') }}</th>
                     <th scope="col">{{ thead('journal', 'mission', 'Mission') }}</th>
                     <th scope="col">{{ thead('journal', 'site', 'Code site') }}</th>
                     <th scope="col">{{ thead('journal', 'site.nom', 'Nom site') }}</th>
                     <th scope="col">{{ thead('journal', 'mission.user', 'Chef de Mission') }}</th>
+                    <th scope="col">Realisateurs</th>
                     <th scope="col">{{ thead('journal', 'prestation.nom', 'Intervention') }}</th>
                 </tr>
             </thead>
             <tbody>
                 {% for intervention in paginator %}
                 <tr>
+                    <td>{{ intervention.id }}</td>
                     <td>{{ intervention.dateIntervention | date('d/m/Y') }}</td>
                     <td> <a href="{{path('mission_intervention',{id: intervention.mission.id | Mycrypt})}}">{{
                             intervention.mission.code }}</a>
@@ -72,6 +75,12 @@
                     </td>
                     <td>{{ intervention.site.nom }}</td>
                     <td>{{ intervention.mission.user }}</td>
+                    <td>{% if intervention.interventionUsers|length > 0 %}
+                        {% for realisateur in intervention.interventionUsers %}
+                        {{ realisateur.user.nom}},
+                        {% endfor %}
+                        {% endif %}
+                    </td>
                     <td>{{ intervention.prestation.nom }}</td>
                 </tr>
                 {% endfor %}

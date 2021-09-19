@@ -84,17 +84,7 @@
                     <td> {{ intervention.interventionVehicule.unite }}</td>
                     <td> {{ intervention.obs }}</td>
                     <td class="text-right">
-                        <a class="btn btn-primary" href="#" onclick='edit_intervention( "{{ entretien.id }}",
-                                                                                        "{{ intervention.id }}",
-                                                                                        "{{ intervention.interventionVehicule.id }}",
-                                                                                        "{{ intervention.interventionVehicule.designation }}",
-                                                                                        "{{ intervention.qte }}",
-                                                                                        "{{ intervention.obs }}");
-                                                                                        return false;'>
-                            <i class="glyphicon glyphicon-edit"></i>
-                        </a>
                         <a class="btn btn-primary" href="{{ path('entretien_show', {id: entretien.id | Mycrypt,interventionEntretien: intervention.id | Mycrypt}) }}"> <i class="glyphicon glyphicon-edit"></i></a>
-                        
                         <button class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteIntervention" data-id="{{ intervention.id }}"><i class="glyphicon glyphicon-trash"></i>
                         </button>
                     </td>

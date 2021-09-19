@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ManyToOne;
+use AppBundle\Entity\InterventionUser;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -23,7 +24,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 //class User implements UserInterface
 class User implements AdvancedUserInterface
 
-{
+{ 
     
 
     /**
@@ -33,7 +34,7 @@ class User implements AdvancedUserInterface
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
+    
     /**
      * @var string
      *
@@ -86,6 +87,7 @@ class User implements AdvancedUserInterface
      */
     private $mission ;
 
+    
     public function __construct ()
     {
         $this -> active = false ;
@@ -94,6 +96,7 @@ class User implements AdvancedUserInterface
         //$this->groupes = 1;
 
     }
+    
     // les methodes a ajouter manuellement
 
     /**

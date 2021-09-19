@@ -33,3 +33,13 @@ var cURL = Routing.generate('select_intervention_vehicule', { entretien: entreti
         )
 
     $("#modalAddIntervention").modal('show');
+==================================================================
+<a class="btn btn-primary" href="#" onclick='edit_intervention( "{{ entretien.id }}",
+                                                                                        "{{ intervention.id }}",
+                                                                                        "{{ intervention.interventionVehicule.id }}",
+                                                                                        "{{ intervention.interventionVehicule.designation }}",
+                                                                                        "{{ intervention.qte }}",
+                                                                                        "{{ intervention.obs }}");
+                                                                                        return false;'>
+                            <i class="glyphicon glyphicon-edit"></i>
+                        </a>

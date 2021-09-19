@@ -12,6 +12,7 @@ use AppBundle\Entity\FonctionUser;
 use AppBundle\Form\UserMPUserType;
 use AppBundle\Model\ChangePassword;
 use AppBundle\Form\ResetPasswordType;
+use DoctrineExtensions\Query\Mysql\Now;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -120,6 +121,8 @@ class DefaultController extends Controller
 
         ));*/
 
+       
+
         if ($date !==null)
         {
             $test = $this->getDoctrine()->getRepository("AppBundle:Test")->find($date);
@@ -153,23 +156,40 @@ class DefaultController extends Controller
      */
     public function testAction(Request $request)
     {
-        $entretien = $this->getDoctrine()->getRepository('AppBundle:EntretienVehicule')->find(1);
-        $inter = $this->getDoctrine()->getRepository('AppBundle:InterventionVehicule')->find(5);
-        $interventions = $this->getDoctrine()->getRepository('AppBundle:InterventionVehicule')->getNotInterventionEntretien($entretien,$inter);
-        dump($interventions->getQuery()->getResult());
-       
-        $client =1;
-        $site =null;
-        $startRow = 1;
-        $maxRows = 10;
-        $sites = $this->getDoctrine()->getRepository("AppBundle:Site")->getSites($client,$site,$startRow,$maxRows);
-        dump($sites->getQuery()->getResult());
+        
+        /*
+        $date = new DateTime(date('2015-12-02'));
+        $vehicule = $this->getDoctrine()->getRepository("AppBundle:Vehicule")->find(1);
+        $kms1 = $this->getDoctrine()->getRepository("AppBundle:EntretienVehicule")->getPreview($date,$vehicule);
+        $kms2 = $this->getDoctrine()->getRepository("AppBundle:EntretienVehicule")->getNext($date,$vehicule);
 
+        
+        dump($kms1);
+        dump($kms2);
+        */
+        /*
+        $date = new DateTime('2021-04-14');
+        //679
+        $mission = $this->getDoctrine()->getRepository("AppBundle:Mission")->find(679);
+        $missions = $this->getDoctrine()->getRepository("AppBundle:User")->getChefMissionDate($date,$mission);
+        dump($missions);
+        */
+
+        $req = $this->getDoctrine()->getRepository("AppBundle:Intervention")->getInterventionsAll();
+        $req = $req->getQuery()->getResult();
+        //dump($req[0]);
+        $var =$req[1];
+        dump($var);
+        dump($var->getId());
+        $var1 = $var->getInterventionUsers();
+        dump ($var1);
+        dump(count($var1));
 
         $form = $this->createForm(DemoType::class);
         
         return $this->render('@App/Default/test.html.twig', array(
-            'form' => $form->createView(),
+            'form'  => $form->createView(),
+            'var'   => $var1
         ));
         
 

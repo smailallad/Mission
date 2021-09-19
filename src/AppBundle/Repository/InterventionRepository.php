@@ -86,9 +86,9 @@ class InterventionRepository extends \Doctrine\ORM\EntityRepository
             ->join('p.sousProjet','sp')
             ->addSelect('p')
             ->addSelect('s')
-            ->addSelect('w');
-        $q  ->addSelect('sp');
-
+            ->addSelect('w')
+            ->addSelect('sp')
+            ;
         return $q;
     }
 

@@ -19,4 +19,44 @@ class EntretienVehiculeRepository extends \Doctrine\ORM\EntityRepository
             
         return $q;//->getQuery()->getResult();
     }
+
+    public function getPreview($date,$vehicule)
+    {   
+        $q = $this->createQueryBuilder('e');
+        $q  ->where('e.date < :d')
+            ->join('e.vehicule','v')
+            ->andWhere('v.id =:v')
+            ->orderBy('e.date','DESC')
+            ->setParameter('d', $date)
+            ->setParameter('v', $vehicule)
+            ;
+        
+            
+        $res = $q->getQuery()->getResult();
+        if (count($res)>0) {
+            return $res[0]->getKms();
+        }else{
+            return null;
+        }
+    }
+
+    public function getNext($date,$vehicule)
+    {   
+        $q = $this->createQueryBuilder('e');
+        $q  ->where('e.date > :d')
+            ->join('e.vehicule','v')
+            ->andWhere('v.id =:v')
+            ->orderBy('e.date','ASC')
+            ->setParameter('d', $date)
+            ->setParameter('v', $vehicule)
+            ;
+        
+            
+        $res = $q->getQuery()->getResult();
+        if (count($res)>0) {
+            return $res[0]->getKms();
+        }else{
+            return null;
+        }
+    }
 }

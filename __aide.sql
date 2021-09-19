@@ -129,7 +129,7 @@ public function getDescriptionArticle($id)
   {
       
      $subquery = $this->_em->createQueryBuilder();
-     $subquery ->select('IDENTITY(da.description)');
+     $subquery ->select('DISTINCT(da.description)');
      $subquery ->from('AppBundle:DescriptionArticle', 'da');
      $subquery ->where('da.article=:id');
 
