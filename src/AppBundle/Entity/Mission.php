@@ -93,6 +93,8 @@ class Mission
         $this->vRollout = false;
         $this->vComptabilite = false;
         $this->avance = 0;
+        $this->depart = new DateTime(date('Y-m-d'));
+        $this->retour = new DateTime(date('Y-m-d'));
     }
 
     /**

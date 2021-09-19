@@ -33,7 +33,26 @@ class InterventionUserRepository extends \Doctrine\ORM\EntityRepository
             ;
         return $q->getQuery()->getResult();
     }
-    
+    public function getInterventionsAll()
+    {
+        $q = $this->createQueryBuilder('iu');
+        $q  ->join('iu.intervention','i')
+            ->join('i.prestation','p')
+            ->join('i.site','s')
+            ->join('iu.user','u')
+            ->join('i.mission','m')
+            ->join('s.wilaya','w')
+            ->join('p.sousProjet','sp')
+            ->addSelect('i')
+            ->addSelect('p')
+            ->addSelect('s')
+            ->addSelect('w')
+            ->addSelect('sp')
+            ->addSelect("GROUP_CONCAT(DISTINCT u.nom SEPARATOR ', ') AS acompagnateur")
+            ;
+        return $q;
+    }
+
 
 
 }

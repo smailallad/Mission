@@ -1147,7 +1147,7 @@ class MissionController extends Controller
         //dump($intervention->getId());
         
         $interventionUser = new InterventionUser(); 
-        $form_realisateur = $this->createForm(InterventionUserType::class,$interventionUser,array('id'=>$intervention));
+        $form_realisateur = $this->createForm(InterventionUserType::class,$interventionUser,array('id'=>$intervention,'date'=>$intervention->getDateIntervention(),'mission'=>$mission));
         
         //$form_realisateur = $this->createForm(new InterventionUserType($intervention),$interventionUser);
         //$form = $this->createForm(new DescriptionArticleType($article->getId()), $descriptionArticle);
@@ -1308,13 +1308,13 @@ class MissionController extends Controller
 
     }
     /**
-     * @Route("/{user}/{intervention}/deleteInterventionUser",name="intervention_realisateur_delete",options = {"expose" = true})
+     * @Route("/{id}/deleteInterventionUser",name="intervention_realisateur_delete",options = {"expose" = true})
      */
-    public function deleteInterventionUserAction(User $user,Intervention $intervention){
+    public function deleteInterventionUserAction($id){
         $manager = $this->getDoctrine()->getManager();
         $cryptage = $this->container->get('my.cryptage');
-        $interventionUser = $manager->getRepository("AppBundle:InterventionUser")->find(['user'=>$user,'intervention'=>$intervention]);
-        $mission = $intervention->getMission();
+        $interventionUser = $manager->getRepository("AppBundle:InterventionUser")->find($id);
+        $intervention = $interventionUser->getIntervention();
         $manager->remove($interventionUser);
         try {
             $manager->flush();

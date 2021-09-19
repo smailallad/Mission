@@ -1,7 +1,31 @@
 {% extends "base.html.twig" %}
+{% form_theme edit_form 'Form/bootstrap_3_layout.html.twig' %}
+{% block title %}Modification - Site{% endblock %}
+{% block bodysaisie %}
+{#{% include "@App/messages.html.twig" %}#}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h2> Modification - Entretien </h2>
+    </div>
+    <div class="panel-body">
+    {{ form_start(edit_form) }}
+    {{ form_widget(edit_form) }}
+       <p>
+          <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-edit"></i> Modifier</button>
+       </p>
+    {{ form_end(edit_form) }}
+    </div>
+    <div class="panel-footer">
+        <div class="btn-group record_actions">
+            <a class="btn btn-info" href="{{ path('entretien_index') }}">
+                <i class="glyphicon glyphicon-list"></i> Retour
+            </a>
+        </div>
+    </div>
+</div>
 
-{% block title %}AppBundle:Entretien:edit{% endblock %}
-
-{% block body %}
-<h1>Welcome to the Entretien:edit page</h1>
+{% endblock %}
+{% block js %}
+<script>
+</script>
 {% endblock %}

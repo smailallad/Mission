@@ -155,15 +155,7 @@
         </div>
     </div>
 
- {#   <div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
-            {% block bodyhome %} {% endblock %}
-        </div>
-        <div class="col-md-1"></div>
-    </div>
-#}
-{% include "@App/modal.messages.html.twig" %}
+ {% include "@App/modal.messages.html.twig" %}
 
     {% block javascripts %}
     <script src="{{ asset('jquery/jquery.js') }}"></script>
@@ -178,9 +170,8 @@
 
     <script src="{{ asset('js/message_flash.js')}}"></script>
 
-    {#<script src="{{ asset('js/jquery.flagstrap.min.js')}}"></script>
-    #}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>#}
+    {#<script src="{{ asset('js/jquery.flagstrap.min.js')}}"></script>#}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
     {% endblock %}
 
     {% block js %} {% endblock %}

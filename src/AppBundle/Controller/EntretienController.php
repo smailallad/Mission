@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 use Doctrine\ORM\QueryBuilder;
 use AppBundle\Entity\EntretienVehicule;
 use AppBundle\Form\EntretienFilterType;
+use AppBundle\Form\EntretienVehiculeType;
 use Symfony\Component\Form\FormInterface;
 use AppBundle\Entity\InterventionEntretien;
 use AppBundle\Form\InterventionEntretienType;
@@ -138,13 +139,29 @@ class EntretienController extends Controller
     }
 
     /**
-     * @Route("/edit",name="entretien_edit")
+     * @Route("/{id}/edit",name="entretien_edit")
      */
-    public function editAction()
-    {
-        return $this->render('@App/Entretien/edit.html.twig', array(
-            // ...
+    public function editAction(Request $request,$id)
+    {   $cryptage = $this->container->get('my.cryptage');
+        $id = $cryptage->my_decrypt($id);
+        $entretien = $this->getDoctrine()->getRepository('AppBundle:EntretienVehicule')->find($id);
+        $editForm = $this->createForm(EntretienVehiculeType::class, $entretien, array(
+            'action' => $this->generateUrl('entretien_edit', array('id' => $cryptage->my_encrypt($entretien->getId()))),
+            'method' => 'PUT',
         ));
+        if ($editForm->handleRequest($request)->isValid()) {
+            $entretien1 = $this->getDoctrine()->getRepository('AppBundle:EntretienVehicule')->getAvant($entretien->getDate());
+            $entretien2 = $this->getDoctrine()->getRepository('AppBundle:EntretienVehicule')->getApres($entretien->getDate());
+            $this->getDoctrine()->getManager()->flush();
+            $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
+            return $this->redirect($this->generateUrl('entretien_edit', array('id' => $cryptage->my_encrypt($id))));
+        }
+        return $this->render('@App/Entretien/edit.html.twig', array(
+            'entretien'     => $entretien,
+            'edit_form'     => $editForm->createView(),
+        ));
+    
+       
     }
 
     /**

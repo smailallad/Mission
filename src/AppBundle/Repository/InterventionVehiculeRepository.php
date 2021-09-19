@@ -13,7 +13,7 @@ class InterventionVehiculeRepository extends \Doctrine\ORM\EntityRepository
     public function getNotInterventionEntretien($entretien, $intervention =null)
     {
      /*   $qb1 = $this->getEntityManager()->createQueryBuilder();
-        $qb1    ->select('IDENTITY(ie.interventionVehicule)')
+        $qb1    ->select('DISTINCT(ie.interventionVehicule)')
                 ->from('AppBundle:InterventionEntretien', 'ie')
                 ->where('ie.entretienVehicule = :v1')
                 //->setParameter('v1',$entretien)
@@ -36,7 +36,7 @@ class InterventionVehiculeRepository extends \Doctrine\ORM\EntityRepository
         //return $qb2->getQuery()->getResult();*/
         //dump($intervention);
         $qb1 = $this->getEntityManager()->createQueryBuilder();
-        $qb1    ->select('IDENTITY(ie.interventionVehicule)')
+        $qb1    ->select('DISTINCT(ie.interventionVehicule)')
                 ->from('AppBundle:InterventionEntretien', 'ie')
                 ->where('ie.entretienVehicule = :v1');
                 if ($intervention <> null){

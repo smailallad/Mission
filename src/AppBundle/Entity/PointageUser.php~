@@ -25,7 +25,7 @@ class PointageUser
     private $id;
     
     /**
-    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User",inversedBy="pointageUsers")
     */
     private $user;
     
@@ -196,30 +196,6 @@ class PointageUser
     public function getObs()
     {
         return $this->obs;
-    }
-
-    /**
-     * Set user.
-     *
-     * @param \AppBundle\Entity\User|null $user
-     *
-     * @return PointageUser
-     */
-    public function setUser(\AppBundle\Entity\User $user = null)
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * Get user.
-     *
-     * @return \AppBundle\Entity\User|null
-     */
-    public function getUser()
-    {
-        return $this->user;
     }
 
     /**

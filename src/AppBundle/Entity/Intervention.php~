@@ -5,6 +5,7 @@ namespace AppBundle\Entity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ManyToOne;
+use AppBundle\Entity\InterventionUser;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -28,6 +29,12 @@ class Intervention
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
+    /**
+    * @ORM\OneToMany(targetEntity="AppBundle\Entity\InterventionUser",mappedBy="intervention")
+    */
+    private $interventionUsers; 
+
+
     /**
      * @var \DateTime
      *
@@ -102,10 +109,26 @@ class Intervention
         $this->dateReception = new DateTime(date('Y-m-d'));
         $this->dateIntervention = new DateTime(date('Y-m-d'));
         $this->setTarif(0);
+        $this->interventionUsers = new \Doctrine\Common\Collections\ArrayCollection();
+       
     }
-
     
+    //public function addInterventionUser(\AppBundle\Entity\InterventionUser $interventionUser)
+    //{
+    //$this->interventionUsers[] = $interventionUser;
+    //return $this;
+    //}
 
+    //public function removeInterventionUser(\AppBundle\Entity\InterventionUser $interventionUser)
+    //{
+    //$this->interventionUsers->removeElement($interventionUser);
+    //}
+
+    public function getInterventionUsers()
+    {
+    return $this->interventionUsers;
+    }
+    
     /**
      * Get id
      *
@@ -368,5 +391,31 @@ class Intervention
         $this->id = $id;
 
         return $this;
+    }
+
+    /**
+     * Add interventionUser.
+     *
+     * @param \AppBundle\Entity\InterventionUser $interventionUser
+     *
+     * @return Intervention
+     */
+    public function addInterventionUser(\AppBundle\Entity\InterventionUser $interventionUser)
+    {
+        $this->interventionUsers[] = $interventionUser;
+
+        return $this;
+    }
+
+    /**
+     * Remove interventionUser.
+     *
+     * @param \AppBundle\Entity\InterventionUser $interventionUser
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeInterventionUser(\AppBundle\Entity\InterventionUser $interventionUser)
+    {
+        return $this->interventionUsers->removeElement($interventionUser);
     }
 }

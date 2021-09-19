@@ -33,7 +33,6 @@ class User implements AdvancedUserInterface
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
-
     /**
      * @var string
      *
@@ -88,8 +87,8 @@ class User implements AdvancedUserInterface
 
     public function __construct ()
     {
-        $this -> active = false ;
-        $this -> mission = false;
+        $this-> active = false ;
+        $this-> mission = false;
         //$this ->groupes = new \Doctrine\Common\Collections\ArrayCollection();
         //$this->groupes = 1;
 
@@ -373,4 +372,6 @@ class User implements AdvancedUserInterface
     {
         return $this->groupes;
     }
+
+    
 }

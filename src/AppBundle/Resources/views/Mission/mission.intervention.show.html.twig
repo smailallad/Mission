@@ -168,8 +168,7 @@
                             intervention.mission.vRollout ))
                             %}
                             <button class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteRealisateur"
-                                data-user="{{ realisateur.user.id }}"
-                                data-intervention="{{ realisateur.intervention.id }}">
+                                data-id="{{ realisateur.id }}">
                                 <i class="glyphicon glyphicon-trash"></i>
                             </button>
                             {% endif %}
@@ -287,11 +286,11 @@
         $('#modalDeleteRealisateur').on('show.bs.modal', function (event) {
             //alert('ddd');
             var button = $(event.relatedTarget) // Button that triggered the modal
-            var user = button.data('user') // Extract info from data-* attributes
-            var intervention = button.data('intervention') // Extract info from data-* attributes
+            var id = button.data('id') // Extract info from data-* attributes
+            //var intervention = button.data('intervention') // Extract info from data-* attributes
             //alert(user);
             //alert(intervention);
-            var cURL = Routing.generate('intervention_realisateur_delete', { user: user, intervention: intervention });
+            var cURL = Routing.generate('intervention_realisateur_delete', { id: id });
             //alert(cURL);
             $("#modalDeleteRealisateurForm").attr('action', cURL);
         })
