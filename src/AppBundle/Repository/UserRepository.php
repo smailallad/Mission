@@ -107,4 +107,23 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
         */
         return $qb4->getQuery()->getResult();
     }
+    public function getNotPointageUsers($date)
+    {
+        $qb1 = $this->getEntityManager()->createQueryBuilder();
+        $qb1    ->select('DISTINCT(pu.user)')
+                ->from('AppBundle:PointageUser', 'pu')
+                ->where('pu.date = :v1')
+                ;
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb    ->select('u')
+                ->from('AppBundle:User', 'u')
+                ->where('u.active = true')
+                //->andWhere('u.mission = true')
+                ->andWhere($qb1->expr()->notIn('u', $qb1->getDQL()))
+                ->orderBy('u.nom')
+                ->setParameter('v1', $date)
+        ;
+        return $qb;
+
+    }
 }

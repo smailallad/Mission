@@ -25,14 +25,23 @@ class PointageController extends Controller
     public function newAction(Request $request)
     {   $pointageUser = new PointageUser();
         $form = $this->createForm(PointageUserType::class, $pointageUser);
-        if ($form->handleRequest($request)->isValid())
-        {
-            $manager = $this->getDoctrine()->getManager();
-            $manager->persist($pointageUser);
-            $manager->flush();
-            //$this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
-            $cryptage = $this->container->get('my.cryptage');
-            return $this->redirect($this->generateUrl('pointage_new'));
+        
+        //if ($form->handleRequest($request)->isValid())
+        $form->handleRequest($request);
+        if ($form->isSubmitted()) {
+            //dump($form);
+            if ($form->isValid()) {
+                $manager = $this->getDoctrine()->getManager();
+                $manager->persist($pointageUser);
+                $manager->flush();
+                $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
+                $cryptage = $this->container->get('my.cryptage');
+                return $this->redirect($this->generateUrl('pointage_new'));
+            }else{
+                //dump('erreur Valide');
+            }
+        }else{
+            //dump('non submit');
         }
         return $this->render('@App/PointageUser/new.html.twig', array(
             'pointageUser' => $pointageUser,
@@ -98,6 +107,20 @@ class PointageController extends Controller
             'edit_form'     => $editForm->createView(),
         ));
     }
+    /**
+     * @Route("/pointage_users/{date}",name="pointage_users",options = { "expose" = true })
+     */
+    public function pointageUserAction($date)
+    {
+        $pointageUser = $this->getDoctrine()->getRepository('AppBundle:User')->getNotPointageUsers($date);
+        $pointageUser = $pointageUser->getQuery()->getResult();
+        $pointageUsers =  $this->get('serializer')->serialize($pointageUser, 'json');
+        //return $interventions;
+        return $this->json(["users"     => $pointageUsers,
+                            ],
+                            200);
+    }
+
 
     //*********************************************************************************//
     /**

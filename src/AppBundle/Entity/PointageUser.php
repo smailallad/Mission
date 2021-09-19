@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -15,7 +16,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @UniqueEntity(fields={"date","user"},errorPath="date",message="Pointage déja effectuer pour cette employé à a cette date.")
  */
 class PointageUser
-{
+{   
     /**
      * @var int
      *
@@ -42,8 +43,8 @@ class PointageUser
      * * @Assert\Range(
      *      min = 0,
      *      max = 8,
-     *      minMessage = "Le montant doit être égal ou supperieur à 0 ",
-     *      maxMessage = "Le montant doit être égal ou inferieur à 8 "
+     *      minMessage = "La valeur doit être égal ou supperieur à 0 ",
+     *      maxMessage = "La valeur doit être égal ou inferieur à 8 "
      *      )
      */
     private $hTravail;
@@ -70,8 +71,9 @@ class PointageUser
     private $pointage;
 
     public function __construct(){
-        $this->date= new DateTime(date('Y-m-d'));
+        //$this->date= new DateTime(date('Y-m-d'));
     }
+    
     /**
      * Get id.
      *

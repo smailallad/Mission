@@ -96,6 +96,9 @@ class UserController extends Controller
             'edit_form'   => $editForm->createView(),
         ));
     }
+
+
+    //================================================================================================
     /**
     * @route("/{field}/{type}/sort",name="admin_users_sort",requirements={ "type"="ASC|DESC" })
     */

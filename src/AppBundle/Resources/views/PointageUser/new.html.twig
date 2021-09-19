@@ -28,6 +28,27 @@
 
 {% block js %}
 <script>
+function process_user(event) {
+var date = $('#appbundle_pointageuser_date').val();
+//alert(date);
+var cURL = Routing.generate('pointage_users', { date: date });
+ $('#appbundle_pointageuser_user option'). remove();
+$.post(
+        cURL,
+        function (data) 
+        {   //console.log(data);
+            var users = JSON.parse(data.users);
+            //console.log(data.interventions.length);
+            //console.log(users);
+            for (i = 0; i < users.length; i++) {
+                var id = users[i]['id'];
+                var nom = users[i]['nom'];
+                console.log(nom);
+                $('#appbundle_pointageuser_user').append($('<option></option>').val(id).html(nom));
+            }
+        }
+    )
 
+}
 </script>
 {% endblock %}

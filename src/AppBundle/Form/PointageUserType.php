@@ -2,11 +2,12 @@
 
 namespace AppBundle\Form;
 
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
@@ -22,6 +23,9 @@ class PointageUserType extends AbstractType
                 'label'     => 'Date',
                 'widget'    => 'single_text',
                 'html5'     => true,
+                'attr' => array(
+                    'onfocusout' => 'process_user(event)',
+                )
             ))
             ->add('user',EntityType::class,array(
                 'class'         => 'AppBundle:User',
@@ -39,6 +43,12 @@ class PointageUserType extends AbstractType
                                         ;
                                     }
             ))
+            /*->add('user',ChoiceType::class,array(
+                    'multiple'  => false,
+                    'label'     => 'Employés',
+                    //'mapped'    => false,
+                )
+            )*/
             ->add('pointage')
             ->add('hTravail', IntegerType::class, [
                 'attr' => [
@@ -69,7 +79,10 @@ class PointageUserType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\PointageUser'
+            'data_class'    => 'AppBundle\Entity\PointageUser',
+            'attr'          => array(
+                'id'        => 'form_pointage'
+            )
         ));
     }
 
