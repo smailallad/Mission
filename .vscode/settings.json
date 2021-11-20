@@ -9,5 +9,21 @@
         "gerant",
         "quantite",
         "sensio"
+    ],
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "Smail",
+            "group": "Smail",
+            "database": "rtie3.4",
+            "username": "smail",
+            "password": "Ads2160396!"
+        }
     ]
 }

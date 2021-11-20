@@ -67,6 +67,143 @@
     </div>
 </div>
 {% endif %}
+
+{% if is_granted('ROLE_CHEF_PARK') %}
+
+<div class="panel panel-danger">
+    <div class="panel-heading">
+        <h4>Entretiens Dépassés</h4>
+    </div>
+    <div class="panel-body">
+        <table class="table">
+        <thead>
+            <tr class="danger">
+                <th scope="col">Véhicule</th>
+                <th scope="col">Intervention</th>
+                <th scope="col" class="text-right">Interval</th>
+                <th scope="col" class="text-right">Dernier Intervention</th>
+                <th scope="col" class="text-right">Dernier Relever</th>
+                <th scope="col" class="text-right">Dépassés</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for alertEntretien in alertEntretiens %}
+                {% if alertEntretien.reste >= 0 %}
+                <tr class="danger">
+                    <td>{{ alertEntretien.nom }}</td>
+                    <td>{{ alertEntretien.designation }}</td>
+                    <td class="text-right">{{ alertEntretien.kms | number_format(0, ' ', ' ') }} Kms</td>
+                    <td class="text-right">{{ alertEntretien.dernierKms | number_format(0, ' ', ' ')}} Kms</td>
+                    <td class="text-right">{{ alertEntretien.kmsRelever | number_format(0, ' ', ' ')}} Kms</td>
+                    <td class="text-right"><b>{{ alertEntretien.reste | number_format(0, ' ', ' ')}} Kms </b></td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+       
+    </div>
+</div>
+<div class="panel panel-warning">
+    <div class="panel-heading">
+        <h4>Entretiens a prendre en compte</h4>
+    </div>
+    <div class="panel-body">
+        <table class="table">
+        <thead>
+            <tr class="warning">
+                <th scope="col">Véhicule</th>
+                <th scope="col">Intervention</th>
+                <th scope="col" class="text-right">Interval</th>
+                <th scope="col" class="text-right">Dernier Intervention</th>
+                <th scope="col" class="text-right">Dernier Relever</th>
+                <th scope="col" class="text-right">Restes</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for alertEntretien in alertEntretiens %}
+                {% if alertEntretien.reste < 0 %}
+                <tr class="warning">
+                    <td>{{ alertEntretien.nom }}</td>
+                    <td>{{ alertEntretien.designation }}</td>
+                    <td class="text-right">{{ alertEntretien.kms | number_format(0, ' ', ' ') }} Kms</td>
+                    <td class="text-right">{{ alertEntretien.dernierKms | number_format(0, ' ', ' ')}} Kms</td>
+                    <td class="text-right">{{ alertEntretien.kmsRelever | number_format(0, ' ', ' ')}} Kms</td>
+                    <td class="text-right"><b>{{ alertEntretien.reste | number_format(0, ' ', ' ')}} Kms</b></td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+       
+    </div>
+</div>
+
+<div class="panel panel-danger">
+    <div class="panel-heading">
+        <h4>Alertes Assurances véhicule</h4>
+    </div>
+    <div class="panel-body">
+        <table class="table">
+        <thead>
+            <tr class="danger">
+                <th scope="col">Véhicule</th>
+                <th scope="col" class="text-right">Date fin d'assurance</th>
+                <th scope="col" class="text-right">Depaser</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for alertAssurance in alertAssurances %}
+            {% if (alertAssurance.nbrjours <= 0) %}
+                <tr class="danger">
+                    <td>{{ alertAssurance.nom }}</td>
+                    <td class="text-right">{{ "now" | date_modify( alertAssurance.nbrjours ~ "day")|date("d/m/Y") }}</td>
+                    <td class="text-right">{{ alertAssurance.nbrjours | number_format(0, ' ', ' ') }} jours</td>
+
+                </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+       
+    </div>
+</div>
+
+<div class="panel panel-warning">
+    <div class="panel-heading">
+        <h4>Alertes Assurances véhicule</h4>
+    </div>
+    <div class="panel-body">
+        <table class="table">
+        <thead>
+            <tr class="warning">
+                <th scope="col">Véhicule</th>
+                <th scope="col" class="text-right">Date fin d'assurance</th>
+                <th scope="col" class="text-right">Reste</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for alertAssurance in alertAssurances %}
+            {% if (alertAssurance.nbrjours <= seuilAssurance) and (alertAssurance.nbrjours > 0) %}
+                <tr class="warning">
+                    <td>{{ alertAssurance.nom }}</td>
+                    <td class="text-right">{{ "now" | date_modify("+ " ~ alertAssurance.nbrjours ~ "day")|date("d/m/Y") }}</td>
+                    <td class="text-right">{{ alertAssurance.nbrjours | number_format(0, ' ', ' ') }} jours</td>
+
+                </tr>
+            {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+       
+    </div>
+</div>
+
+
+
+{% endif %}
+
+
 {# {% include "@App/modal.message.html.twig" %} #}
 
 {% endblock %}

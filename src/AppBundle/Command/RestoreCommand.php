@@ -261,7 +261,7 @@ class RestoreCommand extends ContainerAwareCommand
             $groupes 
                     ->setId(8) 
                     ->setGroupname('CHEF-PARK')
-                    ->setRoles(['ROLE_CHEF-PARK'])
+                    ->setRoles(['ROLE_CHEF_PARK'])
                     ;
             $manager->persist($groupes);
             $output->write('<comment>#</comment>');

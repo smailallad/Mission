@@ -31,8 +31,19 @@ class DefaultController extends Controller
         $session->set("appel_mission",""); 
         $session->set("appel_journal","");
 
-        
-        return $this->render("default/index.html.twig");
+        $seuilAssurance=60;
+        $seuilControlTech=30;
+
+        $alertEntretiens = $this->getDoctrine()->getRepository('AppBundle:Vehicule')->getListeAlerteInterventions();
+        $alertAssurances = $this->getDoctrine()->getRepository('AppBundle:Assurance')->getListeAlerteAssurances($seuilAssurance);
+
+
+        dump($alertAssurances);
+        return $this->render("default/index.html.twig",array(
+            'alertEntretiens'       => $alertEntretiens,
+            'alertAssurances'       => $alertAssurances,
+            'seuilAssurance'        => $seuilAssurance
+        ));
     }
     /**
      * @Route("/{id}/ump",name="updateMP").

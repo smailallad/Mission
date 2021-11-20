@@ -33,8 +33,8 @@ class Vehicule
     /**
      * @var string
      * @Assert\Regex(
-     * pattern="/[\d]+[\-][0-9]{3}[\-][0-9]{2}/",
-     * message="Matricule incorrecte au format 00000-000-00."
+     * pattern="/^[\d]+[\-][0-9]{3}[\-][0-9]{2}$/",
+     * message="Matricule incorrecte au format 00000-000-00"
      * )
      * @ORM\Column(type="string", length=15,unique=true,nullable=true)
      */
