@@ -57,7 +57,7 @@
                             <ul class="dropdown-menu">
                                 {% if is_granted('ROLE_ADMINISTRATION') %}
                                 <li><a href="{{ path('fonction') }}">Fonctions</a></li>
-                                <li><a href="{{ path('employe')}}">Employés</a></li>
+                                <li><a href="{{ path('employe_index')}}">Employés</a></li>
                                 {% endif %}
                                 {% if is_granted('ROLE_BUREAU') %}
                                 <li><a href="{{ path('site')}}">Sites</a></li>
@@ -90,13 +90,13 @@
                         {#<li><a href="{{ path('search_prestation',{sousprojet: '1',nom: 'a',pagenum:0})}}">Test </a>
                         </li>#}
                         {#<li><a href="{{ path('search_site',{client: '3',site: 'c',pagenum:0})}}">Test </a></li>#}
-                        {% if is_granted('ROLE_CHEF-PARK') %}
+                        {% if is_granted('ROLE_CHEF_PARK') %}
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                 aria-haspopup="true" aria-expanded="false">Gestion vehicule<span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li><a href="{{ path('employe')}}">Vehicules</a></li>
-                                <li><a href="{{ path('employe')}}">Interventions</a></li>
+                                <li><a href="{{ path('vehicule_index')}}">Vehicules</a></li>
+                                <li><a href="{{ path('employe_index')}}">Interventions</a></li>
                                 <li role="separator" class="divider"></li>
                                 <li><a href="{{ path('entretien_index') }}">Entretiens</a></li>
                                 <li><a href="{{ path('interventionEntretien_index') }}">Detail des entretiens</a></li>

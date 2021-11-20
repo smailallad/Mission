@@ -16,7 +16,7 @@ use Symfony\Component\Config\Definition\Exception\DuplicateKeyException;
 
 /**
  * @Route("/entretien")
- * @Security("has_role('ROLE_CHEF-PARK')")
+ * @Security("has_role('ROLE_CHEF_PARK')")
  */
 class EntretienController extends Controller
 {

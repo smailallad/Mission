@@ -12,7 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
  * @Route("/intent")
- * @Security("has_role('ROLE_CHEF-PARK')")
+ * @Security("has_role('ROLE_CHEF_PARK')")
  */
 class InterventionEntretienController extends Controller
 {
