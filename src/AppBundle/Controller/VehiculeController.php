@@ -59,7 +59,7 @@ class VehiculeController extends Controller
         $cryptage = $this->container->get('my.cryptage');
         $id = $cryptage->my_decrypt($id);
         $vehicule = $this->getDoctrine()->getRepository('AppBundle:Vehicule')->find($id);
-        $vehicule2 = $this->getDoctrine()->getRepository('AppBundle:Vehicule')->find($id);
+        $lastEntretien = $this->getDoctrine()->getRepository('AppBundle:EntretienVehicule')->getLastEntretien($id);
         $editForm = $this->createForm(VehiculeReleverType::class, $vehicule, array(
             'action' => $this->generateUrl('vehicule_edit_relever', array('id' => $cryptage->my_encrypt($vehicule->getId()))),
             'method' => 'PUT',
@@ -67,14 +67,14 @@ class VehiculeController extends Controller
         if ($editForm->handleRequest($request)->isValid()) {
             
             dump($vehicule);
-            dump($vehicule2);
-            throw new \Exception('Message');
-            if ($vehicule->getDateRelever() < $vehicule2->getDateRelever()){
-                $this->get('session')->getFlashBag()->add('danger', 'Date incorrecte.');
+            dump($lastEntretien);
+            //throw new \Exception('Message');
+            if ($vehicule->getDateRelever() < $lastEntretien->getDate()){
+                $this->get('session')->getFlashBag()->add('danger', 'Date incorrecte, elle doit etre superieur à : ' . date_format($lastEntretien->getDate(),"d/m/Y"));
                 return $this->redirect($this->generateUrl('vehicule_edit_relever', array('id' => $cryptage->my_encrypt($id))));
             }
-            if ($vehicule->getKmsRelever() < $vehicule2->getKmsRelever()){
-                $this->get('session')->getFlashBag()->add('danger', 'Kms incorrecte.');
+            if ($vehicule->getKmsRelever() < $lastEntretien->getKms()){
+                $this->get('session')->getFlashBag()->add('danger', 'Kms incorrecte, il doit etre superieur à : ' . $lastEntretien->getKms());
                 return $this->redirect($this->generateUrl('vehicule_edit_relever', array('id' => $cryptage->my_encrypt($id))));
             }
 
