@@ -4,7 +4,6 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ManyToOne;
-use AppBundle\Entity\InterventionUser;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -86,11 +85,11 @@ class User implements AdvancedUserInterface
      */
     private $mission ;
 
+    
     public function __construct ()
     {
         $this-> active = false ;
         $this-> mission = false;
-        $this-> pointageUsers = new \Doctrine\Common\Collections\ArrayCollection();
         //$this ->groupes = new \Doctrine\Common\Collections\ArrayCollection();
         //$this->groupes = 1;
 
@@ -376,40 +375,5 @@ class User implements AdvancedUserInterface
         return $this->groupes;
     }
 
-    /**
-     * Add pointageUser.
-     *
-     * @param \AppBundle\Entity\PointageUser $pointageUser
-     *
-     * @return User
-     */
-    public function addPointageUser(\AppBundle\Entity\PointageUser $pointageUser)
-    {
-        $this->pointageUsers[] = $pointageUser;
-        $pointageUser->setUser($this);
-
-        return $this;
-    }
-
-    /**
-     * Remove pointageUser.
-     *
-     * @param \AppBundle\Entity\PointageUser $pointageUser
-     *
-     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
-     */
-    public function removePointageUser(\AppBundle\Entity\PointageUser $pointageUser)
-    {
-        return $this->pointageUsers->removeElement($pointageUser);
-    }
-
-    /**
-     * Get pointageUsers.
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getPointageUsers()
-    {
-        return $this->pointageUsers;
-    }
+    
 }

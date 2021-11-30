@@ -30,13 +30,15 @@
         <thead>
             <tr>
                 <th scope="col">{{ thead('vehicule', 'nom', 'Nom') }}</th>
-                <th scope="col" class="text-right">{{ thead('vehicule', 'matricule', 'Matricule') }}</th>
-                <th scope="col">{{ thead('vehicule', 'marque', 'Marque') }}</th>
                 <th scope="col" class="text-center">{{ thead('vehicule', 'active', 'Active') }}</th>
                 <th scope="col" class="text-right">Relever</th>
                 <th scope="col" class="text-right">Etat relever</th>
                 <th scope="col" class="text-right">{{ thead('vehicule', 'dateRelever', 'Date relever') }}</th>
                 <th scope="col" class="text-right">Kms</th>
+                <th scope="col" class="text-right">D.Assurance</th>
+                <th scope="col" class="text-right">F.Assuarnce</th>
+                <th scope="col" class="text-right">D.C.Tech</th>
+                <th scope="col" class="text-right">F.C.Tech</th>                
                 <th scope="col">Actions</th>
             </tr>
         </thead>
@@ -44,11 +46,9 @@
             {% for vehicule in paginator %}
                 {% set difference = date("now").diff(date(vehicule.dateRelever)) %}
                 {% set leftDays = difference.days %}
-                <tr {% if leftDays > vehicule.nbrjAlertRelever %} class="danger" {% endif %}>
+                <tr>
                 
                     <td><a href="{{ path('vehicule_edit', {id: vehicule.id | Mycrypt}) }}">{{ vehicule.nom }}</a></td>
-                    <td class="text-right">{{ vehicule.matricule }}</td>
-                    <td>{{ vehicule.marque }}</td>
                     <td class="text-center">
                         {% if vehicule.active %}
                             <i class="glyphicon glyphicon-check"></i>
@@ -56,18 +56,28 @@
                             <i class="glyphicon glyphicon-unchecked"></i>
                         {% endif %}
                     </td>
-                    <td class="text-right">                        
-                        Chaque {{ vehicule.nbrjAlertRelever }} jours
+                    <td class="text-right">{{ vehicule.nbrjAlertRelever }} jours
                     </td>
-                    <td class="text-right"> {% if leftDays > vehicule.nbrjAlertRelever %} Dépasser de {% else %} Reste {% endif %} {{ (vehicule.nbrjAlertRelever - leftDays) | abs }} jours</td>
+                    <td class="text-right"> {% if leftDays > vehicule.nbrjAlertRelever %} + {% else %} - {% endif %} {{ (vehicule.nbrjAlertRelever - leftDays) | abs }} jours</td>
                     <td class="text-right">{{ vehicule.dateRelever | date('d/m/Y') }}</td>
-                    <td class="text-right">{{ vehicule.kmsRelever | number_format(0, ' ', ' ') }} Kms</td>                                        
+                    <td class="text-right">{{ vehicule.kmsRelever | number_format(0, ' ', ' ') }} Kms</td>
+                    <td class="text-right">{{ vehicule.debutAssurance | date('d/m/Y') }}</td>
+                    <td class="text-right">{{ vehicule.finAssurance | date('d/m/Y') }}</td>
+                    <td class="text-right">{{ vehicule.debutControlTech | date('d/m/Y') }}</td>
+                    <td class="text-right">{{ vehicule.finControlTech | date('d/m/Y') }}</td>
                     <td>
-                        <div class="btn-group">
-                            <a class="btn btn-default btn-sm" href="{{ path('vehicule_edit_relever', {id: vehicule.id | Mycrypt}) }}">
-                                <i class="glyphicon glyphicon-edit"></i>Relever
+                        {% if vehicule.active %}
+                            <a class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Relever compteur" href="{{ path('vehicule_edit_relever', {id: vehicule.id | Mycrypt}) }}">
+                                <i class="glyphicon glyphicon-edit"></i>
                             </a>
-                        </div>
+                            <a class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Assurance" href="{{ path('vehicule_edit_relever', {id: vehicule.id | Mycrypt}) }}">
+                                <i class="glyphicon glyphicon-th-list"></i>
+                            </a>
+                            <a class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Controle Technique" href="{{ path('vehicule_edit_relever', {id: vehicule.id | Mycrypt}) }}">
+                                <i class="glyphicon glyphicon-list-alt"></i>
+                            </a>
+                        
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}

@@ -77,6 +77,30 @@ class Vehicule
      */
     private $dateRelever;
 
+    /**
+ 	 * @Assert\Date(message="Date incorrecte.")
+     * @ORM\Column(type="date",nullable=true)
+     */
+    private $debutAssurance;
+
+    /**
+ 	 * @Assert\Date(message="Date incorrecte.")
+     * @ORM\Column(type="date",nullable=true)
+     */
+    private $finAssurance;
+
+    /**
+ 	 * @Assert\Date(message="Date incorrecte.")
+     * @ORM\Column(type="date",nullable=true)
+     */
+    private $debutControlTech;
+
+    /**
+ 	 * @Assert\Date(message="Date incorrecte.")
+     * @ORM\Column(type="date",nullable=true)
+     */
+    private $finControlTech;
+
     public function __construct()
     {
         $this->dateRelever = new \Datetime();
@@ -277,5 +301,101 @@ class Vehicule
     public function getMarque()
     {
         return $this->marque;
+    }
+
+    /**
+     * Set debutAssurance.
+     *
+     * @param \DateTime|null $debutAssurance
+     *
+     * @return Vehicule
+     */
+    public function setDebutAssurance($debutAssurance = null)
+    {
+        $this->debutAssurance = $debutAssurance;
+
+        return $this;
+    }
+
+    /**
+     * Get debutAssurance.
+     *
+     * @return \DateTime|null
+     */
+    public function getDebutAssurance()
+    {
+        return $this->debutAssurance;
+    }
+
+    /**
+     * Set finAssurance.
+     *
+     * @param \DateTime|null $finAssurance
+     *
+     * @return Vehicule
+     */
+    public function setFinAssurance($finAssurance = null)
+    {
+        $this->finAssurance = $finAssurance;
+
+        return $this;
+    }
+
+    /**
+     * Get finAssurance.
+     *
+     * @return \DateTime|null
+     */
+    public function getFinAssurance()
+    {
+        return $this->finAssurance;
+    }
+
+    /**
+     * Set finControlTech.
+     *
+     * @param \DateTime|null $finControlTech
+     *
+     * @return Vehicule
+     */
+    public function setFinControlTech($finControlTech = null)
+    {
+        $this->finControlTech = $finControlTech;
+
+        return $this;
+    }
+
+    /**
+     * Get finControlTech.
+     *
+     * @return \DateTime|null
+     */
+    public function getFinControlTech()
+    {
+        return $this->finControlTech;
+    }
+
+    /**
+     * Set debutControlTech.
+     *
+     * @param \DateTime|null $debutControlTech
+     *
+     * @return Vehicule
+     */
+    public function setDebutControlTech($debutControlTech = null)
+    {
+        $this->debutControlTech = $debutControlTech;
+
+        return $this;
+    }
+
+    /**
+     * Get debutControlTech.
+     *
+     * @return \DateTime|null
+     */
+    public function getDebutControlTech()
+    {
+        return $this->debutControlTech;
     }
 }

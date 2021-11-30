@@ -12,7 +12,7 @@ use AppBundle\Entity\FonctionUser;
 use AppBundle\Form\UserMPUserType;
 use AppBundle\Model\ChangePassword;
 use AppBundle\Form\ResetPasswordType;
-use DoctrineExtensions\Query\Mysql\Now;
+//use DoctrineExtensions\Query\Mysql\Now;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
@@ -31,18 +31,33 @@ class DefaultController extends Controller
         $session->set("appel_mission",""); 
         $session->set("appel_journal","");
 
-        $seuilAssurance=60;
+        $seuilAssurance=30;
         $seuilControlTech=30;
 
         $alertEntretiens = $this->getDoctrine()->getRepository('AppBundle:Vehicule')->getListeAlerteInterventions();
-        $alertAssurances = $this->getDoctrine()->getRepository('AppBundle:Assurance')->getListeAlerteAssurances($seuilAssurance);
+        //$vehicules = $this->getDoctrine()->getRepository('AppBundle:Assurance')->getListeAlerteAssurances($seuilAssurance);
+        $assuranceDepassers = $this->getDoctrine()->getRepository('AppBundle:Vehicule')->getAssuranceDepasser();
+        $assuranceAlertes = $this->getDoctrine()->getRepository('AppBundle:Vehicule')->getAssuranceAlerte($seuilAssurance);
 
+        $controlTechDepassers = $this->getDoctrine()->getRepository('AppBundle:Vehicule')->getControlTechDepasser();
+        $controlTechAlertes = $this->getDoctrine()->getRepository('AppBundle:Vehicule')->getControlTechAlerte($seuilAssurance);
 
-        dump($alertAssurances);
+        $sansAssurances = $this->getDoctrine()->getRepository('AppBundle:Vehicule')->getSansAssuarence();
+        $sansControlTechniques = $this->getDoctrine()->getRepository('AppBundle:Vehicule')->getSansControlTechnique();
+        
+        $relevers = $this->getDoctrine()->getRepository('AppBundle:Vehicule')->getRelever();
+        dump($relevers);
         return $this->render("default/index.html.twig",array(
             'alertEntretiens'       => $alertEntretiens,
-            'alertAssurances'       => $alertAssurances,
-            'seuilAssurance'        => $seuilAssurance
+            'assuranceDepassers'    => $assuranceDepassers,
+            'assuranceAlertes'      => $assuranceAlertes,
+            'controlTechDepassers'  => $controlTechDepassers,
+            'controlTechAlertes'    => $controlTechAlertes,
+            'sansAssurances'        => $sansAssurances,
+            'sansControlTechniques' => $sansControlTechniques,
+            'seuilAssurance'        => $seuilAssurance,
+            'seuilControlTech'      => $seuilControlTech,
+            'relevers'              => $relevers
         ));
     }
     /**

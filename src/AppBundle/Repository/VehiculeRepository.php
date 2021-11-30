@@ -10,8 +10,8 @@ namespace AppBundle\Repository;
  */
 class VehiculeRepository extends \Doctrine\ORM\EntityRepository{
     public function getListeAlerteRelevements()
-  {     $d=date('y-m-d');
-        $q=$this->_em->createQuery("SELECT v.id,v.nom,v.dateRelever,v.kmsRelever,date_diff(:d,v.dateRelever) as nbrjour FROM rtievehiculeBundle:Vehicule v WHERE (v.active=1)AND (date_diff(:d,v.dateRelever)>=v.nbrjalertRelever) ORDER BY nbrjour DESC");
+  {     $d=date('Y-m-d');
+        $q=$this->_em->createQuery("SELECT v.id,v.nom,v.dateRelever,v.kmsRelever,date_diff(:d,v.dateRelever) as nbrjour FROM AppBundle:Vehicule v WHERE (v.active=1)AND (date_diff(:d,v.dateRelever)>=v.nbrjalertRelever) ORDER BY nbrjour DESC");
         $q->setParameter('d',$d);
         return $q->getResult();
   }
@@ -19,25 +19,102 @@ class VehiculeRepository extends \Doctrine\ORM\EntityRepository{
   public function getListeAlerteInterventions()
   {
     $qb=$this->_em->createQuery('SELECT v.nom,m.nom as marque,i.designation,k.kms,v.kmsRelever,v.kmsRelever-max(e.kms) - k.kms as reste,max(e.kms) as dernierKms
-            FROM
-            AppBundle:EntretienVehicule e,
-            AppBundle:InterventionEntretien l,
-            AppBundle:Vehicule v,
-            AppBundle:Marque m,
-            AppBundle:InterventionVehicule i,
-            AppBundle:KmsInterventionVehicule k
-            WHERE (e.vehicule=v.id)
-            AND   (l.entretienVehicule=e.id)
-            AND   (l.interventionVehicule=i.id)
-            AND   (v.marque=m.id)
-            AND   (k.marque=m.id)
-            AND   (k.interventionVehicule=i.id)
-            GROUP BY v.nom,m.nom,i.designation,k.kms
-            HAVING v.kmsRelever - dernierKms >= (k.kms-1000)
-            ORDER BY v.nom
-            ');
+        FROM
+        AppBundle:EntretienVehicule e,
+        AppBundle:InterventionEntretien l,
+        AppBundle:Vehicule v,
+        AppBundle:Marque m,
+        AppBundle:InterventionVehicule i,
+        AppBundle:KmsInterventionVehicule k
+        WHERE (e.vehicule=v.id)
+        AND   (l.entretienVehicule=e.id)
+        AND   (l.interventionVehicule=i.id)
+        AND   (v.marque=m.id)
+        AND   (k.marque=m.id)
+        AND   (k.interventionVehicule=i.id)
+        GROUP BY v.nom,m.nom,i.designation,k.kms
+        HAVING v.kmsRelever - dernierKms >= (k.kms-1000)
+        ORDER BY v.nom
+        ');
 
     return $qb->getResult();
+  }
+
+  public function getAssuranceDepasser(){
+    $d = date('Y-m-d');
+    $q = $this->createQueryBuilder('v')
+            ->where('v.active = true')
+            ->andWhere('v.finAssurance < :d');
+    $q  ->setParameter('d', $d);
+    $q = $q->getQuery()->getResult();
+    return $q;
+  }
+
+  public function getAssuranceAlerte($seuil){
+    $d=date('Y-m-d');
+    $q=$this->_em->createQuery(
+      "SELECT v
+       FROM AppBundle:Vehicule v 
+       WHERE (v.active = true)
+       AND (date_diff(v.finAssurance,:d) <= :seuil)
+       AND (date_diff(v.finAssurance,:d) >= 0)"
+       );
+    $q->setParameter('d',$d);
+    $q->setParameter('seuil',$seuil);
+    return $q->getResult();
+  }
+
+  public function getControlTechDepasser(){
+    $d = date('Y-m-d');
+    $q = $this->createQueryBuilder('v')
+            ->where('v.active = true')
+            ->andWhere('v.finControlTech < :d');
+    $q  ->setParameter('d', $d);
+    $q = $q->getQuery()->getResult();
+    return $q;
+  }
+
+  public function getControlTechAlerte($seuil){
+    $d=date('Y-m-d');
+    $q=$this->_em->createQuery(
+      "SELECT v
+       FROM AppBundle:Vehicule v 
+       WHERE (v.active = true)
+       AND (date_diff(v.finControlTech,:d) <= :seuil)
+       AND (date_diff(v.finControlTech,:d) >= 0)"
+       );
+    $q->setParameter('d',$d);
+    $q->setParameter('seuil',$seuil);
+    return $q->getResult();
+  }
+
+  public function getSansAssuarence(){
+    $q = $this->createQueryBuilder('v')
+            ->where('v.active = true')
+            ->andWhere('v.finAssurance is null');
+    $q = $q->getQuery()->getResult();
+    return $q;
+  }
+
+  public function getSansControlTechnique(){
+    $q = $this->createQueryBuilder('v')
+            ->where('v.active = true')
+            ->andWhere('v.finControlTech is null');
+    $q = $q->getQuery()->getResult();
+    return $q;
+  }
+
+  public function getRelever(){
+    $d=date('Y-m-d');
+    $q=$this->_em->createQuery(
+      "SELECT v
+       FROM AppBundle:Vehicule v 
+       WHERE (v.active = true)
+       AND (date_diff(:d,v.dateRelever) >= v.nbrjAlertRelever)
+       ORDER BY v.dateRelever
+       ");
+    $q->setParameter('d',$d);
+    return $q->getResult();
   }
 
 }

@@ -2,9 +2,11 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Pointage
@@ -14,7 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @UniqueEntity(fields={"date","user"},errorPath="date",message="Pointage déja effectuer pour cette employé à a cette date.")
  */
 class PointageUser
-{
+{   
     /**
      * @var int
      *
@@ -25,7 +27,7 @@ class PointageUser
     private $id;
     
     /**
-    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User",inversedBy="pointageUsers")
+    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
     */
     private $user;
     
@@ -41,8 +43,8 @@ class PointageUser
      * * @Assert\Range(
      *      min = 0,
      *      max = 8,
-     *      minMessage = "Le montant doit être égal ou supperieur à 0 ",
-     *      maxMessage = "Le montant doit être égal ou inferieur à 8 "
+     *      minMessage = "La valeur doit être égal ou supperieur à 0 ",
+     *      maxMessage = "La valeur doit être égal ou inferieur à 8 "
      *      )
      */
     private $hTravail;
@@ -68,6 +70,10 @@ class PointageUser
      */
     private $pointage;
 
+    public function __construct(){
+        //$this->date= new DateTime(date('Y-m-d'));
+    }
+    
     /**
      * Get id.
      *
@@ -234,5 +240,29 @@ class PointageUser
         $this->id = $id;
 
         return $this;
+    }
+
+    /**
+     * Set user.
+     *
+     * @param \AppBundle\Entity\User|null $user
+     *
+     * @return PointageUser
+     */
+    public function setUser(\AppBundle\Entity\User $user = null)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user.
+     *
+     * @return \AppBundle\Entity\User|null
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

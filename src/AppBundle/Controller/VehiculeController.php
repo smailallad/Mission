@@ -66,8 +66,8 @@ class VehiculeController extends Controller
         ));
         if ($editForm->handleRequest($request)->isValid()) {
             
-            dump($vehicule);
-            dump($lastEntretien);
+            //dump($vehicule);
+            //dump($lastEntretien);
             //throw new \Exception('Message');
             if ($vehicule->getDateRelever() < $lastEntretien->getDate()){
                 $this->get('session')->getFlashBag()->add('danger', 'Date incorrecte, elle doit etre superieur à : ' . date_format($lastEntretien->getDate(),"d/m/Y"));

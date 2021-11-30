@@ -112,7 +112,6 @@ class Intervention
         $this->interventionUsers = new \Doctrine\Common\Collections\ArrayCollection();
        
     }
-
     
     //public function addInterventionUser(\AppBundle\Entity\InterventionUser $interventionUser)
     //{
@@ -129,7 +128,7 @@ class Intervention
     {
     return $this->interventionUsers;
     }
-
+    
     /**
      * Get id
      *
