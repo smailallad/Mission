@@ -85,7 +85,7 @@ class InterventionVehiculeController extends Controller
      * id : interventionVehicule
      */
     public function showAction($id,$kmsInterventionId = null , Request $request)
-    {   dump($id);dump($kmsInterventionId);
+    {   
         $kmsInterventionParam = $kmsInterventionId;
         $manager = $this->getDoctrine()->getManager();
         $cryptage = $this->container->get('my.cryptage');
