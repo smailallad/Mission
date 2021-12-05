@@ -5,12 +5,14 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 //use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Vehicule
  *
  * @ORM\Table(name="vehicule")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\VehiculeRepository")
+ * @UniqueEntity(fields={"nom"},message="Valeur existe déjà sur la base de donnée.")
  */
 class Vehicule
 {
@@ -101,14 +103,30 @@ class Vehicule
      */
     private $finControlTech;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", length=255,nullable=true)
+     */
+    private $obsAssurance;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="string", length=255,nullable=true)
+     */
+    private $obsControlTech;
+
     public function __construct()
     {
         $this->dateRelever = new \Datetime();
 	    $this->kmsRelever=0;
     }
 
+    
+
     /**
-     * Get id
+     * Get id.
      *
      * @return int
      */
@@ -118,7 +136,7 @@ class Vehicule
     }
 
     /**
-     * Set nom
+     * Set nom.
      *
      * @param string $nom
      *
@@ -132,7 +150,7 @@ class Vehicule
     }
 
     /**
-     * Get nom
+     * Get nom.
      *
      * @return string
      */
@@ -142,13 +160,13 @@ class Vehicule
     }
 
     /**
-     * Set matricule
+     * Set matricule.
      *
-     * @param string $matricule
+     * @param string|null $matricule
      *
      * @return Vehicule
      */
-    public function setMatricule($matricule)
+    public function setMatricule($matricule = null)
     {
         $this->matricule = $matricule;
 
@@ -156,9 +174,9 @@ class Vehicule
     }
 
     /**
-     * Get matricule
+     * Get matricule.
      *
-     * @return string
+     * @return string|null
      */
     public function getMatricule()
     {
@@ -166,9 +184,9 @@ class Vehicule
     }
 
     /**
-     * Set active
+     * Set active.
      *
-     * @param boolean $active
+     * @param bool $active
      *
      * @return Vehicule
      */
@@ -180,31 +198,13 @@ class Vehicule
     }
 
     /**
-     * Get active
+     * Get active.
      *
      * @return bool
      */
     public function getActive()
     {
         return $this->active;
-    }
-    public function __toString()
-    {
-        return $this->nom;
-    }
-
-    /**
-     * Set id.
-     *
-     * @param int $id
-     *
-     * @return Vehicule
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-
-        return $this;
     }
 
     /**
@@ -280,30 +280,6 @@ class Vehicule
     }
 
     /**
-     * Set marque.
-     *
-     * @param \AppBundle\Entity\Marque|null $marque
-     *
-     * @return Vehicule
-     */
-    public function setMarque(\AppBundle\Entity\Marque $marque = null)
-    {
-        $this->marque = $marque;
-
-        return $this;
-    }
-
-    /**
-     * Get marque.
-     *
-     * @return \AppBundle\Entity\Marque|null
-     */
-    public function getMarque()
-    {
-        return $this->marque;
-    }
-
-    /**
      * Set debutAssurance.
      *
      * @param \DateTime|null $debutAssurance
@@ -352,6 +328,30 @@ class Vehicule
     }
 
     /**
+     * Set debutControlTech.
+     *
+     * @param \DateTime|null $debutControlTech
+     *
+     * @return Vehicule
+     */
+    public function setDebutControlTech($debutControlTech = null)
+    {
+        $this->debutControlTech = $debutControlTech;
+
+        return $this;
+    }
+
+    /**
+     * Get debutControlTech.
+     *
+     * @return \DateTime|null
+     */
+    public function getDebutControlTech()
+    {
+        return $this->debutControlTech;
+    }
+
+    /**
      * Set finControlTech.
      *
      * @param \DateTime|null $finControlTech
@@ -376,26 +376,78 @@ class Vehicule
     }
 
     /**
-     * Set debutControlTech.
+     * Set obsAssurance.
      *
-     * @param \DateTime|null $debutControlTech
+     * @param string $obsAssurance
      *
      * @return Vehicule
      */
-    public function setDebutControlTech($debutControlTech = null)
+    public function setObsAssurance($obsAssurance)
     {
-        $this->debutControlTech = $debutControlTech;
+        $this->obsAssurance = $obsAssurance;
 
         return $this;
     }
 
     /**
-     * Get debutControlTech.
+     * Get obsAssurance.
      *
-     * @return \DateTime|null
+     * @return string
      */
-    public function getDebutControlTech()
+    public function getObsAssurance()
     {
-        return $this->debutControlTech;
+        return $this->obsAssurance;
+    }
+
+    /**
+     * Set obsControlTech.
+     *
+     * @param string $obsControlTech
+     *
+     * @return Vehicule
+     */
+    public function setObsControlTech($obsControlTech)
+    {
+        $this->obsControlTech = $obsControlTech;
+
+        return $this;
+    }
+
+    /**
+     * Get obsControlTech.
+     *
+     * @return string
+     */
+    public function getObsControlTech()
+    {
+        return $this->obsControlTech;
+    }
+
+    /**
+     * Set marque.
+     *
+     * @param \AppBundle\Entity\Marque|null $marque
+     *
+     * @return Vehicule
+     */
+    public function setMarque(\AppBundle\Entity\Marque $marque = null)
+    {
+        $this->marque = $marque;
+
+        return $this;
+    }
+
+    /**
+     * Get marque.
+     *
+     * @return \AppBundle\Entity\Marque|null
+     */
+    public function getMarque()
+    {
+        return $this->marque;
+    }
+    public function __toString()
+    {
+        return $this->nom;
     }
 }

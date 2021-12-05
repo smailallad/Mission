@@ -1,11 +1,10 @@
 {% extends "base.html.twig" %}
 {% form_theme edit_form 'Form/bootstrap_3_layout.html.twig' %}
-{% block title %}Modification - Employe{% endblock %}
+{% block title %}Modification - Marque{% endblock %}
 {% block bodysaisie %}
-{#{% include "@App/messages.html.twig" %}#}
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h2> Modification - Employe </h2>
+        <h2> Modification - Marque </h2>
     </div>
     <div class="panel-body">
     {{ form_start(edit_form) }}
@@ -17,7 +16,7 @@
     </div>
     <div class="panel-footer">
         <div class="btn-group record_actions">
-            <a class="btn btn-primary" href="{{ path('employe_index') }}">
+            <a class="btn btn-info" href="{{ path('marque_index') }}">
                 <i class="glyphicon glyphicon-list"></i> Retour
             </a>
         </div>

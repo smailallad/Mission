@@ -38,7 +38,7 @@
     </div>
     <div class="panel-footer">
         <div class="btn-group record_actions">
-            <a class="btn btn-primary" href="{{ path('employe') }}">
+            <a class="btn btn-primary" href="{{ path('employe_index') }}">
                 <i class="glyphicon glyphicon-list"></i> Retour à la liste
             </a>
             <a class="btn btn-primary" href="{{ path('employe_edit', {id: employe.id | Mycrypt}) }}">
@@ -64,7 +64,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% set nouveau = true %}
+                {% set nouveau = true %} 
                 {% set i = 1 %}
                 {% for recrutement in recrutements %}
                 <tr>

@@ -2,11 +2,14 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Vehicule;
 use Doctrine\ORM\QueryBuilder;
 use AppBundle\Form\VehiculeType;
 use AppBundle\Form\VehiculeFilterType;
 use AppBundle\Form\VehiculeReleverType;
+use AppBundle\Form\VehiculeAssuranceType;
 use Symfony\Component\Form\FormInterface;
+use AppBundle\Form\VehiculeControlTechType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -21,11 +24,24 @@ class VehiculeController extends Controller
     /**
      * @Route("/new",name="vehicule_new")
      */
-    public function newAction()
+    public function newAction(Request $request)
     {
+        $vehicule = new Vehicule();
+        $form = $this->createForm(VehiculeType::class, $vehicule);
+        if ($form->handleRequest($request)->isValid())
+        {
+            $manager = $this->getDoctrine()->getManager();
+            $manager->persist($vehicule);
+            $manager->flush();
+            //$this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
+            $cryptage = $this->container->get('my.cryptage');
+            return $this->redirect($this->generateUrl('vehicule_index'));
+        }
         return $this->render('@App/Vehicule/new.html.twig', array(
-            // ...
+            'vehicule' => $vehicule,
+            'form' => $form->createView(),
         ));
+
     }
 
     /**
@@ -90,6 +106,64 @@ class VehiculeController extends Controller
     }
 
     /**
+     * @Route("/{id}/editAssurance",name="vehicule_edit_assurance")
+     */
+    public function editAssuranceAction($id, Request $request)
+    {
+        $cryptage = $this->container->get('my.cryptage');
+        $id = $cryptage->my_decrypt($id);
+        $vehicule = $this->getDoctrine()->getRepository('AppBundle:Vehicule')->find($id);
+        $editForm = $this->createForm(VehiculeAssuranceType::class, $vehicule, array(
+            'action' => $this->generateUrl('vehicule_edit_assurance', array('id' => $cryptage->my_encrypt($vehicule->getId()))),
+            'method' => 'PUT',
+        ));
+        if ($editForm->handleRequest($request)->isValid()) {
+            if ($vehicule->getDebutAssurance() >= $vehicule->getFinAssurance()){
+                $this->get('session')->getFlashBag()->add('danger', "Date fin d'assurance doit etre superieur à la date début d'assurance");
+                return $this->redirect($this->generateUrl('vehicule_edit_assurance', array('id' => $cryptage->my_encrypt($id))));
+            }
+            
+            $this->getDoctrine()->getManager()->flush();
+            $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
+            return $this->redirect($this->generateUrl('vehicule_index'));
+        }
+        return $this->render('@App/Vehicule/edit_assurance.html.twig', array(
+            'vehicule'      => $vehicule,
+            'edit_form'     => $editForm->createView(),
+        ));
+        
+    }
+
+     /**
+     * @Route("/{id}/editControlTech",name="vehicule_edit_control_tech")
+     */
+    public function editControlTechAction($id, Request $request)
+    {
+        $cryptage = $this->container->get('my.cryptage');
+        $id = $cryptage->my_decrypt($id);
+        $vehicule = $this->getDoctrine()->getRepository('AppBundle:Vehicule')->find($id);
+        $editForm = $this->createForm(VehiculeControlTechType::class, $vehicule, array(
+            'action' => $this->generateUrl('vehicule_edit_control_tech', array('id' => $cryptage->my_encrypt($vehicule->getId()))),
+            'method' => 'PUT',
+        ));
+        if ($editForm->handleRequest($request)->isValid()) {
+            if ($vehicule->getDebutControlTech() >= $vehicule->getFinControlTech()){
+                $this->get('session')->getFlashBag()->add('danger', "Date fin du control technique doit etre superieur à la date de début control technique");
+                return $this->redirect($this->generateUrl('vehicule_edit_control_tech', array('id' => $cryptage->my_encrypt($id))));
+            }
+            
+            $this->getDoctrine()->getManager()->flush();
+            $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
+            return $this->redirect($this->generateUrl('vehicule_index'));
+        }
+        return $this->render('@App/Vehicule/edit_control_tech.html.twig', array(
+            'vehicule'      => $vehicule,
+            'edit_form'     => $editForm->createView(),
+        ));
+        
+    }
+
+    /**
      * @Route("/index",name="vehicule_index")
      */
     public function indexAction()
@@ -119,16 +193,25 @@ class VehiculeController extends Controller
         ));
     }
 
-    /**
-     * @Route("/delete",name="vehicule_delete")
+   /**
+     * @Route("/{id}/delete",name="vehicule_delete",options = { "expose" = true })
      */
-    public function deleteAction()
+    public function deleteAction($id)
     {
-        return $this->render('@App/Vehicule/delete.html.twig', array(
-            // ...
-        ));
-    }
+        $manager = $this->getDoctrine()->getManager();
+        $vehicule = $manager->getRepository('AppBundle:Vehicule')->find($id);
+        $manager->remove($vehicule);
+        try {
+            $manager->flush();
+        } catch(\Doctrine\DBAL\DBALException $e) {
+            $this->get('session')->getFlashBag()->add('danger', 'Impossible de supprimer cet element.');
+            $cryptage = $this->container->get('my.cryptage');
+            $id = $vehicule->getId();
+            $id = $cryptage->my_encrypt($id);
+        }
 
+        return $this->redirect($this->generateUrl('vehicule_index'));
+    }
 
 
     //*********************************************************************************//

@@ -48,7 +48,7 @@
                 {% set leftDays = difference.days %}
                 <tr>
                 
-                    <td><a href="{{ path('vehicule_edit', {id: vehicule.id | Mycrypt}) }}">{{ vehicule.nom }}</a></td>
+                    <td>{{ vehicule.nom }}</td>
                     <td class="text-center">
                         {% if vehicule.active %}
                             <i class="glyphicon glyphicon-check"></i>
@@ -58,24 +58,45 @@
                     </td>
                     <td class="text-right">{{ vehicule.nbrjAlertRelever }} jours
                     </td>
-                    <td class="text-right"> {% if leftDays > vehicule.nbrjAlertRelever %} + {% else %} - {% endif %} {{ (vehicule.nbrjAlertRelever - leftDays) | abs }} jours</td>
+                    <td class="text-right"> {% if leftDays > vehicule.nbrjAlertRelever %} <b class="text-danger"> {{ ((vehicule.nbrjAlertRelever - leftDays) | abs)  }} jours </b > {% else %} {{ (vehicule.nbrjAlertRelever - leftDays)  }} jours {% endif %} </td>
                     <td class="text-right">{{ vehicule.dateRelever | date('d/m/Y') }}</td>
                     <td class="text-right">{{ vehicule.kmsRelever | number_format(0, ' ', ' ') }} Kms</td>
                     <td class="text-right">{{ vehicule.debutAssurance | date('d/m/Y') }}</td>
-                    <td class="text-right">{{ vehicule.finAssurance | date('d/m/Y') }}</td>
+                    <td class="text-right">
+                        {% if vehicule.obsAssurance != "" %} 
+                            <a data-toggle="tooltip" data-placement="bottom" title="{{ vehicule.obsAssurance }}" href="{{ path('vehicule_edit_assurance', {id: vehicule.id | Mycrypt}) }}">
+                                <i class="glyphicon glyphicon-info-sign"></i>
+                            </a>
+                        {% endif %}
+                        {{ vehicule.finAssurance | date('d/m/Y') }}
+                    </td>
                     <td class="text-right">{{ vehicule.debutControlTech | date('d/m/Y') }}</td>
-                    <td class="text-right">{{ vehicule.finControlTech | date('d/m/Y') }}</td>
+                    <td class="text-right">
+                        {% if vehicule.obsControlTech != "" %} 
+                            <a data-toggle="tooltip" data-placement="bottom" title="{{ vehicule.obsControlTech }}" href="{{ path('vehicule_edit_control_tech', {id: vehicule.id | Mycrypt}) }}">
+                                <i class="glyphicon glyphicon-info-sign"></i>
+                            </a>
+                        {% endif %}
+                        {{ vehicule.finControlTech | date('d/m/Y') }}
+                        </td>
                     <td>
                         {% if vehicule.active %}
-                            <a class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Relever compteur" href="{{ path('vehicule_edit_relever', {id: vehicule.id | Mycrypt}) }}">
+                            <a class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Modifier" href="{{ path('vehicule_edit', {id: vehicule.id | Mycrypt}) }}">
                                 <i class="glyphicon glyphicon-edit"></i>
                             </a>
-                            <a class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Assurance" href="{{ path('vehicule_edit_relever', {id: vehicule.id | Mycrypt}) }}">
+                            <a class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Relever compteur" href="{{ path('vehicule_edit_relever', {id: vehicule.id | Mycrypt}) }}">
+                                <i class="glyphicon glyphicon-dashboard"></i>
+                            </a>
+                            <a class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Assurance" href="{{ path('vehicule_edit_assurance', {id: vehicule.id | Mycrypt}) }}">
                                 <i class="glyphicon glyphicon-th-list"></i>
                             </a>
-                            <a class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Controle Technique" href="{{ path('vehicule_edit_relever', {id: vehicule.id | Mycrypt}) }}">
+                            <a class="btn btn-primary btn-sm" data-toggle="tooltip" data-placement="bottom" title="Controle Technique" href="{{ path('vehicule_edit_control_tech', {id: vehicule.id | Mycrypt}) }}">
                                 <i class="glyphicon glyphicon-list-alt"></i>
                             </a>
+                            <button class="btn btn-danger" data-toggle="modal" title="Supprimer" data-target="#modalDeleteVehicule"
+                                data-id="{{ vehicule.id }}">
+                                <i class="glyphicon glyphicon-trash"></i>
+                        </button>
                         
                         {% endif %}
                     </td>
@@ -94,7 +115,41 @@
         </li>
     </ul>
 </div>
+<!-- Modale delete Vehicule-->
+<div id="modalDeleteVehicule" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="modalDeleteVehiculeLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>Confirmer la suppression</h4>
+            </div>
+            <div class="modal-body">
+                <p>Vous êtes sur le point de supprimer ce Vehicule, cette procédure est irréversible.</p>
+                <p>Voulez-vous poursuivre?</p>
+            </div>
+            <div class="modal-footer">
+                <form name="form" id="modalDeleteVehiculeForm" action="#" method="post">
+                    <button class="btn btn-danger" type="submit"><i class="glyphicon glyphicon-trash"></i>
+                        Supprimer</button>
+                    <button class="btn btn-primary" data-dismiss="modal">Non</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 {% block js %}
+<script>
+    $(document).ready(function () {
+        $('#modalDeleteVehicule').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var id = button.data('id') // Extract info from data-* attributes
+            var cURL = Routing.generate('vehicule_delete', { id: id });
+            //alert(cURL);
+            $("#modalDeleteVehiculeForm").attr('action', cURL);
+        })
 
+    })
+</script>
 {% endblock %}

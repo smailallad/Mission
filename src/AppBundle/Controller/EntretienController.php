@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Component\Config\Definition\Exception\DuplicateKeyException;
+//use Symfony\Component\Config\Definition\Exception\DuplicateKeyException;
 
 /**
  * @Route("/entretien")
@@ -65,7 +65,6 @@ class EntretienController extends Controller
         
         $deleteForm = $this->createDeleteForm($id, 'entretien_delete');
         $deleteInterventionForm = $this->createDeleteForm($id, 'intervention_entretien_delete');
-        //dump($interventionEntretien);
         $form = $this->createForm(InterventionEntretienType::class, $interventionEntretien, array(
             'action'        => $this->generateUrl('entretien_show', array(
                                                                             'id' => $cryptage->my_encrypt($id),
@@ -73,18 +72,13 @@ class EntretienController extends Controller
                                                                         )),
 
             'method'        => 'PUT',
-            'entretien'     => $entretien,
-            'intervention'  => $intervention,
+            //'entretien'     => $entretien,
+            //'intervention'  => $intervention,
         ));
-        $form->handleRequest($request);
-        if ($form->isSubmitted()) {
-            if ($form->isValid()){
+        if ($form->handleRequest($request)->isValid()) {
                 $manager->persist($interventionEntretien);
                 $this->getDoctrine()->getManager()->flush();
-                //$this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
                 return $this->redirect($this->generateUrl('entretien_show', array('id' => $cryptage->my_encrypt($id))));
-                //throw new \Exception('Message');
-            }
         }
       
         return $this->render('@App/Entretien/show.html.twig', array(

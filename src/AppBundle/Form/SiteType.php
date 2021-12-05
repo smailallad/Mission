@@ -23,11 +23,7 @@ class SiteType extends AbstractType
             )
         )
         ->add('nom',TextType::class, array(
-            'label'         => 'Nom',
-            'attr'          => array(
-                "class"     => "text-capitalize",
-                //'readonly'  => true,
-                )
+            'label'         => 'Nom'
             )
         )
         ->add('wilaya',EntityType::class, array(

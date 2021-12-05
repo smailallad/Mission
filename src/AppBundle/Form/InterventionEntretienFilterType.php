@@ -5,7 +5,6 @@ namespace AppBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class InterventionEntretienFilterType extends AbstractType
@@ -16,11 +15,6 @@ class InterventionEntretienFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-        ->add('id',NumberType::class,array(
-            'label'         =>'Entretien',
-            'required'      => false,
-            )
-        )
         ->add('vehicule',EntityType::Class, array(
             'label'         =>'Vehicule',
             'class'         => 'AppBundle:Vehicule',

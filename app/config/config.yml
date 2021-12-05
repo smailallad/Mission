@@ -13,6 +13,8 @@ parameters:
 
 framework:
     #esi: ~
+    #translator:
+    #    enabled: false
     translator: { fallbacks: ['%locale%'] }
     secret: '%secret%'
     router:
@@ -28,11 +30,14 @@ framework:
     trusted_hosts: ~
     session:
         # https://symfony.com/doc/current/reference/configuration/framework.html#handler-id
+        enabled: true
         handler_id: session.handler.native_file
         save_path: '%kernel.project_dir%/var/sessions/%kernel.environment%'
         cookie_lifetime: 0 
         gc_maxlifetime: 300
         # 5 mn sans activité serra déconnecté.
+        gc_probability: 1
+        gc_divisor: 1
 
     fragments: ~
     http_method_override: true

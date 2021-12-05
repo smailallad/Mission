@@ -29,25 +29,29 @@
     <table class="table table-striped table-hover table-bordered records_list">
         <thead>
             <tr>
-                <th scope="col">{{ thead('interventionEntretien', 'entretienVehicule.id', 'Entretien') }}</th>
                 <th scope="col">{{ thead('interventionEntretien', 'entretienVehicule.date', 'Date') }}</th>
                 <th scope="col">{{ thead('interventionEntretien', 'entretienVehicule.vehicule.nom', 'Vehicule') }}</th>
                 <th scope="col">{{ thead('interventionEntretien', 'entretienVehicule.user.nom', 'Chauffeur') }}</th>
                 <th scope="col">{{ thead('interventionEntretien', 'interventionVehicule.designation', 'Intervention') }}</th>
                 <th scope="col">{{ thead('interventionEntretien', 'entretienVehicule.kms', 'Kms') }}</th>
                 <th scope="col">{{ thead('interventionEntretien', 'obs', 'Obs') }}</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for interventionEntretien in paginator %}
                 <tr>
-                    <td><a href="{{ path('entretien_show', {id: interventionEntretien.entretienVehicule.id | Mycrypt}) }}">{{ interventionEntretien.entretienVehicule.id  }}</a></td>
                     <td>{{ interventionEntretien.entretienVehicule.date | date('d/m/Y') }}</td>
                     <td>{{ interventionEntretien.entretienVehicule.vehicule.nom }}</td>
                     <td>{{ interventionEntretien.entretienVehicule.user.nom }}</td>
                     <td>{{ interventionEntretien.interventionVehicule.designation }}</td>
                     <td class="text-right">{{ interventionEntretien.entretienVehicule.kms | number_format(0, ' ',' ') }}</td>
                     <td>{{ interventionEntretien.obs }}</td>
+                    <td>
+                        <a class="btn btn-primary" title="Modifier" href="{{ path('entretien_show', {id: interventionEntretien.entretienVehicule.id | Mycrypt}) }}">
+                            <i class="glyphicon glyphicon-edit"></i>
+                        </a>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

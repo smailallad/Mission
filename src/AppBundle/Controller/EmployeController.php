@@ -135,7 +135,7 @@ class EmployeController extends Controller
     {
         $manager = $this->getDoctrine()->getManager();
         $form = $this->createForm(EmployeFilterType::class);
-        if (!is_null($response = $this->saveFilter($form, 'employe', 'employe'))) {
+        if (!is_null($response = $this->saveFilter($form, 'employe', 'employe_index'))) {
             return $response;
         }
         $qb = $manager->getRepository('AppBundle:User')->createQueryBuilder('u');
@@ -194,7 +194,7 @@ class EmployeController extends Controller
      * @Route("/{id}/delete",name="employe_delete")
      *
      */
-    public function deleteAction($id, Request $request)
+    public function deleteAction($id)
     {
         $cryptage       = $this->container->get('my.cryptage');
         $manager        = $this->getDoctrine()->getManager();
@@ -214,7 +214,7 @@ class EmployeController extends Controller
             }
             $manager->remove($employe);
             $manager->flush();
-            return $this->redirect($this->generateUrl('employe'));
+            return $this->redirect($this->generateUrl('employe_index'));
         }else{
             $this->get('session')->getFlashBag()->add('danger', 'Impossible de supprimer cet employé, verifier les missions, les interventions ou les frais de mission.');
             return $this->redirect($this->generateUrl('employe_show', array('id' => $cryptage->my_encrypt($id))));
@@ -604,7 +604,7 @@ class EmployeController extends Controller
     public function sortAction($field, $type)
     {
         $this->setOrder('employe', $field, $type);
-        return $this->redirect($this->generateUrl('employe'));
+        return $this->redirect($this->generateUrl('employe_index'));
     }
     /**
      * Create Delete form

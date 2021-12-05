@@ -1,13 +1,14 @@
 {% extends "base.html.twig" %}
 {% form_theme form 'Form/bootstrap_3_layout.html.twig' %}
-{% block title %}Nouveau Vehicule - {{ parent() }}{% endblock %}
+{% block title %}Nouvelle Intervention Vehicule - {{ parent() }}{% endblock %}
 {% block bodysaisie %}
+{#{% include "@App/messages.html.twig" %}#}
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h2>Nouveau Vehicule</h2>
+        <h2>Nouvelle Intervention Vehicule</h2>
     </div>
     <div class="panel-body">
-        {{ form_start(form, {action: path('vehicule_new')}) }}
+        {{ form_start(form, {action: path('interventionVehicule_new')}) }}
         {{ form_widget(form) }}
             <p>
                 <button class="btn btn-primary" type="submit">Créer</button>
@@ -16,7 +17,7 @@
     </div>
     <div class="panel-footer">
         <div class="btn-group record_actions">
-            <a class="btn btn-info" href="{{ path('vehicule_index') }}">
+            <a class="btn btn-info" href="{{ path('interventionVehicule_index') }}">
                 <i class="glyphicon glyphicon-list"></i> Retour
             </a>
         </div>

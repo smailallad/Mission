@@ -95,8 +95,9 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                 aria-haspopup="true" aria-expanded="false">Gestion vehicule<span class="caret"></span></a>
                             <ul class="dropdown-menu">
+                                <li><a href="{{ path('marque_index')}}">Marques</a></li>
                                 <li><a href="{{ path('vehicule_index')}}">Vehicules</a></li>
-                                <li><a href="{{ path('employe_index')}}">Interventions</a></li>
+                                <li><a href="{{ path('interventionVehicule_index')}}">Interventions</a></li>
                                 <li role="separator" class="divider"></li>
                                 <li><a href="{{ path('entretien_index') }}">Entretiens</a></li>
                                 <li><a href="{{ path('interventionEntretien_index') }}">Detail des entretiens</a></li>
@@ -111,7 +112,7 @@
 
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        <p class="navbar-text text-capitalize">Bonjour <strong> <em> {{ app.user.username|title }}
+                        <p class="navbar-text text-capitalize"> Bonjour <span class="glyphicon glyphicon-user ml-3 mr-3"> </span> <strong> <em> {{ app.user.username|title }}
                                 </em></strong>
                             <a href="{{ path ('updateMP',{id: app.user.id | Mycrypt})}}"> <span class="glyphicon glyphicon-cog ml-3 mr-3"> </span> </a>
                             <a href="{{ path('logout')}}" title="Déconnectez-vous" class="navbar-link"> Déconnexion </a>

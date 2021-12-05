@@ -5,9 +5,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
-class DepenseType extends AbstractType
+class KmsInterventionVehiculeType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -15,29 +14,26 @@ class DepenseType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-        ->add('nom',TextType::class, array(
-            'label'         => 'Nom'    
-            )
-        )
-        ->add('FamilleDepense',EntityType::class, array(
-            'label'         => 'Famille',
-            'class'         => 'AppBundle:FamilleDepense',
+        ->add('marque',EntityType::class, array(
+            'label'         => 'Marque',
+            'class'         => 'AppBundle:Marque',
             'choice_name'   => 'nom',
             'multiple'      => false,
-            'placeholder'   => '-Choisir une famille-',
-            'query_builder' => function(\Doctrine\ORM\EntityRepository $f)
-                            {   return $f->createQueryBuilder('f');
+            'placeholder'   => '-Choisir une marque-',
+            'query_builder' => function(\Doctrine\ORM\EntityRepository $m)
+                            {   return $m->createQueryBuilder('m');
                             },
             )
         )
-        ->add('nouveau',ChoiceType::class, array(
-            'label'         => 'Nouveau',
-            'choices'       => array(
-                "Nouveau"   => "1",
-                'Valider'   => "0",
-                )
+        ->add('kms',TextType::class, array(
+            'label'         => 'Kms'
             )
         )
+        ->add('obs',TextType::class, array(
+            'label'         => 'Obs',
+            )
+        )
+        
         
         ;
     }/**
@@ -46,7 +42,7 @@ class DepenseType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'        => 'AppBundle\Entity\Depense',
+            'data_class'        => 'AppBundle\Entity\KmsInterventionVehicule',
             'method'            => 'POST',
         ));
     }
@@ -55,6 +51,6 @@ class DepenseType extends AbstractType
      */
     public function getName()
     {
-        return 'depense';
+        return 'kmsInterventionVehicule';
     }
 }

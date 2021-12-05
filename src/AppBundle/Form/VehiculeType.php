@@ -51,6 +51,11 @@ class VehiculeType extends AbstractType
             'label'         =>'Alert en jours'
             )
         )
+        ->add('kmsRelever',NumberType::class, array(
+            'label'         =>'Kms actuel'
+            )
+        )
+
 
         ;
     }/**

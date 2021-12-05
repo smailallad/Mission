@@ -5,7 +5,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class SousProjetType extends AbstractType
 {
@@ -16,11 +15,7 @@ class SousProjetType extends AbstractType
     {
         $builder
         ->add('nom',TextType::class, array(
-            'label'         => 'Nom',
-            'attr'          => array(
-                "class"     => "text-capitalize",
-                //'readonly'  => true,
-                )
+            'label'         => 'Nom'
             )
         )
         ->add('projet',EntityType::Class, array(

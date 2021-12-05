@@ -15,10 +15,7 @@ class FonctionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('nom',TextType::Class,array(
-                'label'     =>'Nom',
-                'attr'          => array(
-                    "class"     => "text-capitalize",
-                    )
+                'label'     =>'Nom'
                 )
             );
     }/**

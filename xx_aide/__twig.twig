@@ -1,0 +1,47 @@
+<a class="btn btn-primary" title="Modifier" href="{{ path('interventionVehicule_edit', {id: interventionVehicule.id | Mycrypt}) }}">
+    <i class="glyphicon glyphicon-edit"></i>
+</a>
+
+
+<button class="btn btn-danger" data-toggle="modal" title="Supprimer" data-target="#modalDeleteMarque" data-id="{{ marque.id }}">
+    <i class="glyphicon glyphicon-trash"></i>
+</button>
+
+<!-- Modale delete Marque-->
+<div id="modalDeleteMarque" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="modalDeleteMarqueLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>Confirmer la suppression</h4>
+            </div>
+            <div class="modal-body">
+                <p>Vous êtes sur le point de supprimer cette Marque, cette procédure est irréversible.</p>
+                <p>Voulez-vous poursuivre?</p>
+            </div>
+            <div class="modal-footer">
+                <form name="form" id="modalDeleteMarqueForm" action="#" method="post">
+                    <button class="btn btn-danger" type="submit"><i class="glyphicon glyphicon-trash"></i>
+                        Supprimer</button>
+                    <button class="btn btn-primary" data-dismiss="modal">Non</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+    $(document).ready(function () {
+        $('#modalDeleteMarque').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var id = button.data('id') // Extract info from data-* attributes
+            var cURL = Routing.generate('marque_delete', { id: id });
+            //alert(cURL);
+            $("#modalDeleteMarqueForm").attr('action', cURL);
+        })
+
+    })
+</script>
+{% endblock %}
