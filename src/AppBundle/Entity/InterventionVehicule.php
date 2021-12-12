@@ -37,6 +37,11 @@ class InterventionVehicule
     private $unite;
 
     /**
+     * @ORM\Column(type="boolean",nullable=true)
+     */
+    private $important;
+
+    /**
      * Get id.
      *
      * @return int
@@ -110,5 +115,29 @@ class InterventionVehicule
     public function __toString()
     {
         return $this->designation;
+    }
+
+    /**
+     * Set important.
+     *
+     * @param bool|null $important
+     *
+     * @return InterventionVehicule
+     */
+    public function setImportant($important = null)
+    {
+        $this->important = $important;
+
+        return $this;
+    }
+
+    /**
+     * Get important.
+     *
+     * @return bool|null
+     */
+    public function getImportant()
+    {
+        return $this->important;
     }
 }

@@ -17,7 +17,10 @@
                 <tr>
                     <td>{{ marque.nom }}</td>
                     <td>
-                        <a class="btn btn-primary" title="Modifier" href="{{ path('marque_edit', {id: marque.id | Mycrypt}) }}">
+                        <a class="btn btn-primary" title="Detail" href="{{ path('marque_show', {id: marque.id | Mycrypt}) }}">
+                            <i class="glyphicon glyphicon-folder-open"></i>
+                        </a>
+                         <a class="btn btn-primary" title="Modifier" href="{{ path('marque_edit', {id: marque.id | Mycrypt}) }}">
                             <i class="glyphicon glyphicon-edit"></i>
                         </a>
                         <button class="btn btn-danger" data-toggle="modal" title="Supprimer" data-target="#modalDeleteMarque"

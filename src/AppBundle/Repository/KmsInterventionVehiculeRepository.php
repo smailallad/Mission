@@ -9,5 +9,7 @@ namespace AppBundle\Repository;
  * repository methods below.
  */
 class KmsInterventionVehiculeRepository extends \Doctrine\ORM\EntityRepository
-{
+{ 
+    
+
 }

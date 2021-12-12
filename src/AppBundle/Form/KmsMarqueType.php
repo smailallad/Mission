@@ -6,7 +6,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
-class KmsInterventionVehiculeType extends AbstractType
+class KmsMarqueType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -14,14 +14,14 @@ class KmsInterventionVehiculeType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-        ->add('marque',EntityType::class, array(
-            'label'         => 'Marque',
-            'class'         => 'AppBundle:Marque',
-            'choice_name'   => 'nom',
+        ->add('interventionVehicule',EntityType::class, array(
+            'label'         => 'Intevention',
+            'class'         => 'AppBundle:interventionVehicule',
+            'choice_name'   => 'designation',
             'multiple'      => false,
-            'placeholder'   => '-Choisir une marque-',
-            'query_builder' => function(\Doctrine\ORM\EntityRepository $m)
-                            {   return $m->createQueryBuilder('m');
+            'placeholder'   => '-Choisir une intervention-',
+            'query_builder' => function(\Doctrine\ORM\EntityRepository $i)
+                            {   return $i->createQueryBuilder('i');
                             },
             )
         )

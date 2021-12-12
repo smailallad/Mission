@@ -34,7 +34,7 @@ framework:
         handler_id: session.handler.native_file
         save_path: '%kernel.project_dir%/var/sessions/%kernel.environment%'
         cookie_lifetime: 0 
-        gc_maxlifetime: 300
+        gc_maxlifetime: 900
         # 5 mn sans activité serra déconnecté.
         gc_probability: 1
         gc_divisor: 1

@@ -106,7 +106,7 @@ class InterventionVehiculeController extends Controller
         }
         
         $deleteForm = $this->createDeleteForm($id, 'interventionVehicule_delete');
-        $deleteKmsForm = $this->createDeleteForm($id, 'kms_intervention_delete');
+        //$deleteKmsForm = $this->createDeleteForm($id, 'kms_intervention_delete');
         $form = $this->createForm(KmsInterventionVehiculeType::class, $kmsIntervention, array(
             'action'        => $this->generateUrl('interventionVehicule_show', array(
                                                                             'id' => $cryptage->my_encrypt($id),
@@ -127,7 +127,7 @@ class InterventionVehiculeController extends Controller
             'interventionVehicule'      => $interventionVehicule,
             'kmsInterventions'          => $kmsInterventions,
             'delete_form'               => $deleteForm->createView(),
-            'delete_kms_form'           => $deleteKmsForm->createView(),
+            //'delete_kms_form'           => $deleteKmsForm->createView(),
             'form'                      => $form->createView(),
             'methode'                   => $methode,
         ));
@@ -149,51 +149,26 @@ class InterventionVehiculeController extends Controller
             $id = $cryptage->my_encrypt($id);
             return $this->redirect($this->generateUrl('interventionVehicule_index', array('id' => $id)));
         }
-        //$this->get('session')->getFlashBag()->add('success', 'Suppression avec succès.');
         return $this->redirect($this->generateUrl('interventionVehicule'));
-
-
-        /** */
-
-/*        $form = $this->createDeleteForm($interventionVehicule->getId(), 'interventionVehicule_delete');
-        if ($form->handleRequest($request)->isValid()) {
-            $manager = $this->getDoctrine()->getManager();
-            $manager->remove($interventionVehicule);
-            try {
-            $manager->flush();
-            } catch(\Doctrine\DBAL\DBALException $e) {
-                $this->get('session')->getFlashBag()->add('danger', 'Impossible de supprimer cette interventionVehicule.');
-                $cryptage = $this->container->get('my.cryptage');
-                $id = $interventionVehicule->getId();
-                $id = $cryptage->my_encrypt($id);
-                return $this->redirect($this->generateUrl('interventionVehicule_show', array('id' => $id)));
-            }
-        }
-        return $this->redirect($this->generateUrl('interventionVehicule'));*/
     }
 
     /**
-     * @Route("/{id}/kmsdelete",name="kms_intervention_delete",options = { "expose" = true })
-     *
+     * @Route("/{id}/KmsDelete/{intervention}",name="kms_intervention_delete",options = { "expose" = true })
      */
-    public function kmsDeleteAction(KmsInterventionVehicule $kmsIntervention, Request $request)
-    {/*
+    public function kmsInterventiondeleteAction($id,$intervention)
+    {
+        $cryptage = $this->container->get('my.cryptage');
         $manager = $this->getDoctrine()->getManager();
-        $manager->remove($interventionVehicule);
+        $kms = $manager->getRepository('AppBundle:KmsInterventionVehicule')->find($id);
+        $manager->remove($kms);
         try {
             $manager->flush();
         } catch(\Doctrine\DBAL\DBALException $e) {
             $this->get('session')->getFlashBag()->add('danger', 'Impossible de supprimer cet element.');
-            $cryptage = $this->container->get('my.cryptage');
-            $id = $interventionVehicule->getId();
-            $id = $cryptage->my_encrypt($id);
-            return $this->redirect($this->generateUrl('interventionVehicule_index', array('id' => $id)));
         }
-        //$this->get('session')->getFlashBag()->add('success', 'Suppression avec succès.');
-        return $this->redirect($this->generateUrl('interventionVehicule'));
-*/
-    }
 
+        return $this->redirect($this->generateUrl('interventionVehicule_show', array('id' => $cryptage->my_encrypt($intervention))));
+    }
     //*********************************************************************************//
     /**
     * @route("/{field}/{type}/sort",name="interventionVehicule_sort",requirements={ "type"="ASC|DESC" })
@@ -252,8 +227,12 @@ class InterventionVehiculeController extends Controller
         // nombre de ligne
         $session = $this->get('session');
         $nbr_pages = $session->get("nbr_pages");
+        if ($nbr_pages == null){
+            $nbr_pages = 20;
+        };
         $this->addQueryBuilderSort($qb, $name);
         $request = $this->container->get('request_stack')->getCurrentRequest();
+        //dump($nbr_pages);
         return $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), $nbr_pages);
     }
     protected function getFilter($name)

@@ -73,7 +73,7 @@ WH WTA Oran
 WH WTA Rouiba
 WH-OTA Constantine
 
-/********************************
+********************************
 
      ALTER TABLE carburant CHANGE id id INT AUTO_INCREMENT NOT NULL;
      ALTER TABLE groupes CHANGE id id INT AUTO_INCREMENT NOT NULL;
@@ -128,3 +128,37 @@ WH-OTA Constantine
      ALTER TABLE site ADD CONSTRAINT FK_694309E419EB6921 FOREIGN KEY (client_id) REFERENCES client (id);
      ALTER TABLE mission ADD CONSTRAINT FK_9067F23CA76ED395 FOREIGN KEY (user_id) REFERENCES user (id);
      ALTER TABLE licenciement ADD CONSTRAINT FK_7B60A384FCC7117B FOREIGN KEY (recrutement_id) REFERENCES recrutement (id);
+
+
+==========================
+$q=$this->_em->createQuery(
+            "SELECT v.id,v.nom,date_diff(max(a.dateFin),:d) as nbrjours 
+            FROM AppBundle:Assurance a 
+            JOIN a.vehicule v 
+            WHERE (v.active=1) 
+            GROUP BY v.id
+            ORDER BY v.nom");
+        $q->setParameter('d',$d);
+        return $q->getResult();
+
+=======================
+
+$connection = $this->_em->getConnection();
+
+        $statement = $connection->prepare("
+            SELECT * 
+            FROM intervention_vehicule 
+            CROSS JOIN marque
+            WHERE important = 1
+            AND (marque.id,intervention_vehicule.id) NOT IN(
+                SELECT kms_intervention_vehicule.marque_id,kms_intervention_vehicule.intervention_vehicule_id
+                FROM kms_intervention_vehicule
+                ORDER BY kms_intervention_vehicule.marque_id,kms_intervention_vehicule.intervention_vehicule_id)
+                
+        ");
+
+        $statement->execute();
+
+        return $statement->fetchAll();
+
+=========================

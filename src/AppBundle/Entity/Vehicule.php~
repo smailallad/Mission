@@ -5,12 +5,14 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 //use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Vehicule
  *
  * @ORM\Table(name="vehicule")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\VehiculeRepository")
+ * @UniqueEntity(fields={"nom"},message="Valeur existe déjà sur la base de donnée.")
  */
 class Vehicule
 {
@@ -443,5 +445,9 @@ class Vehicule
     public function getMarque()
     {
         return $this->marque;
+    }
+    public function __toString()
+    {
+        return $this->nom;
     }
 }

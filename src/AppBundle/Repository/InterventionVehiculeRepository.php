@@ -62,4 +62,79 @@ class InterventionVehiculeRepository extends \Doctrine\ORM\EntityRepository
         //return $qb2->getQuery()->getResult();
        
     }
+    public function getInterventionImportantes()
+    {   
+        /*$q = $this->createQueryBuilder('k');
+        $q  ->select('k')
+            ->join('k.marque','m')
+            ->addSelect('m')
+            ->join('k.interventionVehicule','i')
+            ->addSelect('i');
+        $q  ->where('i.important = 0');
+        $q  ->orderby('i.designation','ASC');
+        
+        return $q->getQuery()->getResult();*/
+        /*
+        SELECT * 
+        FROM intervention_vehicule 
+        WHERE intervention_vehicule.important = 1
+        and intervention_vehicule.id NOT IN 
+        (
+        SELECT DISTINCT(intervention_vehicule.id)
+        FROM kms_intervention_vehicule,intervention_vehicule, marque 
+        WHERE kms_intervention_vehicule.intervention_vehicule_id = intervention_vehicule.id 
+        AND kms_intervention_vehicule.marque_id = marque.id 
+        )
+        
+        $connection = $em->getConnection();
+
+$statement = $connection->prepare("
+    select c.prix-aggregates, t1.avg 
+    from immobilier_ad_blank
+    cross join (
+        select avg(prix) as avg
+        from immobilier_ad_blank
+    ) t1
+");
+
+$statement->execute();
+
+$results = $statement->fetchAll();
+
+
+        */
+        $connection = $this->_em->getConnection();
+
+        $statement = $connection->prepare("
+            SELECT * 
+            FROM intervention_vehicule 
+            CROSS JOIN marque
+            WHERE important = 1
+            AND (marque.id,intervention_vehicule.id) NOT IN(
+                SELECT kms_intervention_vehicule.marque_id,kms_intervention_vehicule.intervention_vehicule_id
+                FROM kms_intervention_vehicule
+                ORDER BY kms_intervention_vehicule.marque_id,kms_intervention_vehicule.intervention_vehicule_id)
+                
+        ");
+
+        $statement->execute();
+
+        return $statement->fetchAll();
+
+/*
+        $q=$this->_em->createQuery(
+            "SELECT i
+            FROM AppBundle:InterventionVehicule i 
+            WHERE i.important = 1
+            AND i.id NOT IN (
+                        SELECT DISTINCT(v)
+                        FROM AppBundle:KmsInterventionVehicule k
+                        JOIN k.interventionVehicule v
+                        JOIN k.marque m 
+                )
+        ");
+
+        return $q->getResult();
+        */
+    } 
 }

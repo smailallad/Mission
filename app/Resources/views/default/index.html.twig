@@ -3,7 +3,7 @@
 {% block bodysaisie %}
 {# {% include "@App/messages2.html.twig" %} #}
 {#<h4> Listes des alertes :</h4>#}
-{% if is_granted('ROLE_ROLLOUT') or is_granted('ROLE_ADMINISTRATION') or is_granted('ROLE_COMPTABLE') or is_granted('ROLE_BUREAU') %}
+{#{% if is_granted('ROLE_ROLLOUT') or is_granted('ROLE_ADMINISTRATION') or is_granted('ROLE_COMPTABLE') or is_granted('ROLE_BUREAU') %}
 <div class="panel panel-info">
     <div class="panel-heading">
         <h4>Info</h4>
@@ -67,281 +67,325 @@
     </div>
 </div>
 {% endif %}
-
+#}
 {% if is_granted('ROLE_CHEF_PARK') %}
-
-<div class="panel panel-danger"> {# Véhicule sans assurance #}
-    <div class="panel-heading">
-        <h4>Véhicule sans assurance</h4>
-    </div>
-    <div class="panel-body">
-        <table class="table">
-        <thead>
-            <tr class="danger">
-                <th scope="col">Véhicule</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for sansAssurance in sansAssurances %}
+{% if sansAssurances != null %}
+    <div class="panel panel-danger"> {# Véhicule sans assurance #}
+        <div class="panel-heading">
+            <h4>Véhicule sans assurance</h4>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+            <thead>
                 <tr class="danger">
-                    <td>{{ sansAssurance.nom }}</td>
+                    <th scope="col">Véhicule</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-       
-    </div>
-</div>
-
-<div class="panel panel-danger"> {# Véhicule sans controle technique #}
-    <div class="panel-heading">
-        <h4>Véhicule sans controle technique</h4>
-    </div>
-    <div class="panel-body">
-        <table class="table">
-        <thead>
-            <tr class="danger">
-                <th scope="col">Véhicule</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for sansControlTechnique in sansControlTechniques %}
-                <tr class="danger">
-                    <td>{{ sansControlTechnique.nom }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-       
-    </div>
-</div>
-
-<div class="panel panel-danger"> {# Assurances dépasser #}
-    <div class="panel-heading">
-        <h4>Assurances dépasser</h4>
-    </div>
-    <div class="panel-body">
-        <table class="table">
-        <thead>
-            <tr class="danger">
-                <th scope="col">Véhicule</th>
-                <th scope="col" class="text-right">Date fin d'assurance</th>
-                <th scope="col" class="text-right">Dépasser</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for assuranceDepasser in assuranceDepassers %}
-                {% set difference = date(assuranceDepasser.finAssurance).diff(date('now')) %}
-                {% set leftDays = difference.days %}
-                {% if (leftDays <= seuilAssurance) %}
+            </thead>
+            <tbody>
+                {% for sansAssurance in sansAssurances %}
                     <tr class="danger">
-                        <td>{{ assuranceDepasser.nom }}</td>
-                        <td class="text-right">{{ assuranceDepasser.finAssurance|date("d/m/Y") }}</td>
+                        <td>{{ sansAssurance.nom }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        </div>
+    </div>
+{% endif %}
+
+{% if sansControlTechniques != null %}
+    <div class="panel panel-danger"> {# Véhicule sans controle technique #}
+        <div class="panel-heading">
+            <h4>Véhicule sans controle technique</h4>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+            <thead>
+                <tr class="danger">
+                    <th scope="col">Véhicule</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sansControlTechnique in sansControlTechniques %}
+                    <tr class="danger">
+                        <td>{{ sansControlTechnique.nom }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        </div>
+    </div>
+{% endif %}
+
+{% if assuranceDepassers != null %}
+    <div class="panel panel-danger"> {# Assurances dépasser #}
+        <div class="panel-heading">
+            <h4>Assurances dépasser</h4>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+            <thead>
+                <tr class="danger">
+                    <th scope="col">Véhicule</th>
+                    <th scope="col" class="text-right">Date fin d'assurance</th>
+                    <th scope="col" class="text-right">Dépasser</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for assuranceDepasser in assuranceDepassers %}
+                    {% set difference = date(assuranceDepasser.finAssurance).diff(date('now')) %}
+                    {% set leftDays = difference.days %}
+                    {% if (leftDays <= seuilAssurance) %}
+                        <tr class="danger">
+                            <td>{{ assuranceDepasser.nom }}</td>
+                            <td class="text-right">{{ assuranceDepasser.finAssurance|date("d/m/Y") }}</td>
+                            <td class="text-right">{{ leftDays | number_format(0, ' ', ' ') }} jours</td>
+
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        </div>
+    </div>
+{% endif %}
+
+
+{% if controlTechDepassers != null %}
+    <div class="panel panel-danger"> {# Controle technique dépasser #}
+        <div class="panel-heading">
+            <h4>Controle technique dépasser</h4>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+            <thead>
+                <tr class="danger">
+                    <th scope="col">Véhicule</th>
+                    <th scope="col" class="text-right">Date fin controle technique</th>
+                    <th scope="col" class="text-right">Dépasser</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for controlTechDepasser in controlTechDepassers %}
+                    {% set difference = date(controlTechDepasser.finControlTech).diff(date('now')) %}
+                    {% set leftDays = difference.days %}
+                        <tr class="danger">
+                            <td>{{ controlTechDepasser.nom }}</td>
+                            <td class="text-right">{{ controlTechDepasser.finControlTech|date("d/m/Y") }}</td>
+                            <td class="text-right">{{ leftDays | number_format(0, ' ', ' ') }} jours</td>
+
+                        </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        </div>
+    </div>
+{% endif %}
+
+{% if alertEntretiens != null %}
+    <div class="panel panel-danger"> {# Entretiens Dépasser #}
+        <div class="panel-heading">
+            <h4>Entretiens Dépasser</h4>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+            <thead>
+                <tr class="danger">
+                    <th scope="col">Véhicule</th>
+                    <th scope="col">Intervention</th>
+                    <th scope="col" class="text-right">Interval</th>
+                    <th scope="col" class="text-right">Dernier Intervention</th>
+                    <th scope="col" class="text-right">Dernier Relever</th>
+                    <th scope="col" class="text-right">Dépassés</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for alertEntretien in alertEntretiens %}
+                    {% if alertEntretien.reste >= 0 %}
+                    <tr class="danger">
+                        <td>{{ alertEntretien.nom }}</td>
+                        <td>{{ alertEntretien.designation }}</td>
+                        <td class="text-right">{{ alertEntretien.kms | number_format(0, ' ', ' ') }} Kms</td>
+                        <td class="text-right">{{ alertEntretien.dernierKms | number_format(0, ' ', ' ')}} Kms</td>
+                        <td class="text-right">{{ alertEntretien.kmsRelever | number_format(0, ' ', ' ')}} Kms</td>
+                        <td class="text-right"><b>{{ alertEntretien.reste | number_format(0, ' ', ' ')}} Kms</b></td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        </div>
+    </div>
+{% endif %}
+
+{% if interventionImportantes != null %}
+    <div class="panel panel-danger"> {# Entretiens non associer #}
+        <div class="panel-heading">
+            <h4>Interventions importantes non associer aux marques</h4>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+            <thead>
+                <tr class="danger">
+                    <th scope="col">Marques</th>
+                    <th scope="col">Interventions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for interventionImportante in interventionImportantes %}
+                    <tr class="danger">
+                        <td>{{ interventionImportante.nom }}</td>
+                        <td>{{ interventionImportante.designation }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        </div>
+    </div>
+{% endif %}
+
+{% if assuranceAlertes != null %}
+    <div class="panel panel-info"> {# Assurances à faire #}
+        <div class="panel-heading">
+            <h4>Assurances à faire</h4>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+            <thead>
+                <tr class="info">
+                    <th scope="col">Véhicule</th>
+                    <th scope="col" class="text-right">Date fin d'assurance</th>
+                    <th scope="col" class="text-right">Rester</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for assuranceAlertes in assuranceAlertes %}
+                    {% set difference = date(assuranceAlertes.finAssurance).diff(date('now')) %}
+                    {% set leftDays = difference.days %}
+                    <tr class="info">
+                        <td>{{ assuranceAlertes.nom }}</td>
+                        <td class="text-right">{{ assuranceAlertes.finAssurance|date("d/m/Y") }}</td>
                         <td class="text-right">{{ leftDays | number_format(0, ' ', ' ') }} jours</td>
 
                     </tr>
-                {% endif %}
-            {% endfor %}
-        </tbody>
-    </table>
-       
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        </div>
     </div>
-</div>
+{% endif %}
 
-<div class="panel panel-danger"> {# Controle technique dépasser #}
-    <div class="panel-heading">
-        <h4>Controle technique dépasser</h4>
-    </div>
-    <div class="panel-body">
-        <table class="table">
-        <thead>
-            <tr class="danger">
-                <th scope="col">Véhicule</th>
-                <th scope="col" class="text-right">Date fin controle technique</th>
-                <th scope="col" class="text-right">Dépasser</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for controlTechDepasser in controlTechDepassers %}
-                {% set difference = date(controlTechDepasser.finControlTech).diff(date('now')) %}
-                {% set leftDays = difference.days %}
-                    <tr class="danger">
-                        <td>{{ controlTechDepasser.nom }}</td>
-                        <td class="text-right">{{ controlTechDepasser.finControlTech|date("d/m/Y") }}</td>
+{% if controlTechAlertes != null %}
+    <div class="panel panel-info"> {# Controle technique à faire #}
+        <div class="panel-heading">
+            <h4>Controle technique à faire</h4>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+            <thead>
+                <tr class="info">
+                    <th scope="col">Véhicule</th>
+                    <th scope="col" class="text-right">Date fin conrole technique</th>
+                    <th scope="col" class="text-right">Rester</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for controlTechAlerte in controlTechAlertes %}
+                    {% set difference = date(controlTechAlerte.finControlTech).diff(date('now')) %}
+                    {% set leftDays = difference.days %}
+                    <tr class="info">
+                        <td>{{ controlTechAlerte.nom }}</td>
+                        <td class="text-right">{{ controlTechAlerte.finControlTech|date("d/m/Y") }}</td>
                         <td class="text-right">{{ leftDays | number_format(0, ' ', ' ') }} jours</td>
 
                     </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-       
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        </div>
     </div>
-</div>
+{% endif %}
 
-<div class="panel panel-danger"> {# Entretiens Dépasser #}
-    <div class="panel-heading">
-        <h4>Entretiens Dépasser</h4>
-    </div>
-    <div class="panel-body">
-        <table class="table">
-        <thead>
-            <tr class="danger">
-                <th scope="col">Véhicule</th>
-                <th scope="col">Intervention</th>
-                <th scope="col" class="text-right">Interval</th>
-                <th scope="col" class="text-right">Dernier Intervention</th>
-                <th scope="col" class="text-right">Dernier Relever</th>
-                <th scope="col" class="text-right">Dépassés</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for alertEntretien in alertEntretiens %}
-                {% if alertEntretien.reste >= 0 %}
-                <tr class="danger">
-                    <td>{{ alertEntretien.nom }}</td>
-                    <td>{{ alertEntretien.designation }}</td>
-                    <td class="text-right">{{ alertEntretien.kms | number_format(0, ' ', ' ') }} Kms</td>
-                    <td class="text-right">{{ alertEntretien.dernierKms | number_format(0, ' ', ' ')}} Kms</td>
-                    <td class="text-right">{{ alertEntretien.kmsRelever | number_format(0, ' ', ' ')}} Kms</td>
-                    <td class="text-right"><b>{{ alertEntretien.reste | number_format(0, ' ', ' ')}} Kms</b></td>
-                </tr>
-                {% endif %}
-            {% endfor %}
-        </tbody>
-    </table>
-       
-    </div>
-</div>
-
-<div class="panel panel-info"> {# Assurances à faire #}
-    <div class="panel-heading">
-        <h4>Assurances à faire</h4>
-    </div>
-    <div class="panel-body">
-        <table class="table">
-        <thead>
-            <tr class="info">
-                <th scope="col">Véhicule</th>
-                <th scope="col" class="text-right">Date fin d'assurance</th>
-                <th scope="col" class="text-right">Rester</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for assuranceAlertes in assuranceAlertes %}
-                {% set difference = date(assuranceAlertes.finAssurance).diff(date('now')) %}
-                {% set leftDays = difference.days %}
+{% if alertEntretiens != null %}
+    <div class="panel panel-info"> {# Entretiens à faire #}
+        <div class="panel-heading">
+            <h4>Entretiens à faire</h4>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+            <thead>
                 <tr class="info">
-                    <td>{{ assuranceAlertes.nom }}</td>
-                    <td class="text-right">{{ assuranceAlertes.finAssurance|date("d/m/Y") }}</td>
-                    <td class="text-right">{{ leftDays | number_format(0, ' ', ' ') }} jours</td>
-
+                    <th scope="col">Véhicule</th>
+                    <th scope="col">Intervention</th>
+                    <th scope="col" class="text-right">Interval</th>
+                    <th scope="col" class="text-right">Dernier Intervention</th>
+                    <th scope="col" class="text-right">Dernier Relever</th>
+                    <th scope="col" class="text-right">Rester</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-       
+            </thead>
+            <tbody>
+                {% for alertEntretien in alertEntretiens %}
+                    {% if alertEntretien.reste < 0 %}
+                    <tr class="info">
+                        <td>{{ alertEntretien.nom }}</td>
+                        <td>{{ alertEntretien.designation }}</td>
+                        <td class="text-right">{{ alertEntretien.kms | number_format(0, ' ', ' ') }} Kms</td>
+                        <td class="text-right">{{ alertEntretien.dernierKms | number_format(0, ' ', ' ')}} Kms</td>
+                        <td class="text-right">{{ alertEntretien.kmsRelever | number_format(0, ' ', ' ')}} Kms</td>
+                        <td class="text-right"><b>{{ alertEntretien.reste | abs | number_format(0, ' ', ' ')}} Kms</b></td>
+                    </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        </div>
     </div>
-</div>
+{% endif  %}
 
-<div class="panel panel-info"> {# Controle technique à faire #}
-    <div class="panel-heading">
-        <h4>Controle technique à faire</h4>
-    </div>
-    <div class="panel-body">
-        <table class="table">
-        <thead>
-            <tr class="info">
-                <th scope="col">Véhicule</th>
-                <th scope="col" class="text-right">Date fin conrole technique</th>
-                <th scope="col" class="text-right">Rester</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for controlTechAlerte in controlTechAlertes %}
-                {% set difference = date(controlTechAlerte.finControlTech).diff(date('now')) %}
-                {% set leftDays = difference.days %}
+{% if relevers != null %}
+    <div class="panel panel-info"> {# Relever compteur véhicule #}
+        <div class="panel-heading">
+            <h4>Relever compteur véhicule</h4>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+            <thead>
                 <tr class="info">
-                    <td>{{ controlTechAlerte.nom }}</td>
-                    <td class="text-right">{{ controlTechAlerte.finControlTech|date("d/m/Y") }}</td>
-                    <td class="text-right">{{ leftDays | number_format(0, ' ', ' ') }} jours</td>
-
+                    <th scope="col">Véhicule</th>
+                    <th scope="col" class="text-right">Date relever</th>
+                    <th scope="col" class="text-right">Kms</th>
+                    <th scope="col" class="text-right">Relever chaque</th>
+                    <th scope="col" class="text-right">Jours dépasser</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-       
-    </div>
-</div>
+            </thead>
+            <tbody>
+                {% for relever in relevers %}
+                    {% set difference = date(date('now')).diff(relever.dateRelever) %}
+                    {% set leftDays = difference.days %}
+                    <tr class="info">
+                        <td>{{ relever.nom }}</td>
+                        <td class="text-right">{{ relever.dateRelever|date("d/m/Y") }}</td>
+                        <td class="text-right">{{ relever.kmsRelever | number_format(0, ' ', ' ') }} Kms</td>
+                        <td class="text-right">{{ relever.nbrjAlertRelever }} Jours</td>
+                        <td class="text-right">{{ leftDays | number_format(0, ' ', ' ') }} jours</td>
 
-<div class="panel panel-info"> {# Entretiens à faire #}
-    <div class="panel-heading">
-        <h4>Entretiens à faire</h4>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        </div>
     </div>
-    <div class="panel-body">
-        <table class="table">
-        <thead>
-            <tr class="info">
-                <th scope="col">Véhicule</th>
-                <th scope="col">Intervention</th>
-                <th scope="col" class="text-right">Interval</th>
-                <th scope="col" class="text-right">Dernier Intervention</th>
-                <th scope="col" class="text-right">Dernier Relever</th>
-                <th scope="col" class="text-right">Rester</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for alertEntretien in alertEntretiens %}
-                {% if alertEntretien.reste < 0 %}
-                <tr class="info">
-                    <td>{{ alertEntretien.nom }}</td>
-                    <td>{{ alertEntretien.designation }}</td>
-                    <td class="text-right">{{ alertEntretien.kms | number_format(0, ' ', ' ') }} Kms</td>
-                    <td class="text-right">{{ alertEntretien.dernierKms | number_format(0, ' ', ' ')}} Kms</td>
-                    <td class="text-right">{{ alertEntretien.kmsRelever | number_format(0, ' ', ' ')}} Kms</td>
-                    <td class="text-right"><b>{{ alertEntretien.reste | abs | number_format(0, ' ', ' ')}} Kms</b></td>
-                </tr>
-                {% endif %}
-            {% endfor %}
-        </tbody>
-    </table>
-       
-    </div>
-</div>
-
-<div class="panel panel-info"> {# Relever compteur véhicule #}
-    <div class="panel-heading">
-        <h4>Relever compteur véhicule</h4>
-    </div>
-    <div class="panel-body">
-        <table class="table">
-        <thead>
-            <tr class="info">
-                <th scope="col">Véhicule</th>
-                <th scope="col" class="text-right">Date relever</th>
-                <th scope="col" class="text-right">Kms</th>
-                <th scope="col" class="text-right">Relever chaque</th>
-                <th scope="col" class="text-right">Jours dépasser</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for relever in relevers %}
-                {% set difference = date(date('now')).diff(relever.dateRelever) %}
-                {% set leftDays = difference.days %}
-                <tr class="info">
-                    <td>{{ relever.nom }}</td>
-                    <td class="text-right">{{ relever.dateRelever|date("d/m/Y") }}</td>
-                    <td class="text-right">{{ relever.kmsRelever | number_format(0, ' ', ' ') }} Kms</td>
-                    <td class="text-right">{{ relever.nbrjAlertRelever }} Jours</td>
-                    <td class="text-right">{{ leftDays | number_format(0, ' ', ' ') }} jours</td>
-
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-       
-    </div>
-</div>
-
+{% endif %}
 
 
 {% endif %}

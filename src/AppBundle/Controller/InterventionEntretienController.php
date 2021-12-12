@@ -93,6 +93,9 @@ class InterventionEntretienController extends Controller
         // nombre de ligne
         $session = $this->get('session');
         $nbr_pages = $session->get("nbr_pages");
+        if ($nbr_pages == null){
+            $nbr_pages = 20;
+        };
         $this->addQueryBuilderSort($qb, $name);
         $request = $this->container->get('request_stack')->getCurrentRequest();
         

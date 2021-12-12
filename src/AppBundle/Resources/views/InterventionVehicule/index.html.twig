@@ -30,6 +30,7 @@
             <tr>
                 <th scope="col">{{ thead('interventionVehicule', 'designation', 'Désignation') }}</th>
                 <th scope="col">{{ thead('interventionVehicule', 'unite', 'Unité') }}</th>
+                <th scope="col">{{ thead('interventionVehicule', 'important', 'Important') }}</th>
                 <th scope="col">Actions</th>
             </tr>
         </thead>
@@ -38,6 +39,13 @@
                 <tr>
                     <td>{{ interventionVehicule.designation }}</td>
                     <td>{{ interventionVehicule.unite }}</td>
+                    <td>
+                        {% if interventionVehicule.important %}
+                            <i class="glyphicon glyphicon-check"></i>
+                        {% else %}
+                            <i class="glyphicon glyphicon-uncheck"></i>
+                        {% endif %}
+                    </td>
                     <td>
                         <a class="btn btn-primary" title="Modifier" href="{{ path('interventionVehicule_show', {id: interventionVehicule.id | Mycrypt}) }}">
                             <i class="glyphicon glyphicon-folder-open"></i>

@@ -46,18 +46,21 @@ class DefaultController extends Controller
         $sansControlTechniques = $this->getDoctrine()->getRepository('AppBundle:Vehicule')->getSansControlTechnique();
         
         $relevers = $this->getDoctrine()->getRepository('AppBundle:Vehicule')->getRelever();
-        dump($relevers);
+
+        $interventionImportantes = $this->getDoctrine()->getRepository('AppBundle:InterventionVehicule')->getInterventionImportantes();
+        dump($interventionImportantes);
         return $this->render("default/index.html.twig",array(
-            'alertEntretiens'       => $alertEntretiens,
-            'assuranceDepassers'    => $assuranceDepassers,
-            'assuranceAlertes'      => $assuranceAlertes,
-            'controlTechDepassers'  => $controlTechDepassers,
-            'controlTechAlertes'    => $controlTechAlertes,
-            'sansAssurances'        => $sansAssurances,
-            'sansControlTechniques' => $sansControlTechniques,
-            'seuilAssurance'        => $seuilAssurance,
-            'seuilControlTech'      => $seuilControlTech,
-            'relevers'              => $relevers
+            'alertEntretiens'           => $alertEntretiens,
+            'assuranceDepassers'        => $assuranceDepassers,
+            'assuranceAlertes'          => $assuranceAlertes,
+            'controlTechDepassers'      => $controlTechDepassers,
+            'controlTechAlertes'        => $controlTechAlertes,
+            'sansAssurances'            => $sansAssurances,
+            'sansControlTechniques'     => $sansControlTechniques,
+            'seuilAssurance'            => $seuilAssurance,
+            'seuilControlTech'          => $seuilControlTech,
+            'relevers'                  => $relevers,
+            'interventionImportantes'   => $interventionImportantes
         ));
     }
     /**

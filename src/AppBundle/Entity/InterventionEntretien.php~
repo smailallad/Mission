@@ -154,5 +154,4 @@ class InterventionEntretien
         return $this->interventionVehicule;
     }
 
-    
 }

@@ -82,16 +82,19 @@ class VehiculeController extends Controller
         ));
         if ($editForm->handleRequest($request)->isValid()) {
             
-            //dump($vehicule);
-            //dump($lastEntretien);
+            dump($vehicule);
+            dump($lastEntretien);
             //throw new \Exception('Message');
-            if ($vehicule->getDateRelever() < $lastEntretien->getDate()){
-                $this->get('session')->getFlashBag()->add('danger', 'Date incorrecte, elle doit etre superieur à : ' . date_format($lastEntretien->getDate(),"d/m/Y"));
-                return $this->redirect($this->generateUrl('vehicule_edit_relever', array('id' => $cryptage->my_encrypt($id))));
-            }
-            if ($vehicule->getKmsRelever() < $lastEntretien->getKms()){
-                $this->get('session')->getFlashBag()->add('danger', 'Kms incorrecte, il doit etre superieur à : ' . $lastEntretien->getKms());
-                return $this->redirect($this->generateUrl('vehicule_edit_relever', array('id' => $cryptage->my_encrypt($id))));
+            if ($lastEntretien != null){
+                if ($vehicule->getDateRelever() < $lastEntretien->getDate()){
+                    $this->get('session')->getFlashBag()->add('danger', 'Date incorrecte, elle doit etre superieur à : ' . date_format($lastEntretien->getDate(),"d/m/Y"));
+                    return $this->redirect($this->generateUrl('vehicule_edit_relever', array('id' => $cryptage->my_encrypt($id))));
+                }
+            
+                if ($vehicule->getKmsRelever() < $lastEntretien->getKms()){
+                    $this->get('session')->getFlashBag()->add('danger', 'Kms incorrecte, il doit etre superieur à : ' . $lastEntretien->getKms());
+                    return $this->redirect($this->generateUrl('vehicule_edit_relever', array('id' => $cryptage->my_encrypt($id))));
+                }
             }
 
             $this->getDoctrine()->getManager()->flush();
@@ -272,6 +275,9 @@ class VehiculeController extends Controller
         // nombre de ligne
         $session = $this->get('session');
         $nbr_pages = $session->get("nbr_pages");
+        if ($nbr_pages == null){
+            $nbr_pages = 20;
+        };
         $this->addQueryBuilderSort($qb, $name);
         $request = $this->container->get('request_stack')->getCurrentRequest();
         return $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), $nbr_pages);

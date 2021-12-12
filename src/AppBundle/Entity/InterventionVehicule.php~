@@ -37,6 +37,11 @@ class InterventionVehicule
     private $unite;
 
     /**
+     * @ORM\Column(type="boolean",nullable=true)
+     */
+    private $important;
+
+    /**
      * Get id.
      *
      * @return int

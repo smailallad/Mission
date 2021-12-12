@@ -5,6 +5,7 @@ namespace AppBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
 //use Lexik\Bundle\FormFilterBundle\Filter\Form\Type\TextFilterType;
 
@@ -19,8 +20,18 @@ class InterventionVehiculeFilterType extends AbstractType
         ->add('designation',Filters\TextFilterType::class, array(
             'label' => "Désignation"
             )
+        )
+        ->add('important', ChoiceType::Class, array(
+            'choices'       => array(
+                'Important'       => 1,
+                'Nom important'   => 0
+            ),
+            'required'      => false,
+            'placeholder'   => '-Tous-',
+            'label'         => 'Importance',
+            'empty_data'    => null
             )
-        
+        )
         ;
     }/**
      * {@inheritdoc}

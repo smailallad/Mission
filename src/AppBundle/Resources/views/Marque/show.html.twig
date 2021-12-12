@@ -1,7 +1,146 @@
 {% extends "base.html.twig" %}
+{% block title %}Intervention Marque - {{ parent() }}{% endblock %}
+{% block bodysaisie %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4> Intervention Marque </h4>
+    </div>
+    <div class="panel-body">
+        <table class="table table-hover record_properties">
+            <tbody>
+                 <tr>
+                    <th scope="row">Intervention</th>
+                    <td>{{ marque.nom }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-footer">
+        <div class="btn-group record_actions">
+            <a class="btn btn-info" href="{{ path('marque_index') }}">
+                <i class="glyphicon glyphicon-list"></i> Retour à la liste
+            </a>
+            <a class="btn btn-primary" href="{{ path('marque_edit', {id: marque.id | Mycrypt}) }}">
+                <i class="glyphicon glyphicon-edit"></i>Modifier
+            </a>
+            <button class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteMarque"><i class="glyphicon glyphicon-trash"></i> Supprimer</button>
+        </div>
+    </div>
+</div>
 
-{% block title %}AppBundle:Vehicule:Edit{% endblock %}
+{{ form_start(form) }}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4>{% if (methode == 'Post') %}Nouveau {% else %} Modifier {% endif %}</h4>
+    </div> 
+    <div class="panel-body">
+        <table class="table ">
+            <tbody>
+               <tr>
+                    <td>{{ form_widget(form.interventionVehicule)}} {{ form_errors(form.interventionVehicule)}}</td>
+                    <td>{{ form_widget(form.kms)}} {{ form_errors(form.kms)}}</td>
+                    <td>{{ form_widget(form.obs)}} {{ form_errors(form.obs)}}</td>
+                </tr>               
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-footer">
+        <div class="btn-group record_actions">
+        <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-ok"></i> Valider </button>
+        <a class="btn btn-primary" href="{{ path('interventionVehicule_show', {id: marque.id | Mycrypt}) }}" >
+                <i class="glyphicon glyphicon-plus">Nouveau</i>
+        </a>
+        </div>
+    </div>
+</div>
+ {{ form_end(form)}} 
 
-{% block body %}
-<h1>Welcome to the Vehicule:Edit page</h1>
+ 
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4>Interventions</h4>
+    </div> 
+    <div class="panel-body">
+        <table class="table table-hover record_properties">
+            <tbody>
+               {% for kmsIntervention in kmsInterventions %}
+                <tr>
+                    <td> <i class="glyphicon glyphicon-hand-right"> {{ kmsIntervention.interventionVehicule.designation }}</i></td>
+                    <td class="text-right"> {{ kmsIntervention.kms | number_format(0, '', ' ') }} Kms</td>
+                    <td> {{ kmsIntervention.obs }}</td>
+                    <td class="text-right">
+                        <a class="btn btn-primary" href="{{ path('marque_show', {id:marque.id | Mycrypt , kmsInterventionId: kmsIntervention.id | Mycrypt}) }}"> <i class="glyphicon glyphicon-edit"></i></a>
+                        <button class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteIntervention" data-id="{{ kmsIntervention.id }}" data-marque="{{ marque.id }}" ><i class="glyphicon glyphicon-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- Modale delete Marque-->
+<div id="modalDeleteMarque" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjoutRoleLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>Confirmer la suppression</h4>
+            </div>
+            <div class="modal-body">
+                <p>Veuillez confimer la suppression </p>
+            </div>
+            <div class="modal-footer">
+                {{ form_start(delete_form) }}
+                {{ form_widget(delete_form) }}
+                    <button class="btn btn-danger" type="submit"><i class="glyphicon glyphicon-trash-o"></i> Oui</button>
+                    <button class="btn btn-primary" data-dismiss="modal">Non</button>
+                    <input name="modal" type="hidden" value="0">
+                {{ form_end(delete_form) }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modale delete Intervention-->
+<div id="modalDeleteIntervention" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="modalDeleteInterventionLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>Confirmer la suppression</h4>
+            </div>
+            <div class="modal-body">
+                <p>Vous êtes sur le point de supprimer cet élément, cette procédure est irréversible.</p>
+                <p>Voulez-vous poursuivre?</p>
+            </div>
+            <div class="modal-footer">
+                <form name="form" id="modalDeleteInterventionForm" action="#" method="post">
+                    <button class="btn btn-danger" type="submit"><i class="glyphicon glyphicon-trash"></i>
+                        Supprimer</button>
+                    <button class="btn btn-primary" data-dismiss="modal">Annuler</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block js %}
+<script> 
+$(document).ready(function () {
+    $('#modalDeleteIntervention').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        var id = button.data('id') // Extract info from data-* attributes
+        var marque = button.data('marque') // Extract info from data-* attributes
+        var cURL = Routing.generate('kmsMarque_delete', { id: id,marque: marque });
+        //alert(cURL);
+        $("#modalDeleteInterventionForm").attr('action', cURL);
+    })
+
+})
+
+
+</script>
 {% endblock %}

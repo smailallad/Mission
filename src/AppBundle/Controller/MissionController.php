@@ -2878,7 +2878,10 @@ class MissionController extends Controller
         }
         if ($paginer == true){
             $session = $this->get('session');
-            $nbr_pages = $session->get("nbr_pages");        // nombre de ligne
+            $nbr_pages = $session->get("nbr_pages");
+            if ($nbr_pages == null){
+                $nbr_pages = 20;
+            };        // nombre de ligne
             $this->addQueryBuilderSort($qb, $name);
             $request = $this->container->get('request_stack')->getCurrentRequest();
             return $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), $nbr_pages);

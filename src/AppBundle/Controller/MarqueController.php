@@ -5,8 +5,10 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Marque;
 use AppBundle\Form\MarqueType;
 use Doctrine\ORM\QueryBuilder;
+use AppBundle\Form\KmsMarqueType;
 use AppBundle\Form\MarqueFilterType;
 use Symfony\Component\Form\FormInterface;
+use AppBundle\Entity\KmsInterventionVehicule;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -86,15 +88,60 @@ class MarqueController extends Controller
         
     }
 
+    
     /**
-     * @Route("/show",name="marque_show")
+     * @Route("/{id}/show/{kmsInterventionId}",name="marque_show")
+     * id : marque
      */
-    public function showAction()
-    {
+    public function showAction($id,$kmsInterventionId = null , Request $request)
+    {   
+        $kmsInterventionParam = $kmsInterventionId;
+        $manager = $this->getDoctrine()->getManager();
+        $cryptage = $this->container->get('my.cryptage');
+        $id = $cryptage->my_decrypt($id);
+        $marque = $this->getDoctrine()->getRepository('AppBundle:Marque')->find($id);
+        $kmsIntervention = null;
+        $kmsInterventions = $this->getDoctrine()->getRepository('AppBundle:KmsInterventionVehicule')->findByMarque($marque);
+        if ($kmsInterventionId <> null) {
+            $kmsInterventionId = $cryptage->my_decrypt($kmsInterventionId);
+            dump($kmsInterventionId);
+            $kmsIntervention = $this->getDoctrine()->getRepository('AppBundle:KmsInterventionVehicule')->find($kmsInterventionId);
+            //$kmsIntervention = $kmsIntervention->getInterventionVehicule();
+            $methode = 'Edit';
+        }else{
+            $kmsIntervention = new KmsInterventionVehicule();
+            $kmsIntervention->setMarque($marque);
+            $methode = 'Post';
+        }
+        dump($methode);
+        $deleteForm = $this->createDeleteForm($id, 'marque_delete');
+        //$deleteKmsForm = $this->createDeleteForm($id, 'kms_intervention_delete');
+        $form = $this->createForm(KmsMarqueType::class, $kmsIntervention, array(
+            'action'        => $this->generateUrl('marque_show', array(
+                                                                            'id' => $cryptage->my_encrypt($id),
+                                                                            'kmsInterventionId' => $kmsInterventionParam,
+                                                                        )),
+
+            'method'        => 'PUT',
+
+        ));
+
+        if ($form->handleRequest($request)->isValid()) {
+                $manager->persist($kmsIntervention);
+                $this->getDoctrine()->getManager()->flush();
+                return $this->redirect($this->generateUrl('marque_show', array('id' => $cryptage->my_encrypt($id))));
+        }
+        dump($kmsInterventions);
         return $this->render('@App/Marque/show.html.twig', array(
-            // ...
+            'marque'                    => $marque,
+            'kmsInterventions'          => $kmsInterventions,
+            'delete_form'               => $deleteForm->createView(),
+            //'delete_kms_form'           => $deleteKmsForm->createView(),
+            'form'                      => $form->createView(),
+            'methode'                   => $methode,
         ));
     }
+
 
     /**
      * @Route("/{id}/delete",name="marque_delete",options = { "expose" = true })
@@ -115,6 +162,28 @@ class MarqueController extends Controller
 
         return $this->redirect($this->generateUrl('marque_index'));
     }
+
+    /**
+     * @Route("/{id}/KmsDelete/{marque}",name="kmsMarque_delete",options = { "expose" = true })
+     */
+    public function kmsMarqueDeleteAction($id,$marque)
+    {
+        $cryptage = $this->container->get('my.cryptage');
+        $manager = $this->getDoctrine()->getManager();
+        $kms = $manager->getRepository('AppBundle:KmsInterventionVehicule')->find($id);
+        $manager->remove($kms);
+        try {
+            $manager->flush();
+        } catch(\Doctrine\DBAL\DBALException $e) {
+            $this->get('session')->getFlashBag()->add('danger', 'Impossible de supprimer cet element.');
+            
+            //$id = $marque->getId();
+            //$id = $cryptage->my_encrypt($id);
+        }
+
+        return $this->redirect($this->generateUrl('marque_show', array('id' => $cryptage->my_encrypt($marque))));
+    }
+
 
 
 
@@ -176,6 +245,9 @@ class MarqueController extends Controller
         // nombre de ligne
         $session = $this->get('session');
         $nbr_pages = $session->get("nbr_pages");
+        if ($nbr_pages == null){
+            $nbr_pages = 20;
+        };
         $this->addQueryBuilderSort($qb, $name);
         $request = $this->container->get('request_stack')->getCurrentRequest();
         return $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), $nbr_pages);

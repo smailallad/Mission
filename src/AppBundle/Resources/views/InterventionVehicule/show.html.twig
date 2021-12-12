@@ -74,7 +74,7 @@
                     <td> {{ kmsIntervention.obs }}</td>
                     <td class="text-right">
                         <a class="btn btn-primary" href="{{ path('interventionVehicule_show', {id:interventionVehicule.id | Mycrypt , kmsInterventionId: kmsIntervention.id | Mycrypt}) }}"> <i class="glyphicon glyphicon-edit"></i></a>
-                        <button class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteIntervention" data-id="{{ kmsIntervention.id }}"><i class="glyphicon glyphicon-trash"></i>
+                        <button class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteIntervention" data-id="{{ kmsIntervention.id }}" data-intervention="{{ interventionVehicule.id }}"><i class="glyphicon glyphicon-trash"></i>
                         </button>
                     </td>
                 </tr>
@@ -137,7 +137,8 @@ $(document).ready(function () {
     $('#modalDeleteIntervention').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget) // Button that triggered the modal
         var id = button.data('id') // Extract info from data-* attributes
-        var cURL = Routing.generate('kmsInterventionMarque_InterventionVehicule_delete', { id: id });
+        var intervention = button.data('intervention') // Extract info from data-* attributes
+        var cURL = Routing.generate('kms_intervention_delete', { id: id,intervention:intervention });
         //alert(cURL);
         $("#modalDeleteInterventionForm").attr('action', cURL);
     })
