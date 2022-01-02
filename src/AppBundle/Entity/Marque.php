@@ -25,6 +25,12 @@ class Marque
      * @Assert\Length(min = "3",max = "50",minMessage = "Le nom doit faire au moins {{ limit }} caractères",maxMessage = "Le nom ne peut pas être plus long que {{ limit }} caractères")
      */
     private $nom;
+    /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean")
+     */
+    private $active;    
 
     /**
      * Get id
@@ -62,5 +68,29 @@ class Marque
     public function __toString()
     {
         return $this->nom;
+    }
+
+    /**
+     * Set active.
+     *
+     * @param bool $active
+     *
+     * @return Marque
+     */
+    public function setActive($active)
+    {
+        $this->active = $active;
+
+        return $this;
+    }
+
+    /**
+     * Get active.
+     *
+     * @return bool
+     */
+    public function getActive()
+    {
+        return $this->active;
     }
 }

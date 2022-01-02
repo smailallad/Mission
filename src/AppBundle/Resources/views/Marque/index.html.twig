@@ -9,6 +9,7 @@
         <thead>
             <tr>
                 <th scope="col">Nom</th>  
+                <th scope="col">Etat</th>  
                 <th scope="col">Action</th>              
             </tr>
         </thead>
@@ -16,6 +17,12 @@
             {% for marque in paginator %}
                 <tr>
                     <td>{{ marque.nom }}</td>
+                    <td>{% if marque.active %}
+                            <i class="glyphicon glyphicon-check"></i>
+                        {% else %}
+                            <i class="glyphicon glyphicon-unchecked"></i>
+                        {% endif %}
+                    </td>
                     <td>
                         <a class="btn btn-primary" title="Detail" href="{{ path('marque_show', {id: marque.id | Mycrypt}) }}">
                             <i class="glyphicon glyphicon-folder-open"></i>

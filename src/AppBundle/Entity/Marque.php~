@@ -25,6 +25,12 @@ class Marque
      * @Assert\Length(min = "3",max = "50",minMessage = "Le nom doit faire au moins {{ limit }} caractères",maxMessage = "Le nom ne peut pas être plus long que {{ limit }} caractères")
      */
     private $nom;
+    /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean")
+     */
+    private $active;    
 
     /**
      * Get id

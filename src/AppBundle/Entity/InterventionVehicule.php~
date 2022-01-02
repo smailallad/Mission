@@ -116,4 +116,28 @@ class InterventionVehicule
     {
         return $this->designation;
     }
+
+    /**
+     * Set important.
+     *
+     * @param bool|null $important
+     *
+     * @return InterventionVehicule
+     */
+    public function setImportant($important = null)
+    {
+        $this->important = $important;
+
+        return $this;
+    }
+
+    /**
+     * Get important.
+     *
+     * @return bool|null
+     */
+    public function getImportant()
+    {
+        return $this->important;
+    }
 }

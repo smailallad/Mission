@@ -110,6 +110,7 @@ $results = $statement->fetchAll();
             FROM intervention_vehicule 
             CROSS JOIN marque
             WHERE important = 1
+            AND (marque.active = true)
             AND (marque.id,intervention_vehicule.id) NOT IN(
                 SELECT kms_intervention_vehicule.marque_id,kms_intervention_vehicule.intervention_vehicule_id
                 FROM kms_intervention_vehicule
