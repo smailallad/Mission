@@ -104,9 +104,6 @@ class RestoreCommand extends ContainerAwareCommand
         $output->writeln('********************************');
         $output->writeln('');
 
-        $output->writeln('<comment>===>  Table "Sous Projet" Modifie le code "0" a une autre valeur et change dans la table "Prestation" le "code_sous_projet" a la nouvelle valeur </comment>');
-        $output->writeln('<comment>===>  Supprimer les prestation "142" , "143" , "144" , "145" </comment>');
-        $output->writeln('<comment>===>  Créeer "Contraintes de clé étrangère" entre "prestation" et "sous_projet"</comment>');
         $output->writeln('<comment>===>  Executer la commande : php bin/console restore <comment>');
               
         $i=1;

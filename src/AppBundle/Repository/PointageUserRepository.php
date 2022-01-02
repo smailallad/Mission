@@ -25,4 +25,22 @@ class PointageUserRepository extends \Doctrine\ORM\EntityRepository
             
         return $q;//->getQuery()->getResult();
     }
+
+    public function addFilterPointage($q,$user,$du,$au){
+        
+        
+        if ($du !== null){
+            $q->andWhere('p.date >= :du');
+            $q->setParameter('du',$du);
+        }
+        if ($au !== null){
+            $q->andWhere('p.date <= :au');
+            $q->setParameter('au',$au);
+        }
+        if ($user !== null){
+            $q->andWhere('u = :user');
+            $q->setParameter('user',$user);
+        }
+        return $q;
+    }
 }

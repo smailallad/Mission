@@ -7,6 +7,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Lexik\Bundle\FormFilterBundle\Filter\Form\Type\DateRangeFilterType;
 
 class PointageFilterType extends AbstractType
 {
@@ -17,16 +18,36 @@ class PointageFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {  
         $builder
-        ->add('date',DateType::Class, array(
-            'label'     => 'Date',
+        /*->add('date',DateType::Class, array(
+            'label'     => 'Au',
             'widget'    => 'single_text',
             'html5'     => true,
             'required'  => true,
             'data' => new \DateTime("now"),
             )
+        )*/
+        ->add('date',DateRangeFilterType::Class, array(
+            'label' =>'Pointage',
+            'left_date_options' => [
+                'label'     =>'Du',
+                'widget'    => 'single_text',
+                //'format'  => \IntlDateFormatter::SHORT,
+                //'attr'    => ['class' => 'date-picker form-filter'],
+                'data'    => (new \DateTime()),
+                'html5'     => true,
+            ],
+            'right_date_options' => [
+                'label'     => 'Au',
+                'widget'    => 'single_text',
+                //'format'  => \IntlDateFormatter::SHORT,
+                //'attr'    => ['class' => 'date-picker form-filter'],
+                'data'    => (new \DateTime()),
+                'html5'     => true,
+            ],
+            )
         )
         ->add('user',EntityType::Class, array(
-                    'label'         =>'Chef de mission',
+                    'label'         =>'Employé',
                     'class'         => 'AppBundle:User',
                     'choice_name'   => 'nom',
                     'multiple'      => false,

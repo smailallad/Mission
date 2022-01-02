@@ -173,11 +173,25 @@ class PointageController extends Controller
     {   
         if (!is_null($values = $this->getFilter($name))) {
             if ($form->submit($values)->isValid()) {
-                $this->get('lexik_form_filter.query_builder_updater')->addFilterConditions($form, $qb);
+                //$this->get('lexik_form_filter.query_builder_updater')->addFilterConditions($form, $qb);
+                $user   = $form->get('user')->getData();
+                $du = ($form->get('date')->getData() !== null) ? $form->get('date')->getData()['left_date'] : null;
+                $au = ($form->get('date')->getData() !== null) ? $form->get('date')->getData()['right_date'] : null;
+
+                dump($du);
+                dump($au);
+                dump($user);
+                $manager = $this->getDoctrine()->getManager();
+                // Recupere les sommes  avant pagination
+                //dump($qbDepense);
+                if ($qb !== null){
+                    $qb = $manager->getRepository('AppBundle:PointageUser')->addFilterPointage($qb,$user,$du,$au);
+                }
             }
         }
         // possible sorting
         // nombre de ligne
+        
         $session = $this->get('session');
         $nbr_pages = $session->get("nbr_pages");
         if ($nbr_pages == null){
@@ -185,6 +199,7 @@ class PointageController extends Controller
         };
         $this->addQueryBuilderSort($qb, $name);
         $request = $this->container->get('request_stack')->getCurrentRequest();
+        dump($qb->getDQL());
         return $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), $nbr_pages);
     }
     protected function getFilter($name)

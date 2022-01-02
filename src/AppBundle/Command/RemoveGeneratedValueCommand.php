@@ -37,7 +37,7 @@ class RemoveGeneratedValueCommand extends ContainerAwareCommand
         $output->writeln('********************************');
         $output->writeln('');
 
-        $file = "/var/www/html/rtie3.4/src/AppBundle/Entity/Marque.php~";
+        //$file = "/var/www/html/rtie3.4/src/AppBundle/Entity/Marque.php~";
         $dir = "/var/www/html/rtie3.4/src/AppBundle/Entity/";
         
         $find='@ORM\GeneratedValue';

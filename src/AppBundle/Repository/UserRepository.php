@@ -45,7 +45,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
         
         $qb3 = $this->getEntityManager()->createQueryBuilder();
         $qb3    ->select('DISTINCT(m.user)')
-                ->from('AppBundle:Mission', 'm')
+                ->from('AppBundle:Mission', 'm') 
                 ->where(':d BETWEEN m.depart AND m.retour')
                 ;
         $qb4 = $this->getEntityManager()->createQueryBuilder();

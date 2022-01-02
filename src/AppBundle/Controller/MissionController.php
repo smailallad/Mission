@@ -2796,7 +2796,7 @@ class MissionController extends Controller
         } elseif ($request->query->has('reset-filter')) {
             $request->getSession()->set('filter.' . $name, null);
             return $this->redirect($url);
-        } 
+        }  
     }
     protected function filter(FormInterface $form,$name, QueryBuilder $qb,$qbAvance = null,$qbDepense = null,$qbFM = null,$qbCarburant = null, $paginer = true){   
         // t = M : Mission
