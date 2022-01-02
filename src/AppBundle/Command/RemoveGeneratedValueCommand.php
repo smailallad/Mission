@@ -62,5 +62,10 @@ class RemoveGeneratedValueCommand extends ContainerAwareCommand
         $output->writeln('****** Fin de Traitement Remove Generatedvalue *******');
         $output->writeln('********************************');
         $output->writeln('');
+
+        $output->writeln('<comment>===>  Excuter php bin/console doctrine:schema:update --dump-sql');
+        $output->writeln('<comment>===>  Excuter php bin/console doctrine:schema:update --force');
+        $output->writeln('<comment>===>  Executer la commande : php bin/console restore <comment>');
+        
     }
 }

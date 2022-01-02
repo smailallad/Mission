@@ -104,7 +104,7 @@ class RestoreCommand extends ContainerAwareCommand
         $output->writeln('********************************');
         $output->writeln('');
 
-        $output->writeln('<comment>===>  Executer la commande : php bin/console restore <comment>');
+        //$output->writeln('<comment>===>  Executer la commande : php bin/console restore <comment>');
               
         $i=1;
   
@@ -1455,7 +1455,7 @@ class RestoreCommand extends ContainerAwareCommand
 
         $output->writeln('');
         $output->writeln('');
-        //$output->writeln('<comment>===>  Copier les Entity avec Auto Incrementation dans src/Entity  <comment>');
+        $output->writeln('<comment>===>  Executer la commande : php bin/console addGeneratedValue <comment>');
         $output->writeln('<comment>===>  Utiliser : php bin/console doctrine:schema:drop --dump-sql</comment>');
         $output->writeln('<comment>===>  copier le code : Creation de id Auto en premier puis les contraintes en dernier <comment>');
         $output->writeln('<comment>===>  Executer le code ALTER TABLE ... DROP FOREIGN KEY ... dans PhpMyAdmin <comment>');
