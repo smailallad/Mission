@@ -42,9 +42,9 @@ class AutoConstraint extends ContainerAwareCommand
         
         $find='@ORM\GeneratedValue';
         $replace='ORM\GeneratedValue';
-        $file ='/var/www/html/rtie3.4/src/sql.sql';
-        $auto = '/var/www/html/rtie3.4/src/auto.sql';
-        $cons = '/var/www/html/rtie3.4/src/constraint.sql';
+        $file ='/var/www/html/rtie3.4/src/AppBundle/Command/sql.sql';
+        $auto = '/var/www/html/rtie3.4/src/AppBundle/Command/auto.sql';
+        $cons = '/var/www/html/rtie3.4/src/AppBundle/Command/constraint.sql';
         $fauto = fopen($auto,'w+');
         $fcons = fopen($cons,'w+');
         //$find='ORM\GeneratedValue';

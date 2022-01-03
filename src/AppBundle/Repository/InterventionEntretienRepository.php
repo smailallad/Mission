@@ -25,18 +25,18 @@ class InterventionEntretienRepository extends \Doctrine\ORM\EntityRepository
         return $q;//->getQuery()->getResult();
     }
     public function addFilter(QueryBuilder $qb, FormInterface $form)
-    {
-        $id                     = $form->get('id')->getData();
+    {   dump($form);
+        //$id                     = $form->get('id')->getData();
         $vehicule               = $form->get('vehicule')->getData();
         //$depart               = ($form->get('depart')->getData() !== null) ? $form->get('depart')->getData()['left_date'] : null;
         //$retour               = ($form->get('depart')->getData() !== null) ? $form->get('depart')->getData()['right_date'] : null;
         $user                   = $form->get('user')->getData();
         $interventionVehicule   = $form->get('interventionVehicule')->getData();
 
-        if ($id !== null){
+        /*if ($id !== null){
             $qb->andWhere('ev.id = :id');
             $qb->setParameter('id',$id);
-        }
+        }*/
         if ($user !== null){
             $qb->andWhere('ev.user = :user');
             $qb->setParameter('user',$user);

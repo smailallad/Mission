@@ -162,3 +162,8 @@ $connection = $this->_em->getConnection();
         return $statement->fetchAll();
 
 =========================
+UPDATE entretien_vehicule SET user_id = 9  WHERE user_id = 3;
+UPDATE entretien_vehicule SET user_id = 24  WHERE user_id = 4;
+UPDATE entretien_vehicule SET user_id = 12  WHERE user_id = 6;
+UPDATE entretien_vehicule SET user_id = 3  WHERE user_id = 7;
+UPDATE entretien_vehicule SET user_id = 47  WHERE user_id = 8;

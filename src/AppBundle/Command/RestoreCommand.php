@@ -379,7 +379,7 @@ class RestoreCommand extends ContainerAwareCommand
                         ->setPassword($encoder->encodePassword($user, 'pass'))
                         ->setActive($recs["active"])
                         ->setMission($recs["active_mission"]);
-                if ($recs["code_employe"]=2){
+                if ($recs["code_employe"] == 2){
                     $user->setGroupes($groupAdmin);
                 }else{
                     $user->setGroupes($groupUser);
@@ -798,7 +798,32 @@ class RestoreCommand extends ContainerAwareCommand
 
             foreach ($ress as $recs)
             {   $vehicule = $repository->getRepository("AppBundle:Vehicule")->find($recs["vehicule_id"]);
-                $user = $repository->getRepository("AppBundle:User")->find($recs["chauffeur_id"]);
+                switch ($recs["chauffeur_id"]) {
+                    case 1:
+                        $chauffeur = 1;
+                        break;
+                    case 2:
+                        $chauffeur = 2;
+                        break;
+                    case 3:
+                        $chauffeur = 9;
+                    case 4:
+                        $chauffeur = 24;
+                        break;
+                    case 5:
+                        $chauffeur = 5;
+                        break;
+                    case 6:
+                        $chauffeur = 12;
+                        break;
+                    case 7:
+                        $chauffeur = 3;
+                        break;
+                    case 8:
+                        $chauffeur = 47;
+                        break;             
+                    }
+                $user = $repository->getRepository("AppBundle:User")->find($chauffeur);
                 $entretienVehicule  = new EntretienVehicule();
                 $entretienVehicule  ->setId($recs['id'])
                             ->setVehicule($vehicule)
@@ -809,6 +834,7 @@ class RestoreCommand extends ContainerAwareCommand
                             ;
                 $manager->persist($entretienVehicule);
                 $output->write('<comment>#</comment>');
+                
             }
 
             try {
@@ -1477,7 +1503,7 @@ class RestoreCommand extends ContainerAwareCommand
         $output->writeln('');
         $output->writeln('<comment>===>  Executer la commande : php bin/console addGeneratedValue <comment>');
         $output->writeln('<comment>===>  Utiliser : php bin/console doctrine:schema:drop --dump-sql</comment>');
-        $output->writeln('<comment>===>  copier le code : Creation de id Auto en premier puis les contraintes en dernier <comment>');
+       // $output->writeln('<comment>===>  copier le code : Creation de id Auto en premier puis les contraintes en dernier <comment>');
         $output->writeln('<comment>===>  Executer le code ALTER TABLE ... DROP FOREIGN KEY ... dans PhpMyAdmin <comment>');
         $output->writeln('<comment>===>  Excuter php bin/console doctrine:schema:update --dump-sql');
         $output->writeln('<comment>===>  Copier le resultat dans le fichier sql.sql');

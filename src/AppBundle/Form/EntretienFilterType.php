@@ -23,7 +23,8 @@ class EntretienFilterType extends AbstractType
             'required'      => false,
             'placeholder'   => '-Choisir un vehicule-',
             'query_builder' => function(\Doctrine\ORM\EntityRepository $v)
-                            {   return $v->createQueryBuilder('v');
+                            {   return $v->createQueryBuilder('v')
+                                        ->orderBy('v.nom');
                             },
             )
         )
@@ -35,7 +36,8 @@ class EntretienFilterType extends AbstractType
             'required'      => false,
             'placeholder'   => '-Choisir un chauffeur-',
             'query_builder' => function(\Doctrine\ORM\EntityRepository $u)
-                            {   return $u->createQueryBuilder('u');
+                            {   return $u->createQueryBuilder('u')
+                                        ->orderBy('u.nom');
                             },
             )
         )

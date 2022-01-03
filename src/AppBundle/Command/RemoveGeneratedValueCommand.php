@@ -9,7 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Security\Core\Role\Role;
 
 class RemoveGeneratedValueCommand extends ContainerAwareCommand
-{  // php bin/console restore
+{  // php bin/console removeGeneratedValue
     
     protected function configure()
     {
