@@ -154,4 +154,18 @@ class InterventionEntretien
         return $this->interventionVehicule;
     }
 
+
+    /**
+     * Set id.
+     *
+     * @param int $id
+     *
+     * @return InterventionEntretien
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 }
