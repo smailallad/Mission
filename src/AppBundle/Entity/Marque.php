@@ -93,4 +93,18 @@ class Marque
     {
         return $this->active;
     }
+
+    /**
+     * Set id.
+     *
+     * @param int $id
+     *
+     * @return Marque
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 }

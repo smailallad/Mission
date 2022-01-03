@@ -1,5 +1,6 @@
 <?php
 namespace AppBundle\Command;
+use PDO;
 use DateTime;
 use AppBundle\Entity\Site;
 use AppBundle\Entity\User;
@@ -29,8 +30,8 @@ use AppBundle\Entity\DepenseMission;
 use AppBundle\Entity\FamilleDepense;
 use AppBundle\Entity\TarifPrestation;
 use AppBundle\Entity\CarburantMission;
-use AppBundle\Entity\EntretienVehicule;
 use AppBundle\Entity\InterventionUser;
+use AppBundle\Entity\EntretienVehicule;
 use AppBundle\Entity\InterventionVehicule;
 use AppBundle\Entity\JustificationDepense;
 use AppBundle\Entity\InterventionEntretien;
@@ -107,9 +108,9 @@ class RestoreCommand extends ContainerAwareCommand
         //$output->writeln('<comment>===>  Executer la commande : php bin/console restore <comment>');
               
         $i=1;
-  
+              
         if (1==1) 
-    {   
+        {   
             // Roles **********************************************************************************************************
             $output->writeln('<question>' . $i . ' : Roles : </question>');
 
@@ -280,32 +281,6 @@ class RestoreCommand extends ContainerAwareCommand
                 $manager = $this->getContainer()->get('doctrine')->resetManager();
             }
 
-            //*** Gestion des vehicules 
-            //Marque  ***********************************************************************************************************
-            $i++;
-            $output->writeln('');
-            $output->writeln('<question>' . $i . ' : Marque : </question>');
-            $reqs = $dbv->prepare("SELECT * FROM marque Order By id ASC");
-            $reqs->execute();
-            $ress = $reqs->fetchAll();
-
-            foreach ($ress as $recs)
-            {   $marque     = new Marque();
-                $marque     ->setId($recs['id'])
-                            ->setNom($recs['nom'])
-                            ;
-                $manager->persist($marque);
-                $output->write('<comment>#</comment>');
-            }
-
-            try {
-                $manager->flush();
-            } catch (\Throwable $th) {
-                $output->writeln('');
-                $output->writeln('<error>Erreur: '. $th->getMessage() .'</error>');
-                $manager = $this->getContainer()->get('doctrine')->resetManager();
-            }
-
             // Client ***************************************************************************************************************
             $i++;
             $output->writeln('');
@@ -388,7 +363,8 @@ class RestoreCommand extends ContainerAwareCommand
             $i++;
             $output->writeln('');
             $output->writeln('<question>' . $i . ' : User : </question>');
-            $group = $repository->getRepository('AppBundle:Groupes')->findOneByGroupname('USER');
+            $groupUser = $repository->getRepository('AppBundle:Groupes')->findOneByGroupname('USER');
+            $groupAdmin = $repository->getRepository('AppBundle:Groupes')->findOneByGroupname('ADMIN');
             $reqs = $dbs->prepare("SELECT * FROM employe Order By code_employe ASC");
             $reqs->execute();
             $ress = $reqs->fetchAll();
@@ -402,9 +378,14 @@ class RestoreCommand extends ContainerAwareCommand
                         ->setEmail($email)
                         ->setPassword($encoder->encodePassword($user, 'pass'))
                         ->setActive($recs["active"])
-                        ->setMission($recs["active_mission"])
-                        ->setGroupes($group)
-                        ->setNaissance(new DateTime($recs["date_nais"]))
+                        ->setMission($recs["active_mission"]);
+                if ($recs["code_employe"]=2){
+                    $user->setGroupes($groupAdmin);
+                }else{
+                    $user->setGroupes($groupUser);
+                }
+                
+                $user   ->setNaissance(new DateTime($recs["date_nais"]))
                         ->setNom($recs["nom_employe"])
                         ;
                 $manager->persist($user);
@@ -610,7 +591,7 @@ class RestoreCommand extends ContainerAwareCommand
                 $manager = $this->getContainer()->get('doctrine')->resetManager();
             }
             
-            
+          
             // Mission **********************************************************************************************************
             $i++;
             $output->writeln('');
@@ -620,7 +601,7 @@ class RestoreCommand extends ContainerAwareCommand
             $ress = $reqs->fetchAll();
             $j=1;
             foreach ($ress as $recs)
-            {
+            {   //$output->writeln($recs["code_employe"]);
                 $user = $repository->getRepository("AppBundle:User")->find($recs["code_employe"]);
                 $mission    = new Mission();
                 $mission    ->setId($j)
@@ -636,6 +617,7 @@ class RestoreCommand extends ContainerAwareCommand
                 $manager->persist($mission);
                 $output->write('<comment>#</comment>');
                 $j++;
+                
 
             }
             try {
@@ -645,8 +627,34 @@ class RestoreCommand extends ContainerAwareCommand
                 $output->writeln('<error>Erreur: '. $th->getMessage() .'</error>');
                 $manager = $this->getContainer()->get('doctrine')->resetManager();
             }
+        
+            //*** Gestion des vehicules 
+            //Marque  ***********************************************************************************************************
+            $i++;
+            $output->writeln('');
+            $output->writeln('<question>' . $i . ' : Marque : </question>');
+            $reqs = $dbv->prepare("SELECT * FROM marque Order By id ASC");
+            $reqs->execute();
+            $ress = $reqs->fetchAll();
 
-            // Gestions des Vehicules
+            foreach ($ress as $recs)
+            {   $marque     = new Marque();
+                $marque     ->setId($recs['id'])
+                            ->setNom($recs['nom'])
+                            ->setActive(true)
+                            ;
+                $manager->persist($marque);
+                $output->write('<comment>#</comment>');
+            }
+
+            try {
+                $manager->flush();
+            } catch (\Throwable $th) {
+                $output->writeln('');
+                $output->writeln('<error>Erreur: '. $th->getMessage() .'</error>');
+                $manager = $this->getContainer()->get('doctrine')->resetManager();
+            }
+
             // Vehicule ********************************************************************************************************
             $i++;
             $output->writeln('');
@@ -656,6 +664,14 @@ class RestoreCommand extends ContainerAwareCommand
             $ress = $reqs->fetchAll();
             foreach ($ress as $recs)
             {   $marque = $repository->getRepository("AppBundle:Marque")->find($recs["marque_id"]);
+                $reqAssurance = $dbv->prepare("SELECT * FROM assurance where vehicule_id = " . $recs["id"] . " AND dernier = 1" );
+                $reqAssurance->execute();
+                $assurance = $reqAssurance->fetch(PDO::FETCH_ASSOC);
+
+                $reqCTech = $dbv->prepare("SELECT * FROM controletech where vehicule_id = " . $recs["id"] . " AND dernier = 1" );
+                $reqCTech->execute();
+                $controlTech = $reqCTech->fetch(PDO::FETCH_ASSOC);
+               
                 $vehicule    = new Vehicule();
                 $vehicule   ->setId($recs["id"])
                             ->setNom($recs["nom"])
@@ -665,6 +681,10 @@ class RestoreCommand extends ContainerAwareCommand
                             ->setNbrjAlertRelever($recs["nbrjalertRelever"])
                             ->setKmsRelever($recs["kmsRelever"])
                             ->setDateRelever(new DateTime($recs["dateRelever"]))
+                            ->setDebutAssurance(new DateTime($assurance["dateDebut"]))
+                            ->setFinAssurance(new DateTime($assurance["dateFin"]))
+                            ->setDebutControlTech(new DateTime($controlTech["dateDebut"]))
+                            ->setFinControlTech(new DateTime($controlTech["dateFin"]))
                             ;
                 $manager->persist($vehicule);
                 $output->write('<comment>#</comment>');
@@ -680,7 +700,7 @@ class RestoreCommand extends ContainerAwareCommand
 
             //*** Gestion des vehicules 
             // Assurance ****************************************************************************************************
-            $i++;
+            /*$i++;
             $output->writeln('');
             $output->writeln('<question>' . $i . ' : Assurance : </question>');
             $reqs = $dbv->prepare("SELECT * FROM assurance Order By id ASC");
@@ -707,11 +727,11 @@ class RestoreCommand extends ContainerAwareCommand
                 $output->writeln('');
                 $output->writeln('<error>Erreur: '. $th->getMessage() .'</error>');
                 $manager = $this->getContainer()->get('doctrine')->resetManager();
-            }
+            }*/
 
             //*** Gestion des vehicules 
             // ControlTech ****************************************************************************************************
-            $i++;
+           /* $i++;
             $output->writeln('');
             $output->writeln('<question>' . $i . ' : Controle Technique : </question>');
             $reqs = $dbv->prepare("SELECT * FROM controletech Order By id ASC");
@@ -738,13 +758,13 @@ class RestoreCommand extends ContainerAwareCommand
                 $output->writeln('');
                 $output->writeln('<error>Erreur: '. $th->getMessage() .'</error>');
                 $manager = $this->getContainer()->get('doctrine')->resetManager();
-            }
+            }*/
 
             //*** Gestion des vehicules 
             // InterventionVehicule *****************************************************************************************
             $i++;
             $output->writeln('');
-            $output->writeln('<question>' . $i . ' : Controle Technique : </question>');
+            $output->writeln('<question>' . $i . ' : Intervention Vehicule : </question>');
             $reqs = $dbv->prepare("SELECT * FROM intervention Order By id ASC");
             $reqs->execute();
             $ress = $reqs->fetchAll();
@@ -1460,8 +1480,10 @@ class RestoreCommand extends ContainerAwareCommand
         $output->writeln('<comment>===>  copier le code : Creation de id Auto en premier puis les contraintes en dernier <comment>');
         $output->writeln('<comment>===>  Executer le code ALTER TABLE ... DROP FOREIGN KEY ... dans PhpMyAdmin <comment>');
         $output->writeln('<comment>===>  Excuter php bin/console doctrine:schema:update --dump-sql');
-        $output->writeln('<comment>===>  Executer ALTER TABLE ... CHANGE id id INT AUTO_INCREMENT NOT NULL, CHANGE ... <comment>');
-        $output->writeln('<comment>===>  Executer ALTER TABLE ... ADD CONSTRAINT ... FOREIGN KEY ... <comment>');
+        $output->writeln('<comment>===>  Copier le resultat dans le fichier sql.sql');
+        $output->writeln('<comment>===>  Executer la commande php bin/console autoConstraint');
+        $output->writeln('<comment>===>  Executer le contenu du fichier auto.sql dans phpmyadmin');
+        $output->writeln('<comment>===>  Executer le contenu du fichier constraint.sql dans phpmyadmin');
         $output->writeln('');
         $output->writeln('********************************');
         $output->writeln('****** Fin de Traitement *******');

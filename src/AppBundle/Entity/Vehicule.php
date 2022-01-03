@@ -450,4 +450,18 @@ class Vehicule
     {
         return $this->nom;
     }
+
+    /**
+     * Set id.
+     *
+     * @param int $id
+     *
+     * @return Vehicule
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 }
