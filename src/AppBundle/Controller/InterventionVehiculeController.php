@@ -95,7 +95,7 @@ class InterventionVehiculeController extends Controller
         $kmsInterventions = $this->getDoctrine()->getRepository('AppBundle:KmsInterventionVehicule')->findByInterventionVehicule($interventionVehicule);
         if ($kmsInterventionId <> null) {
             $kmsInterventionId = $cryptage->my_decrypt($kmsInterventionId);
-            dump($kmsInterventionId);
+            
             $kmsIntervention = $this->getDoctrine()->getRepository('AppBundle:KmsInterventionVehicule')->find($kmsInterventionId);
             //$kmsIntervention = $kmsIntervention->getInterventionVehicule();
             $methode = 'Edit';
@@ -232,7 +232,7 @@ class InterventionVehiculeController extends Controller
         };
         $this->addQueryBuilderSort($qb, $name);
         $request = $this->container->get('request_stack')->getCurrentRequest();
-        //dump($nbr_pages);
+        
         return $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), $nbr_pages);
     }
     protected function getFilter($name)

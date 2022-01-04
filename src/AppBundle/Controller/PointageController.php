@@ -29,7 +29,6 @@ class PointageController extends Controller
         //if ($form->handleRequest($request)->isValid())
         $form->handleRequest($request);
         if ($form->isSubmitted()) {
-            //dump($form);
             if ($form->isValid()) {
                 $manager = $this->getDoctrine()->getManager();
                 $manager->persist($pointageUser);
@@ -37,11 +36,7 @@ class PointageController extends Controller
                 $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
                 $cryptage = $this->container->get('my.cryptage');
                 return $this->redirect($this->generateUrl('pointage_new'));
-            }else{
-                //dump('erreur Valide');
             }
-        }else{
-            //dump('non submit');
         }
         return $this->render('@App/PointageUser/new.html.twig', array(
             'pointageUser' => $pointageUser,
@@ -177,13 +172,8 @@ class PointageController extends Controller
                 $user   = $form->get('user')->getData();
                 $du = ($form->get('date')->getData() !== null) ? $form->get('date')->getData()['left_date'] : null;
                 $au = ($form->get('date')->getData() !== null) ? $form->get('date')->getData()['right_date'] : null;
-
-                dump($du);
-                dump($au);
-                dump($user);
                 $manager = $this->getDoctrine()->getManager();
                 // Recupere les sommes  avant pagination
-                //dump($qbDepense);
                 if ($qb !== null){
                     $qb = $manager->getRepository('AppBundle:PointageUser')->addFilterPointage($qb,$user,$du,$au);
                 }
@@ -199,7 +189,6 @@ class PointageController extends Controller
         };
         $this->addQueryBuilderSort($qb, $name);
         $request = $this->container->get('request_stack')->getCurrentRequest();
-        dump($qb->getDQL());
         return $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), $nbr_pages);
     }
     protected function getFilter($name)

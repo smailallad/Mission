@@ -81,13 +81,14 @@
                 </tbody>
                 <tfoot>
                     <tr class="info">
-                        <td colspan="7" class="text-right"> <b>Total</b> </td>
+                        <td colspan="6" class="text-right"> <b>Total</b> </td>
                         <td class="text-right"> <b>{{ sumAvance | number_format(2, ',', ' ') }} DA</b> </td>
                         <td class="text-right"> <b>{{ sumDepense| number_format(2, ',', ' ') }} DA</b> </td>
                         <td class="text-right"> <b>{{ sumFM| number_format(2, ',', ' ') }} DA</b> </td>
+                        <td class="text-right"> <b>{{ sumpCarburant| number_format(2, ',', ' ') }} DA</b> </td>
                         <td class="text-right"> 
                             <b>
-                            {% set sumDepFm = sumDepense + sumFM %}
+                            {% set sumDepFm = sumDepense + sumFM + sumpCarburant %}
                             {{ sumDepFm | number_format(2, ',', ' ') }} DA
                             </b> 
                         </td>

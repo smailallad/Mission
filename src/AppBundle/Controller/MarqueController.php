@@ -104,7 +104,7 @@ class MarqueController extends Controller
         $kmsInterventions = $this->getDoctrine()->getRepository('AppBundle:KmsInterventionVehicule')->findByMarque($marque);
         if ($kmsInterventionId <> null) {
             $kmsInterventionId = $cryptage->my_decrypt($kmsInterventionId);
-            dump($kmsInterventionId);
+           
             $kmsIntervention = $this->getDoctrine()->getRepository('AppBundle:KmsInterventionVehicule')->find($kmsInterventionId);
             //$kmsIntervention = $kmsIntervention->getInterventionVehicule();
             $methode = 'Edit';
@@ -113,7 +113,7 @@ class MarqueController extends Controller
             $kmsIntervention->setMarque($marque);
             $methode = 'Post';
         }
-        dump($methode);
+       
         $deleteForm = $this->createDeleteForm($id, 'marque_delete');
         //$deleteKmsForm = $this->createDeleteForm($id, 'kms_intervention_delete');
         $form = $this->createForm(KmsMarqueType::class, $kmsIntervention, array(
@@ -131,7 +131,7 @@ class MarqueController extends Controller
                 $this->getDoctrine()->getManager()->flush();
                 return $this->redirect($this->generateUrl('marque_show', array('id' => $cryptage->my_encrypt($id))));
         }
-        dump($kmsInterventions);
+        
         return $this->render('@App/Marque/show.html.twig', array(
             'marque'                    => $marque,
             'kmsInterventions'          => $kmsInterventions,

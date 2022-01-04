@@ -569,7 +569,6 @@ class RestoreCommand extends ContainerAwareCommand
             foreach ($ress as $recs)
             {   
                 $wilaya = $repository->getRepository("AppBundle:Wilaya")->find($recs["code_wilaya"]);
-                //dump("wilaya: " .$recs["code_wilaya"]);
                 $client = $repository->getRepository("AppBundle:Client")->find($recs["client"]);
                 $site = new Site();
                 $site   ->setId($j)

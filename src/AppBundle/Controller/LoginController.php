@@ -25,8 +25,7 @@ class LoginController extends Controller
 
         $errors =$authenticationUtils->getLastAuthenticationError();
         $lastUserName = $authenticationUtils->getLastUserName();
-        //dump("error: ".$errors);
-        //dump("user: ". $lastUserName);
+        
         //$manager = $this->getDoctrine()->getManager();
         //$menu_famille = $manager->getRepository('AppBundle:Famille')->childrenHierarchy();
         //$promos = $manager->getRepository('AppBundle:Article')->getPromo();
@@ -70,12 +69,9 @@ class LoginController extends Controller
             $user->setPassword($password);
             $user->setEnabled(false);
 
-            //$manager = $this->getDoctrine()->getManager();
          	$groupes = $manager->getRepository('AppBundle:Groupes')->find(1);
 
-         	//var_dump($groupes); exit;
-
-            $user->setGroups($groupes);
+         	$user->setGroups($groupes);
 
             if ($form->isValid())
             {
@@ -86,7 +82,7 @@ class LoginController extends Controller
 
 
         }
-        //echo "okkk";exit;
+        
         return $this->render('@App/Register/register.html.twig', array(
             'form' => $form->createView()
         ));

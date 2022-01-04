@@ -18,3 +18,10 @@
                     ],
                     )
                 )
+
+PHPExcel
+/var/www/html/rtie3.4/vendor/phpoffice/phpexcel/Classes/PHPExcel/Calulation.php
+ligne 2946:	if (is_array($testPrevOp) and ($testPrevOp['value'] == ':')) {
+
+/var/www/html/rtie3.4/vendor/phpoffice/phpexcel/Classes/PHPExcel/Writer/Excel2007/Worksheet.php:1118
+ligne 1118:	if (is_array($attributes) and ($attributes['t'] == 'array')) {

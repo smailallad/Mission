@@ -188,10 +188,6 @@ class PrestationController extends Controller
         $prestation = $this->getDoctrine()->getRepository('AppBundle:Prestation')->find($id);
         $tarifPrestation = new TarifPrestation;
         $tarifPrestation->setPrestation($prestation);
-        //dump($request);
-        //throw new \Exception("Arret");
-        
-        //$id = $tarifPrestation->getPrestation()->getId();
         $newMontantForm = $this->createForm(TarifPrestationNewType::class, $tarifPrestation);
         if ($newMontantForm->handleRequest($request)->isValid()) {
             $manager->persist($tarifPrestation);

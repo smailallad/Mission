@@ -81,10 +81,6 @@ class VehiculeController extends Controller
             'method' => 'PUT',
         ));
         if ($editForm->handleRequest($request)->isValid()) {
-            
-            dump($vehicule);
-            dump($lastEntretien);
-            //throw new \Exception('Message');
             if ($lastEntretien != null){
                 if ($vehicule->getDateRelever() < $lastEntretien->getDate()){
                     $this->get('session')->getFlashBag()->add('danger', 'Date incorrecte, elle doit etre superieur à : ' . date_format($lastEntretien->getDate(),"d/m/Y"));

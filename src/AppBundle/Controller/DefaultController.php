@@ -48,7 +48,6 @@ class DefaultController extends Controller
         $relevers = $this->getDoctrine()->getRepository('AppBundle:Vehicule')->getRelever();
 
         $interventionImportantes = $this->getDoctrine()->getRepository('AppBundle:InterventionVehicule')->getInterventionImportantes();
-        dump($interventionImportantes);
         return $this->render("default/index.html.twig",array(
             'alertEntretiens'           => $alertEntretiens,
             'assuranceDepassers'        => $assuranceDepassers,
@@ -91,7 +90,6 @@ class DefaultController extends Controller
                 return $this->redirectToRoute('homepage');
             }
         }else{
-            //dump("erreur");
             //throw new \Exception("Arret");
         }
         return $this->render('@App/User/mpUser.html.twig', array(
@@ -193,27 +191,23 @@ class DefaultController extends Controller
         $kms2 = $this->getDoctrine()->getRepository("AppBundle:EntretienVehicule")->getNext($date,$vehicule);
 
         
-        dump($kms1);
-        dump($kms2);
+        
         */
         /*
         $date = new DateTime('2021-04-14');
         //679
         $mission = $this->getDoctrine()->getRepository("AppBundle:Mission")->find(679);
         $missions = $this->getDoctrine()->getRepository("AppBundle:User")->getChefMissionDate($date,$mission);
-        dump($missions);
+        
         */
 
         $req = $this->getDoctrine()->getRepository("AppBundle:Intervention")->getInterventionsAll();
         $req = $req->getQuery()->getResult();
-        //dump($req[0]);
+        
         $var =$req[1];
-        dump($var);
-        dump($var->getId());
+        
         $var1 = $var->getInterventionUsers();
-        dump ($var1);
-        dump(count($var1));
-
+        
         $form = $this->createForm(DemoType::class);
         
         return $this->render('@App/Default/test.html.twig', array(
@@ -225,8 +219,7 @@ class DefaultController extends Controller
         //
         //$manager = $this->getDoctrine()->getManager();
         //$qb = $manager->getRepository('AppBundle:DepenseMission')->test();
-        //dump($qb);
-
+        
         //throw new \Exception("Arret");
 
         /*
@@ -269,10 +262,9 @@ class DefaultController extends Controller
 
 /*        $prestation = $this->getDoctrine()->getRepository('AppBundle:Prestation')->find(100);
         $zone = $this->getDoctrine()->getRepository('AppBundle:Zone')->getAddZone($prestation);
-        //dump($zone);
-        //dump($zone->getDql());
+       
         $zone = $zone->getQuery()->getResult();
-        //dump($zone);
+       
 
 
         $data = $this->getDoctrine()->getRepository('AppBundle:FamilleDepense')->findAll();
@@ -285,10 +277,7 @@ class DefaultController extends Controller
             );
             $i++;
         }
-        //dump($donnees[0]);
-        dump($data);
-        dump($a);
-
+        
         */
 
         //throw \Exception("Arret");

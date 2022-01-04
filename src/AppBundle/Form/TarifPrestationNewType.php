@@ -16,7 +16,6 @@ class TarifPrestationNewType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {   $prestation = $options['prestation'];
-        //dump($prestation);
         $builder
         ->add('Zone',EntityType::class, array(
             'label'         => 'Zone',

@@ -18,7 +18,6 @@ class Cryptage {
 	    return $output;
     }
     public function my_decrypt($value) {
-        //dump($this->secret_key);dump($this->secret_iv);
 	    $output = false;
 	    $encrypt_method = "AES-256-CBC";
 	    $key = hash( 'sha256', $this->secret_key );

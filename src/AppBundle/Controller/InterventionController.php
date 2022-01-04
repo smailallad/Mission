@@ -27,7 +27,7 @@ class InterventionController extends Controller
             return $response;
         }
         $qb = $manager->getRepository('AppBundle:Intervention')->getInterventionsAll();
-        //dump($qb);
+       
         
         $paginator = $this->filter($form, $qb, 'journal');
         
@@ -111,7 +111,7 @@ class InterventionController extends Controller
                 $du         = ($form->get('periode')->getData() !== null) ? $form->get('periode')->getData()['left_date'] : null;
                 $au         = ($form->get('periode')->getData() !== null) ? $form->get('periode')->getData()['right_date'] : null;
                 $user       = $form->get('user')->getData();
-                //dump($user);
+                
 //                $qb         = $manager->getRepository('AppBundle:Intervention')->addFilterInterventionAll($qb,$mission,$code,$site,$du,$au,$user);
                 //$this->get('lexik_form_filter.query_builder_updater')->addFilterConditions($form, $qb);
                 
@@ -130,12 +130,9 @@ class InterventionController extends Controller
             }
 
             $this->addQueryBuilderSort($qb, $name);
-            //dump($qb);
+            
             $request = $this->container->get('request_stack')->getCurrentRequest();
-            //dump($request);
-            //dump($nbr_pages);
-            //dump($request->query->get('page', 1));
-            //dump($qb);
+            
             return $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), $nbr_pages);
         }else{
             return $qb->getQuery()->getResult();
@@ -147,8 +144,7 @@ class InterventionController extends Controller
     }
     protected function fAlias(QueryBuilder $qb, $name){
         $joints = current($qb->getDQLPart('join'));
-        //dump($qb);
-        //dump($joints);
+       
         if ($joints !== false) {
             foreach($joints as $joint){
                 $valeur = explode(".",$joint->getJoin());
@@ -193,18 +189,17 @@ class InterventionController extends Controller
         //    return $response;
         //}
         $qb = $manager->getRepository('AppBundle:Intervention')->getInterventionsAll();
-        //dump($qb);
+       
         
         $interventions = $this->filter($form, $qb, 'journal',false);
         
-        //dump($intervention);
+        
         //$session = $this->get("session");
         //$session->set("appel_employe","non"); // appel = 1 non employe
         
         //$manager = $this->getDoctrine()->getManager();
         //$form = $this->createForm(MissionFilterType::class);
-        //dump($form);
-        //dump($form->get('user')->getData());
+       
         //throw new \Exception("Arret");
         
        /* if (!is_null($response = $this->saveFilter($form, 'mission', 'mission_index'))) {
@@ -456,8 +451,6 @@ class InterventionController extends Controller
                 ->setCellValue('H'.$i, $intervention->getDesignation())
                 ;
             $realisateurs = $this->getDoctrine()->getRepository('AppBundle:InterventionUser')->getRealisateursIntervention($intervention);
-            //dump($realisateurs);
-            //throw new \Exception("Error Processing Request", 1);
             
             $var = "";
             foreach ($realisateurs as $realisateur) {

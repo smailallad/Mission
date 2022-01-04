@@ -80,7 +80,7 @@ class InterventionEntretienController extends Controller
         }
     }
     protected function filter(FormInterface $form, QueryBuilder $qb, $name)
-    {   //dump($qb->getDQL());
+    {  
         $manager = $this->getDoctrine()->getManager();
         if (!is_null($values = $this->getFilter($name))) {
             if ($form->submit($values)->isValid()) {
@@ -88,7 +88,7 @@ class InterventionEntretienController extends Controller
                 $qb = $manager->getRepository('AppBundle:InterventionEntretien')->addFilter($qb,$form);
             }
         }
-        //dump($qb->getDQL());
+        
         // possible sorting
         // nombre de ligne
         $session = $this->get('session');

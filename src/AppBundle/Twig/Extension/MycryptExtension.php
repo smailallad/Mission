@@ -27,7 +27,6 @@ class MycryptExtension extends \Twig_Extension
     {
         $secret_key = $this->container->getParameter('secret_key');
         $secret_iv = $this->container->getParameter('secret_iv');
-        //dump($secret_key);dump($secret_iv);
 	    $output = false;
 	    $encrypt_method = "AES-256-CBC";
 	    $key = hash( 'sha256', $secret_key );

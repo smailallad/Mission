@@ -36,16 +36,14 @@ class EmployeController extends Controller
         $user = new User();
         $manager = $this->getDoctrine()->getManager();
         $groupe = $this->getDoctrine()->getRepository('AppBundle:Groupes')->findOneBy(['groupname' =>'USER']);
-        //dump($groupe);
+        
         $user->setGroupes($groupe);
-        //dump($user);
+       
 
         $form = $this->createForm(EmployeType::class, $user);
         $form->handleRequest($request); 
         if ($form->isSubmitted())
-        {   //throw new \Exception('Message1');
-        
-            //throw new \Exception('Message2');
+        {   
             $recruter = $form['recruter']->getData();
             $fonction = $form['fonction']->getData();
             $recrutement = new Recrutement();
@@ -78,10 +76,10 @@ class EmployeController extends Controller
                 {
                     $manager->persist($user);
                     $manager->persist($recrutement);
-                    //dump($fonctionUser);
+                  
                     $manager->persist($fonctionUser);
                     $manager->flush();
-                    /*** */
+                  
                     $adresse = $user->getEmail();
                     $name = $user->getNom();
                     $id   = $user->getUsername();
@@ -141,7 +139,7 @@ class EmployeController extends Controller
         $qb = $manager->getRepository('AppBundle:User')->createQueryBuilder('u');
         $paginator = $this->filter($form, $qb, 'employe');
         $forme=$form->createView();
-        //dump($paginator);
+        
         return $this->render('@App/Employe/index.html.twig', array(
             'form'      => $form->createView(),
             'paginator' => $paginator,
@@ -180,10 +178,10 @@ class EmployeController extends Controller
         $id = $cryptage->my_decrypt($id);
         $recrutements = $this->getDoctrine()->getRepository('AppBundle:Recrutement')->listeRecrutement($id);
         $employe = $this->getDoctrine()->getRepository('AppBundle:User')->find($id);
-        //dump($id);dump($employe);
+    
         $fonctions = $this->getDoctrine()->getRepository('AppBundle:FonctionUser')->findByUser($employe);
         $deleteForm = $this->createDeleteForm($id, 'employe_delete');
-        //dump($fonctions);
+ 
         return $this->render('@App/Employe/show.html.twig', array(
             'employe'       => $employe,
             'recrutements'  => $recrutements,
@@ -263,9 +261,9 @@ class EmployeController extends Controller
                 //$date = new DateTime('2000-01-01');
                 //$fonctionUser->setDatefonction($date);
                 $fonctionUser->setUser($user);
-                //dump($recrutement);
+   
                 $this->getDoctrine()->getManager()->persist($recrutement);
-                //dump($fonctionUser);
+            
                 $this->getDoctrine()->getManager()->persist($fonctionUser);
                 $this->getDoctrine()->getManager()->flush();
                 //$this->get('session')->getFlashBag()->add('success', "Enregistrement avec succès.");
@@ -489,10 +487,10 @@ class EmployeController extends Controller
             'method' => 'PUT',
         ));
         if ($form->handleRequest($request)->isValid())
-        {   //dump($fonctionEmploye->getDatefonction());dump(($form['datefonction']->getData()));exit;
+        {  
             $erreur = false;
             $recrutement = $manager->getRepository("AppBundle:Recrutement")->findOneBy(["user" => $userId],["recruter" => "DESC"]);
-            //dump($recrutement);
+           
             if ($recrutement->getRecruter() >= $form['datefonction']->getData())
             {
                 $this->get('session')->getFlashBag()->add('danger', "Date de la nouvelle fonction doit être supérieur à la dernière date de recrutement:".$recrutement->getRecruter()->format('d/m/Y'));
@@ -500,7 +498,7 @@ class EmployeController extends Controller
             }
             if (!$erreur)
             {
-                //dump($fonctionEmploye);
+                
                 $this->getDoctrine()->getManager()->persist($fonctionEmploye);
                 $this->getDoctrine()->getManager()->flush();
                 //$this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
@@ -526,15 +524,14 @@ class EmployeController extends Controller
         {
             $fonctionEmploye = $fonctionEmploye[0];
         }
-        //dump($fonctionEmploye);
-        //dump(Type::getTypesMap());
+       
         $form = $this->createForm(FonctionUserType::class);
         $form = $this->createForm(FonctionUserType::class, $fonctionEmploye, array(
             'action' => $this->generateUrl('fonction_employe_edit', array('userId' => $cryptage->my_encrypt($userId),'fonctionId' => $cryptage->my_encrypt($fonctionId))),
             'method' => 'PUT',
         ));
         /*
-        //dump($request->getMethod());dump($form);
+        
         if ($request->getMethod() == 'PUT')
         {
             $fonctionEmploye->setDatefonction($form['datef']->getData());
@@ -543,7 +540,7 @@ class EmployeController extends Controller
         }*/
         $oldDatefonction = $fonctionEmploye->getDatefonction();
         if ($form->handleRequest($request)->isValid())
-        {   //dump($fonctionEmploye->getDatefonction());dump(($form['datefonction']->getData()));exit;
+        {  
             $erreur = false;
             if ($oldDatefonction != $form['datefonction']->getData())
             {
@@ -556,7 +553,7 @@ class EmployeController extends Controller
                 }else
                 {
                     //$recrutement = $manager->getRepository(Recrutement::class)->getRecrutementFonction($userId,$oldDatefonction);
-                    //dump($recrutement);exit;
+                   
                 }
             }
             if (!$erreur)

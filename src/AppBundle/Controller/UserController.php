@@ -29,8 +29,6 @@ class UserController extends Controller
         $qb = $manager->getRepository('AppBundle:User')->createQueryBuilder('u');
         $paginator = $this->filter($form, $qb, 'user');
         $forme=$form->createView();
-        //dump($paginator);
-        //echo "ok";exit;
         return $this->render('@App/User/index.html.twig', array(
             'form'      => $form->createView(),
             'paginator' => $paginator,
@@ -78,7 +76,7 @@ class UserController extends Controller
      *
      */
     public function editAction($id, Request $request)
-    {   //dump($id);
+    {   
         $cryptage = $this->container->get('my.cryptage');
         $user = $this->getDoctrine()->getRepository('AppBundle:User')->find($cryptage->my_decrypt($id));
         $editForm = $this->createForm(UserType::Class, $user, array(
@@ -260,10 +258,8 @@ class UserController extends Controller
         if ($form->isSubmitted()){  
             if ($form->isValid()){
                 $mp= $user->getPassword();
-                dump($mp);
                 $password = $passwordEncoder->encodePassword($user, $user->getPassword());
                 $user->setPassword($password);
-                dump($password);
                 $manager = $this->getDoctrine()->getManager();
                 $manager->persist($user);
                 
@@ -274,8 +270,6 @@ class UserController extends Controller
                 $id     = $user->getUsername();
                 $mp     = $mp;
                 $mail = $this->container->getParameter('mailer_user');
-                //dump($mail);
-                //throw new \Exception("Arret");
                 $message = (new \Swift_Message('Bonjour'))
                     ->setFrom($mail)
                     ->setTo($adresse)

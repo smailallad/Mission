@@ -144,7 +144,6 @@ LEFT JOIN (
                                             ON m.user_id = aa.id
                                             WHERE m.id = ?', $rsm);
         $query->setParameter(1, 354);
-        dump($query);
         return $query->getResult();
     }
 }

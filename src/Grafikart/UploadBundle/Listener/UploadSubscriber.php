@@ -26,7 +26,6 @@ class UploadSubscriber implements EventSubscriber {
     foreach ($this->reader->getUploadableFields($entity) as $property => $annotation)	{
       $accessor = PropertyAccess::createPropertyAccessor();
       $file = $accessor->getValue($entity,$property);
-      //dump($file);
     }	
     
     throw new \Exception("test");

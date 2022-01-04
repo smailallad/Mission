@@ -53,7 +53,7 @@ class MissionRepository extends \Doctrine\ORM\EntityRepository{
         $q->setParameter('v1', $t);
         $q->setParameter('user',$user);
 
-        return $q->getQuery()->getResult();
+        return $q->getQuery()->getResult(); 
     }
 
     public function getMissionUser($user,$t){
@@ -177,7 +177,7 @@ class MissionRepository extends \Doctrine\ORM\EntityRepository{
 
          //WHERE m.code LIKE ':id%'");
         //$query->setParameter(1, $id);
-        //dump($query);
+        
     }
 
    

@@ -166,11 +166,11 @@ class EntretienController extends Controller
     {
         $cryptage = $this->container->get('my.cryptage');
         $manager = $this->getDoctrine()->getManager();
-        //dump($id);
+        
         //$id = $cryptage->my_decrypt($id);
-        //dump($id);
+       
         $intervention = $this->getDoctrine()->getRepository('AppBundle:InterventionEntretien')->find($id);
-        //dump($intervention);
+       
         $entretien = $intervention->getEntretienVehicule()->getId();
         $manager->remove($intervention);
         $manager->flush();

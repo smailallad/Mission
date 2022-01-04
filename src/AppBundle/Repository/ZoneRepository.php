@@ -29,10 +29,6 @@ class ZoneRepository extends \Doctrine\ORM\EntityRepository
                 ->orderBy('z.nom')
                 ->setParameter('v1',$prestation)
         ;
-        //dump($qb2);
-        //throw new \Exception('Message');
-        return $qb2;
-        //return $qb2->getQuery()->getResult();
-       
+        return $qb2;       
     }
 }

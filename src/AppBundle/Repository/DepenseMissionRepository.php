@@ -30,7 +30,7 @@ class DepenseMissionRepository extends \Doctrine\ORM\EntityRepository
         ->select('SUM(e.montant) AS total')
         ->where('e.mission = :mission')
         ->setParameter('mission',$mission);
-        ;
+        ; 
         return $q->getQuery()->getResult()[0];
     }
 
@@ -106,8 +106,6 @@ class DepenseMissionRepository extends \Doctrine\ORM\EntityRepository
         ->where('m.code = :code')
         ->setParameter('code','2021M0001');
         ;
-        
-        //dump($q);
         $res = $q->getQuery()->execute();
         return $res;
   

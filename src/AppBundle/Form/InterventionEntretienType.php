@@ -6,7 +6,6 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use AppBundle\Repository\InterventionVehiculeRepository;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
@@ -19,7 +18,6 @@ class InterventionEntretienType extends AbstractType
     {
         $entretien      = $options['entretien'];
         $intervention   = $options['intervention'];
-        //dump($intervention);
         $builder
         ->add('interventionVehicule',EntityType::class, array(
             'label'         => 'Intervention',

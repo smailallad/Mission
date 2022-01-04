@@ -72,10 +72,8 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
                 ->setParameter('mission',$mission)
                 ->setParameter('d1',$date)
         ;
-        //dump($qb2);
-        //throw new \Exception('Message');
+        
         return $qb2;
-        //return $qb2->getQuery()->getResult();
        
     }
     public function getChefMissionDate($date,$mission)

@@ -35,9 +35,7 @@ class LicenciementRepository extends \Doctrine\ORM\EntityRepository
         }
     }
     public function getLicenciementPrecedent($user,$date)
-    {   //dump($user);
-        //dump($date);
-        $q=$this->createQueryBuilder('l')
+    {   $q=$this->createQueryBuilder('l')
                 ->leftJoin('l.recrutement','r','WITH','r.user = :user')
                 //->join('r.user','u')
                 ->addSelect('r')
@@ -56,9 +54,7 @@ class LicenciementRepository extends \Doctrine\ORM\EntityRepository
         }
 }
     public function getLicenciementDernier($user)
-    {   //dump($user);
-        //dump($date);
-        $q=$this->createQueryBuilder('l')
+    {   $q=$this->createQueryBuilder('l')
                 ->join('l.recrutement','r','WITH','r.user = :user')
                 ->addSelect('r')
                 ->setParameter('user', $user)

@@ -45,7 +45,7 @@ class MissionController extends Controller
 
         $manager = $this->getDoctrine()->getManager();
         $form = $this->createForm(MissionFilterType::class);
-        //dump($form);
+        
         if (!is_null($response = $this->saveFilter($form, 'mission', 'mission_index'))) {
             return $response;
         }
@@ -57,7 +57,7 @@ class MissionController extends Controller
         $qbCarburant    = $manager->getRepository('AppBundle:CarburantMission')->getTotalCarburantMissions('M');
 
         $paginator = $this->filter($form,'mission', $qb,$qbAvance,$qbDepense,$qbFM,$qbCarburant);
-        //dump($qbDepense)->getDql();
+        
         $SumAvance      = ($qbAvance->getQuery()->getResult()[0]['total']    === null) ? 0 : $qbAvance->getQuery()->getResult()[0]['total'] ;
         $SumDepense     = ($qbDepense->getQuery()->getResult()[0]['total']   === null) ? 0 : $qbDepense->getQuery()->getResult()[0]['total'];
         $SumFM          = ($qbFM->getQuery()->getResult()[0]['total']        === null) ? 0 : $qbFM->getQuery()->getResult()[0]['total'];
@@ -95,7 +95,7 @@ class MissionController extends Controller
 
             );
         }
-        //dump($missions);
+       
         $forme=$form->createView();
         return $this->render('@App/Mission/mission.index.html.twig', array(
             'page'          => 'mission',
@@ -124,17 +124,16 @@ class MissionController extends Controller
         //$mission = $mission->getQuery()->getResult();
 
         $qbAvance   = $manager->getRepository('AppBundle:Mission')->getAvanceMissionUser($user,'M');
-        $qbDepense  = $manager->getRepository('AppBundle:DepenseMission')->getTotalDepenseMissions('M');
+        $qbDepense  = $manager->getRepository('AppBundle:DepenseMission')->getTotalDepenseMissions('M'); 
         $qbDepense  = $manager->getRepository('AppBundle:DepenseMission')->addFilterTotalDepenseMissions($qbDepense,null,null,null,$user,null,null,false);
-
+        
         $qbFM       = $manager->getRepository('AppBundle:FraisMission')->getTotalFM('M');
         $qbFM       = $manager->getRepository('AppBundle:FraisMission')->addFilterTotalFM($qbFM,null,null,null,$user,null,null,false);
 
         $qbCarburant= $manager->getRepository('AppBundle:CarburantMission')->getTotalCarburantMissions('M');
         $qbCarburant= $manager->getRepository('AppBundle:CarburantMission')->addFilterTotalCarburantMissions($qbCarburant,null,null,null,$user,null,null,false);
 
-        //dump($qbTotalFM);
-        ///////
+       
         $SumAvance  = ($qbAvance[0]['total']    === null) ? 0 : $qbAvance[0]['total'] ;
         $SumDepense = ($qbDepense->getQuery()->getResult()[0]['total']   === null) ? 0 : $qbDepense->getQuery()->getResult()[0]['total'];
         $SumFM      = ($qbFM->getQuery()->getResult()[0]['total']        === null) ? 0 : $qbFM->getQuery()->getResult()[0]['total'];
@@ -142,9 +141,9 @@ class MissionController extends Controller
 
         
         $SumSolde   = $SumAvance - $SumDepense - $SumFM - $SumCarburant;
-        $sommeDepense = [];
-        $sommeFm = [];
-        $SommeCarburant = [];
+        //$sommeDepense = [];
+        //$sommeFm = [];
+        //$SommeCarburant = [];
         $missions = [];
         foreach ($mission as $value) {
             $mis = $value->getId();
@@ -185,7 +184,7 @@ class MissionController extends Controller
             'sumAvance'     => $SumAvance,
             'sumDepense'    => $SumDepense,
             'sumFM'         => $SumFM,
-            'SumpCarburant' => $SumCarburant,
+            'sumpCarburant' => $SumCarburant,
             'sumSolde'      => $SumSolde,
         ));
     }
@@ -200,7 +199,7 @@ class MissionController extends Controller
         
         $manager = $this->getDoctrine()->getManager();
         $form = $this->createForm(NoteFraisFilterType::class);
-        //dump($form);
+        
         if (!is_null($response = $this->saveFilter($form, 'note_frais', 'note_frais_index'))) {
             return $response;
         }
@@ -268,7 +267,6 @@ class MissionController extends Controller
         $qbAvance   = $manager->getRepository('AppBundle:Mission')->getAvanceMissionUser($user,'C');
         $qbDepense  = $manager->getRepository('AppBundle:DepenseMission')->getTotalDepenseMissions('C');
         $qbDepense  = $manager->getRepository('AppBundle:DepenseMission')->addFilterTotalDepenseMissions($qbDepense,null,null,null,$user,null,null,false);
-
         $SumAvance  = ($qbAvance[0]['total']    === null) ? 0 : $qbAvance[0]['total'] ;
         $SumDepense = ($qbDepense->getQuery()->getResult()[0]['total']   === null) ? 0 : $qbDepense->getQuery()->getResult()[0]['total'];
 
@@ -369,14 +367,13 @@ class MissionController extends Controller
         ));
         $depart = $request->request->get('mission')['depart'];
         $retour = $request->request->get('mission')['retour'];
-        //dump($depart);
-        //throw new \Exception('Arret');
+        
         if ($editForm->handleRequest($request)->isValid()) {
 
             $dd = $this->getDoctrine()->getRepository('AppBundle:Intervention')->valideDate($id,$depart,$retour);
             $d1 = $dd["d1"];
             $d2 = $dd["d2"];
-            //dump($dd);
+           
 
             if (($d1 !== null) or ($d2 !== null)){
                 if ($d1 != null){
@@ -424,11 +421,8 @@ class MissionController extends Controller
             'method' => 'PUT',
         ));
         
-        ////dump($depart);
-        //throw new \Exception('Message');
+        
         if ($avanceForm->handleRequest($request)->isValid()) {
-            //dump($mission);
-            //throw new \Exception('Message');
             $this->getDoctrine()->getManager()->flush();
             //$this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
             return $this->redirect($this->generateUrl('mission_show', array('id' => $cryptage->my_encrypt($id))));
@@ -713,7 +707,7 @@ class MissionController extends Controller
      * id: mission
      */
     public function missionCarburantAction($id,Request $request)
-    {   //dump("entrer");
+    {   
         $cryptage = $this->container->get('my.cryptage');
         $manager = $this->getDoctrine()->getManager();
         $id = $cryptage->my_decrypt($id);
@@ -878,12 +872,10 @@ class MissionController extends Controller
         $montantCarburantMission    = $montantCarburantMission['total'] !== null ? $montantCarburantMission['total'] : 0;
         $montantFmMission           = $montantFmMission['total'] !== null  ? $montantFmMission['total'] : 0;
 
-        //dump($userInterventions);
         $employes = array();
         foreach ($userInterventions as $value) {
             $employes[] = ['dateFm' =>$value->getIntervention()->getDateIntervention() ,'user' =>$value->getUser()];
         }
-        //dump($employes);
         return $this->render('@App/Mission/mission.fm.html.twig', array(
             'page'                      => 'fm',
             'mission'                   => $mission,
@@ -908,19 +900,18 @@ class MissionController extends Controller
         $id = $cryptage->my_decrypt($id);
         //$mission         = $this->getDoctrine()->getRepository('AppBundle:Mission')->find($id);
         $userInterventions = $this->getDoctrine()->getRepository('AppBundle:InterventionUser')->getRealisateurs($id);
-        //dump($userInterventions);
+        
         foreach ($userInterventions as $userIntervention) {
-            //dump($userIntervention);
+            
             $d = $userIntervention->getIntervention()->getDateIntervention();
             $user =$userIntervention->getUser();
             $wilaya = $userIntervention->getIntervention()->getSite()->getWilaya()->getNom();
             $montantFm = $userIntervention->getIntervention()->getSite()->getWilaya()->getMontantFm();
-            //dump('Wilaya: '. $wilaya . 'Monatnt: ' . $montantFm);
-            //dump($d);dump($user->getNom());
+            
             $fm = $this->getDoctrine()->getRepository('AppBundle:FraisMission')->findBy(['user'=>$user,'dateFm'=>$d]);
             if (count($fm) >0) {
                 $fraisMission = $fm[0];
-                //dump('Fm OK : '.$user->getNom(). 'Date: ' . $fraisMission->getDateFm()->format('m/d/Y'). ', Monatnt: ' .$fraisMission->getMontant());
+               
                 if ( $montantFm > $fraisMission->getMontant()){
                     $val = $fraisMission->getMontant();
                     $val = number_format($val, 2, ',', ' ');
@@ -931,7 +922,7 @@ class MissionController extends Controller
 
                 }
             }else{
-                //dump('Fm NOK : '.$user->getNom());
+               
                 if ($montantFm >0 ){
                     $fraisMission = new FraisMission();
                     $fraisMission->setUser($user);
@@ -947,7 +938,7 @@ class MissionController extends Controller
             
         }
         
-        //throw new \Exception('Arret');
+        
         return $this->redirect($this->generateUrl('mission_fm',array('id' => $cryptage->my_encrypt($id))));
 
     }
@@ -1010,16 +1001,10 @@ class MissionController extends Controller
      */
     public function missionDepenseDeleteAction($id)
     {
-        //dump($id);
-        
         $cryptage = $this->container->get('my.cryptage');
         $depenseMission = $this->getDoctrine()->getRepository('AppBundle:DepenseMission')->find($id);
         $mission = $depenseMission->getMission();
-        //dump($depenseMission);
-        //dump($mission);
-
-        //throw new \Exception('Message');
-
+        
         $manager = $this->getDoctrine()->getManager();
         $manager->remove($depenseMission);
         $manager->flush();
@@ -1033,16 +1018,9 @@ class MissionController extends Controller
      */
     public function missionFMDeleteAction($id)
     {
-        //dump($id);
-        
         $cryptage = $this->container->get('my.cryptage');
         $fraisMission = $this->getDoctrine()->getRepository('AppBundle:FraisMission')->find($id);
         $mission = $fraisMission->getMission();
-        //dump($fraisMission);
-        //dump($mission);
-
-        //throw new \Exception('Message');
-
         $manager = $this->getDoctrine()->getManager();
         $manager->remove($fraisMission);
         $manager->flush();
@@ -1089,9 +1067,7 @@ class MissionController extends Controller
             $intervention->setPrestation($prestation);
         }
         if ($form_intervention->handleRequest($request)->isValid()) {
-            //dump($mission->getDepart());
             $dd =  $mission->getDepart()->format('d/m/Y');
-            //dump($dd);
             if (($intervention->getDateIntervention()<$mission->getDepart()) or ($intervention->getDateIntervention() > $mission->getRetour()) ){
                 $this->get('session')->getFlashBag()->add('danger', "Date d'intervention doit être supérieur  ou égale à la date de départ: ". $mission->getDepart()->format('d/m/Y') ." et inférieur ou égale à la de retour: ". $mission->getRetour()->format("d/m/Y").".");
             }else{
@@ -1143,9 +1119,6 @@ class MissionController extends Controller
         $montantCarburantMission    = $montantCarburantMission['total'] !== null ? $montantCarburantMission['total'] : 0;
         $montantFmMission           = $montantFmMission['total'] !== null  ? $montantFmMission['total'] : 0;
 
-        //dump($intervention);
-        //dump($intervention->getId());
-        
         $interventionUser = new InterventionUser(); 
         $form_realisateur = $this->createForm(InterventionUserType::class,$interventionUser,array('id'=>$intervention,'date'=>$intervention->getDateIntervention(),'mission'=>$mission));
         
@@ -1177,8 +1150,6 @@ class MissionController extends Controller
         $cryptage = $this->container->get('my.cryptage');
         $id = $cryptage->my_decrypt($id);
         $intervention = $this->getDoctrine()->getRepository('AppBundle:Intervention')->find($id);
-        //dump($intervention);
-
         $cryptage = $this->container->get('my.cryptage');
         //$id = $cryptage->my_decrypt($id);
         //$mission = $this->getDoctrine()->getRepository('AppBundle:Mission')->find($id);
@@ -1204,7 +1175,6 @@ class MissionController extends Controller
         
         $siteid = $request->request->get('intervention')['siteid'];
         $prestationid = $request->request->get('intervention')['prestationid'];
-        //dump($siteid);dump($prestationid);
         if(($siteid !== null) and ($siteid !==""))
         {   
             $site = $this->getDoctrine()->getRepository('AppBundle:Site')->find($siteid);
@@ -1279,18 +1249,8 @@ class MissionController extends Controller
         $cryptage = $this->container->get('my.cryptage');
         $id = $cryptage->my_decrypt($id);
         $intervention = $manager->getRepository("AppBundle:Intervention")->find($id);
-        //dump($intervention);
-        //dump($request->request->all());
-        //getNotRealisateursIntervention
-        //$users = $manager->getRepository("AppBundle:InterventionUser")->getNotRealisateursIntervention($id);
-        //dump($users);
-        //throw new \Exception('Arret');
-
-        $quest = $request->request->all()["intervention_user"]["User"];
-        //dump($quest);  
-        
+        $quest = $request->request->all()["intervention_user"]["User"];      
         foreach($quest as $realisateur){
-            //dump($realisateur);
             $user = $manager->getRepository("AppBundle:User")->find($realisateur);
             $interventionUser = new InterventionUser();
             $interventionUser->setUser($user);
@@ -1299,11 +1259,6 @@ class MissionController extends Controller
             $manager->persist($interventionUser);
             $manager->flush();
         }
-        
-
-       
-        //$realisateurs = $manager->getRepository("AppBundle:Intervention")->getRealisateursIntervention($id);
-
         return $this->redirect($this->generateUrl('mission_intervention_show', array('id' => $cryptage->my_encrypt($id))));
 
     }
@@ -1749,6 +1704,7 @@ class MissionController extends Controller
         $feuil->setCellValue('B2', $mission->getCode());
         $feuil->setCellValue('B3', $mission->getUser()->getNom());
         $feuil->setCellValue('B4', $destination);
+        //\PHPExcel_Shared_Date::PHPToExcel($depart)
         $feuil->setCellValue('B5', date_format($mission->getDepart(),'d/m/Y'));
         $feuil->setCellValue('B6', date_format($mission->getRetour(),'d/m/Y'));
         $feuil = $objPHPExcel->getActiveSheet();
@@ -2182,8 +2138,8 @@ class MissionController extends Controller
 
         $feuil->setCellValue('A5',($code === null ? 'Tous' : $code));
         $feuil->setCellValue('B5',($chef_mission === null ? 'Tous' : $chef_mission->getNom()));
-        $feuil->setCellValue('C5',($depart === null ? 'Tous' : $depart));
-        $feuil->setCellValue('D5',($retour === null ? 'Tous' : $retour));
+        $feuil->setCellValue('C5',($depart === null ? 'Tous' : \PHPExcel_Shared_Date::PHPToExcel($depart)));
+        $feuil->setCellValue('D5',($retour === null ? 'Tous' : \PHPExcel_Shared_Date::PHPToExcel($retour)));
         $feuil->setCellValue('E5',($vEmploye === null ? 'Tous' : ($vEmploye === 0 ? 'Non validé' : 'Validé')));
         $feuil->setCellValue('F5',($vRollout === null ? 'Tous' : ($vRollout === 0 ? 'Non validé' : 'Validé')));
         $feuil->setCellValue('G5',($vComptabilite === null ? 'Tous' : ($vComptabilite === 0 ? 'Non validé' : 'Validé')));
@@ -2819,7 +2775,6 @@ class MissionController extends Controller
 
                 $manager = $this->getDoctrine()->getManager();
                 // Recupere les sommes  avant pagination
-                //dump($qbDepense);
                 if ($qbDepense !== null){
                     $qbDepense = $manager->getRepository('AppBundle:DepenseMission')->addFilterTotalDepenseMissions($qbDepense,$code,$depart,$retour,$user,$vEmploye,$vRollout,$vComptabilite,$t);
                 }

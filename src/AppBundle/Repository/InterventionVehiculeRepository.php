@@ -30,11 +30,7 @@ class InterventionVehiculeRepository extends \Doctrine\ORM\EntityRepository
                 ->orderBy('iv.designation')
                 ->setParameter('v1',$entretien)
         ;
-        //dump($qb2);
-        //throw new \Exception('Message');
-        return $qb2;
-        //return $qb2->getQuery()->getResult();*/
-        //dump($intervention);
+        */
         $qb1 = $this->getEntityManager()->createQueryBuilder();
         $qb1    ->select('DISTINCT(ie.interventionVehicule)')
                 ->from('AppBundle:InterventionEntretien', 'ie')
@@ -56,10 +52,7 @@ class InterventionVehiculeRepository extends \Doctrine\ORM\EntityRepository
                 if ($intervention <> null){
                     $qb2->setParameter('v2',$intervention);
                 }
-        //dump($qb2);
-        //throw new \Exception('Message');
         return $qb2;
-        //return $qb2->getQuery()->getResult();
        
     }
     public function getInterventionImportantes()

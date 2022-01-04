@@ -3,6 +3,8 @@ throw new \Exception('Message');
 
 php ../composer.phar update
 
+dev/,var/,vendor/,xx*/,*.*~
+
 /***********************
 
 http://example.com/somewhere?_switch_user=thomas
