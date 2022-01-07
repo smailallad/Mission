@@ -110,11 +110,7 @@ class InterventionController extends Controller
                 $site       = $form->get('site')->getData();
                 $du         = ($form->get('periode')->getData() !== null) ? $form->get('periode')->getData()['left_date'] : null;
                 $au         = ($form->get('periode')->getData() !== null) ? $form->get('periode')->getData()['right_date'] : null;
-                $user       = $form->get('user')->getData();
-                
-//                $qb         = $manager->getRepository('AppBundle:Intervention')->addFilterInterventionAll($qb,$mission,$code,$site,$du,$au,$user);
-                //$this->get('lexik_form_filter.query_builder_updater')->addFilterConditions($form, $qb);
-                
+                $user       = $form->get('user')->getData();                
             }else{
             }
         }
@@ -213,8 +209,8 @@ class InterventionController extends Controller
         $mission        = $form->get('mission')->getData();
         $code           = $form->get('code')->getData();
         $site           = $form->get('site')->getData();
-        $du         = ($form->get('periode')->getData() !== null) ? $form->get('periode')->getData()['left_date'] : null;
-        $au         = ($form->get('periode')->getData() !== null) ? $form->get('periode')->getData()['right_date'] : null;
+        $du             = ($form->get('periode')->getData() !== null) ? $form->get('periode')->getData()['left_date'] : null;
+        $au             = ($form->get('periode')->getData() !== null) ? $form->get('periode')->getData()['right_date'] : null;
         $chef_mission   = $form->get('user')->getData();
                 
         $user = $this->getUser();
@@ -382,10 +378,11 @@ class InterventionController extends Controller
         $feuil->setCellValue('D7', 'Code site');
         $feuil->setCellValue('E7', 'Nom site ');
         $feuil->setCellValue('F7', 'Wilaya');
-        $feuil->setCellValue('G7', 'Intervention');
-        $feuil->setCellValue('H7', 'Détail et anomalie');
-        $feuil->setCellValue('I7', 'Réalisateur');
-        $feuil->getStyle('A7:I7')->applyFromArray(
+        $feuil->setCellValue('G7', 'Client');
+        $feuil->setCellValue('H7', 'Intervention');
+        $feuil->setCellValue('I7', 'Détail et anomalie');
+        $feuil->setCellValue('J7', 'Réalisateur');
+        $feuil->getStyle('A7:J7')->applyFromArray(
                 array(
                     'font'    => array(
                         'bold'      => true
@@ -428,7 +425,7 @@ class InterventionController extends Controller
                     ),
                 )
         );
-        $feuil->getStyle('I7')->applyFromArray(
+        $feuil->getStyle('J7')->applyFromArray(
                 array(
                     'borders' => array(
                         'right'     => array(
@@ -447,8 +444,9 @@ class InterventionController extends Controller
                 ->setCellValue('D'.$i, $intervention->getSite()->getCode())
                 ->setCellValue('E'.$i, $intervention->getSite()->getNom())
                 ->setCellValue('F'.$i, $intervention->getSite()->getWilaya()->getNom())
-                ->setCellValue('G'.$i, $intervention->getPrestation()->getNom())
-                ->setCellValue('H'.$i, $intervention->getDesignation())
+                ->setCellValue('G'.$i, $intervention->getSite()->getClient()->getNom())
+                ->setCellValue('H'.$i, $intervention->getPrestation()->getNom())
+                ->setCellValue('I'.$i, $intervention->getDesignation())
                 ;
             $realisateurs = $this->getDoctrine()->getRepository('AppBundle:InterventionUser')->getRealisateursIntervention($intervention);
             
@@ -460,7 +458,7 @@ class InterventionController extends Controller
                     $var = $realisateur->getUser()->getNom();
                 }
             }
-            $feuil->setCellValue('I'.$i, $var);
+            $feuil->setCellValue('J'.$i, $var);
             
             $feuil->getStyle('C'.$i)->getNumberFormat()->setFormatCode("dd/mm/yyyy");
            
@@ -476,9 +474,9 @@ class InterventionController extends Controller
                 ),
             ),
         );
-        $feuil->getStyle('A7:I'.$i)->applyFromArray($styleThinBlackBorderAllborders);
-        $feuil->getStyle('A8:T'.$i)->getAlignment()->setWrapText(true);
-        $feuil->getStyle('A8:I'.$i)->applyFromArray(
+        $feuil->getStyle('A7:J'.$i)->applyFromArray($styleThinBlackBorderAllborders);
+        $feuil->getStyle('A8:J'.$i)->getAlignment()->setWrapText(true);
+        $feuil->getStyle('A8:J'.$i)->applyFromArray(
                 array(
                     'alignment' => array(
                         'vertical' => \PHPExcel_Style_Alignment::VERTICAL_CENTER,
@@ -512,9 +510,10 @@ class InterventionController extends Controller
         $feuil->getColumnDimension('D')->setAutoSize(true);
         $feuil->getColumnDimension('E')->setAutoSize(true);
         $feuil->getColumnDimension('F')->setAutoSize(true);
-        $feuil->getColumnDimension('G')->setWidth(50);
+        $feuil->getColumnDimension('G')->setAutoSize(true);
         $feuil->getColumnDimension('H')->setWidth(50);
-        $feuil->getColumnDimension('I')->setAutoSize(true);
+        $feuil->getColumnDimension('I')->setWidth(50);
+        $feuil->getColumnDimension('J')->setAutoSize(true);
         
         // create the writer
         $writer = $this->get('phpexcel')->createWriter($objPHPExcel, 'Excel2007');

@@ -27,11 +27,12 @@ class PointageUserType extends AbstractType
                     'onfocusout' => 'process_user(event)',
                 )
             ))
-            ->add('user',EntityType::class,array(
+            /*->add('user',EntityType::class,array(
                 'class'         => 'AppBundle:User',
                 'label'         => 'Employe',
+                'mapped'        => false,
                 'placeholder'   => '-Choisir-',
-                'multiple'      => false,
+                'multiple'      => true,
                 //'expanded'      => true,
                 'query_builder' => function(\Doctrine\ORM\EntityRepository $u)
                                     {
@@ -42,14 +43,27 @@ class PointageUserType extends AbstractType
                                                     ->setParameter('v2',true)
                                         ;
                                     }
-            ))
-            /*->add('user',ChoiceType::class,array(
-                    'multiple'  => false,
+            ))*/
+
+            ->add('user',ChoiceType::class,array(
+                    'multiple'  => true,
                     'label'     => 'Employés',
-                    //'mapped'    => false,
+                    'mapped'    => false,
                 )
-            )*/
-            ->add('pointage')
+            )
+            //->add('pointage')
+            ->add('pointage',EntityType::class,array(
+                'class'         => 'AppBundle:Pointage',
+                'label'         => 'pointage',
+                //'placeholder'   => '-Choisir-',
+                //'multiple'      => true,
+                //'expanded'      => true,
+                'query_builder' => function(\Doctrine\ORM\EntityRepository $p)
+                                    {
+                                        return $p   ->createQueryBuilder('p')
+                                        ;
+                                    }
+            ))
             ->add('hTravail', IntegerType::class, [
                 'attr' => [
                     'min' => 0,

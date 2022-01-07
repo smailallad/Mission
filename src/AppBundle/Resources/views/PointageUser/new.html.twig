@@ -43,12 +43,13 @@ $.post(
             for (i = 0; i < users.length; i++) {
                 var id = users[i]['id'];
                 var nom = users[i]['nom'];
-                console.log(nom);
+                //console.log(nom);
                 $('#appbundle_pointageuser_user').append($('<option></option>').val(id).html(nom));
             }
         }
     )
 
 }
+
 </script>
 {% endblock %}

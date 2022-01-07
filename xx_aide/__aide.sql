@@ -1,5 +1,5 @@
 
-throw new \Exception('Message');
+throw new \Exception('Arret Smail');
 
 php ../composer.phar update
 

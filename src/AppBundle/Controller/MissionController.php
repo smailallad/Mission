@@ -1052,9 +1052,8 @@ class MissionController extends Controller
         $form_recherche_site = $this->createForm(SiteRechercheType::class);
         $form_recherche_prestation = $this->createForm(PrestationRechercheType::class);
         $form_intervention = $this->createForm(InterventionType::class, $intervention);
-        
-        $siteid = $request->request->get('intervention')['siteid'];
-        $prestationid = $request->request->get('intervention')['prestationid'];
+        $siteid = !empty($request->request->all())  ? $request->request->all()['intervention']['siteid'] : null;
+        $prestationid = !empty($request->request->all())  ? $request->request->all()['intervention']['prestationid'] : null;
 
         if($siteid !== null)
         {   
@@ -1249,7 +1248,7 @@ class MissionController extends Controller
         $cryptage = $this->container->get('my.cryptage');
         $id = $cryptage->my_decrypt($id);
         $intervention = $manager->getRepository("AppBundle:Intervention")->find($id);
-        $quest = $request->request->all()["intervention_user"]["User"];      
+        $quest = $request->request->all()["intervention_user"]["User"];       
         foreach($quest as $realisateur){
             $user = $manager->getRepository("AppBundle:User")->find($realisateur);
             $interventionUser = new InterventionUser();

@@ -235,8 +235,8 @@
             cURL,
             function (data) {
                 $('#listeSiteTable tbody > tr').remove();
-                ligne = '';alert("og");
-                console.log(data);
+                ligne = '';
+                //console.log(data);
                 if (data.pagenum != 0) {
                     ligne += '<button id="firstsite" data-pagenum="' + data.pagenum + '" data-totalpages="' + data.totalpages + '" onclick="firstsite()" class="ml-2 btn btn-primary glyphicon glyphicon-fast-backward">  </button>';
                 }
@@ -349,7 +349,7 @@
         $.post(
             cURL,
             function (data) {
-                console.log(data.prestations);
+                //console.log(data.prestations);
                 $('#listePrestationTable tbody > tr').remove();
                 ligne = '';
                 if (data.pagenum != 0) {

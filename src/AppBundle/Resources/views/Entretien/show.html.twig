@@ -150,7 +150,6 @@ $(document).ready(function () {
         var button = $(event.relatedTarget) // Button that triggered the modal
         var id = button.data('id') // Extract info from data-* attributes
         var cURL = Routing.generate('intervention_entretien_delete', { id: id });
-        //alert(cURL);
         $("#modalDeleteInterventionForm").attr('action', cURL);
     })
 
