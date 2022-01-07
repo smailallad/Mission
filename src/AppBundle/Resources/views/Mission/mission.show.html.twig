@@ -106,7 +106,7 @@
         </table>
     </div>
     <div class="panel-footer">
-        <div class="btn-group record_actions">
+
             {% if is_granted("ROLE_ADMIN") or ((is_granted("ROLE_BUREAU") ) and ((not mission.vComptabilite) and
             (not mission.vRollout))) %}
             <a class="btn btn-primary" href="{{ path('mission_edit', {id: mission.id | Mycrypt}) }}">
@@ -117,16 +117,16 @@
             (is_granted("ROLE_SUPER_COMPTABLE") ) or
             (is_granted("ROLE_COMPTABLE") and (not mission.vComptabilite)) %}
             <a class="btn btn-primary" href="{{ path('mission_avance', {id: mission.id | Mycrypt}) }}">
-                <i class="glyphicon glyphicon-edit"></i> Avance
+                <i class="glyphicon glyphicon-usd"></i> Avance
             </a>
             {% endif %}
+            <a class='btn btn-primary' href="{{path('mission_index') }}"> <i class="glyphicon glyphicon-arrow-left"></i> Retour</a>
             {% if is_granted("ROLE_ADMIN") or
             (is_granted("ROLE_BUREAU") and (not mission.vEmploye) and ( not mission.vRollout) and (not
             mission.vComptabilite)) %}
             <button class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteMission"><i
                     class="glyphicon glyphicon-trash"></i> Supprimer</button>
             {% endif %}
-        </div>
     </div>
 </div>
 

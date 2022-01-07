@@ -110,11 +110,7 @@ class InterventionController extends Controller
                 $site       = $form->get('site')->getData();
                 $du         = ($form->get('periode')->getData() !== null) ? $form->get('periode')->getData()['left_date'] : null;
                 $au         = ($form->get('periode')->getData() !== null) ? $form->get('periode')->getData()['right_date'] : null;
-                $user       = $form->get('user')->getData();
-                
-//                $qb         = $manager->getRepository('AppBundle:Intervention')->addFilterInterventionAll($qb,$mission,$code,$site,$du,$au,$user);
-                //$this->get('lexik_form_filter.query_builder_updater')->addFilterConditions($form, $qb);
-                
+                $user       = $form->get('user')->getData();                
             }else{
             }
         }
@@ -213,8 +209,8 @@ class InterventionController extends Controller
         $mission        = $form->get('mission')->getData();
         $code           = $form->get('code')->getData();
         $site           = $form->get('site')->getData();
-        $du         = ($form->get('periode')->getData() !== null) ? $form->get('periode')->getData()['left_date'] : null;
-        $au         = ($form->get('periode')->getData() !== null) ? $form->get('periode')->getData()['right_date'] : null;
+        $du             = ($form->get('periode')->getData() !== null) ? $form->get('periode')->getData()['left_date'] : null;
+        $au             = ($form->get('periode')->getData() !== null) ? $form->get('periode')->getData()['right_date'] : null;
         $chef_mission   = $form->get('user')->getData();
                 
         $user = $this->getUser();
@@ -250,8 +246,8 @@ class InterventionController extends Controller
         $feuil->getStyle('C1')->getFont()->getColor()->setARGB(\PHPExcel_Style_Color::COLOR_WHITE);
         
         
-        $feuil->getStyle('A1:F1')->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID);
-        $feuil->getStyle('A1:F1')->getFill()->getStartColor()->setARGB('FF808080');
+        $feuil->getStyle('A1:K1')->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID);
+        $feuil->getStyle('A1:K1')->getFill()->getStartColor()->setARGB('FF808080');
     
         $feuil->setCellValue('A3', 'Filtre');
         $feuil->getStyle('A3')->applyFromArray(
@@ -382,10 +378,12 @@ class InterventionController extends Controller
         $feuil->setCellValue('D7', 'Code site');
         $feuil->setCellValue('E7', 'Nom site ');
         $feuil->setCellValue('F7', 'Wilaya');
-        $feuil->setCellValue('G7', 'Intervention');
-        $feuil->setCellValue('H7', 'Détail et anomalie');
-        $feuil->setCellValue('I7', 'Réalisateur');
-        $feuil->getStyle('A7:I7')->applyFromArray(
+        $feuil->setCellValue('G7', 'Client');
+        $feuil->setCellValue('H7', 'Intervention');
+        $feuil->setCellValue('I7', 'Designation');
+        $feuil->setCellValue('J7', 'Reserves');
+        $feuil->setCellValue('K7', 'Réalisateur');
+        $feuil->getStyle('A7:k7')->applyFromArray(
                 array(
                     'font'    => array(
                         'bold'      => true
@@ -428,7 +426,7 @@ class InterventionController extends Controller
                     ),
                 )
         );
-        $feuil->getStyle('I7')->applyFromArray(
+        $feuil->getStyle('K7')->applyFromArray(
                 array(
                     'borders' => array(
                         'right'     => array(
@@ -447,8 +445,10 @@ class InterventionController extends Controller
                 ->setCellValue('D'.$i, $intervention->getSite()->getCode())
                 ->setCellValue('E'.$i, $intervention->getSite()->getNom())
                 ->setCellValue('F'.$i, $intervention->getSite()->getWilaya()->getNom())
-                ->setCellValue('G'.$i, $intervention->getPrestation()->getNom())
-                ->setCellValue('H'.$i, $intervention->getDesignation())
+                ->setCellValue('G'.$i, $intervention->getSite()->getClient()->getNom())
+                ->setCellValue('H'.$i, $intervention->getPrestation()->getNom())
+                ->setCellValue('I'.$i, $intervention->getDesignation())
+                ->setCellValue('J'.$i, $intervention->getReserves())
                 ;
             $realisateurs = $this->getDoctrine()->getRepository('AppBundle:InterventionUser')->getRealisateursIntervention($intervention);
             
@@ -460,10 +460,8 @@ class InterventionController extends Controller
                     $var = $realisateur->getUser()->getNom();
                 }
             }
-            $feuil->setCellValue('I'.$i, $var);
-            
+            $feuil->setCellValue('K'.$i, $var);
             $feuil->getStyle('C'.$i)->getNumberFormat()->setFormatCode("dd/mm/yyyy");
-           
             $i++;
         }
         $i--;
@@ -476,16 +474,20 @@ class InterventionController extends Controller
                 ),
             ),
         );
-        $feuil->getStyle('A7:I'.$i)->applyFromArray($styleThinBlackBorderAllborders);
-        $feuil->getStyle('A8:T'.$i)->getAlignment()->setWrapText(true);
-        $feuil->getStyle('A8:I'.$i)->applyFromArray(
+        $feuil->getStyle('A7:K'.$i)->applyFromArray($styleThinBlackBorderAllborders);
+        $feuil->getStyle('A8:K'.$i)->getAlignment()->setWrapText(true);
+        $feuil->getStyle('A8:K'.$i)->applyFromArray(
                 array(
                     'alignment' => array(
                         'vertical' => \PHPExcel_Style_Alignment::VERTICAL_CENTER,
                     ),
                 )
         );
+        $feuil->setAutoFilter("A7:K7");
         $feuil->freezePane('B8');
+        $feuil->getPageSetup()->setRowsToRepeatAtTopByStartAndEnd(1,7);
+        $feuil->getHeaderFooter()->setOddFooter('&P/&N');
+
         
       /*  $styleThickBrownBorderOutline = array(
             'borders' => array(
@@ -512,9 +514,11 @@ class InterventionController extends Controller
         $feuil->getColumnDimension('D')->setAutoSize(true);
         $feuil->getColumnDimension('E')->setAutoSize(true);
         $feuil->getColumnDimension('F')->setAutoSize(true);
-        $feuil->getColumnDimension('G')->setWidth(50);
-        $feuil->getColumnDimension('H')->setWidth(50);
-        $feuil->getColumnDimension('I')->setAutoSize(true);
+        $feuil->getColumnDimension('G')->setAutoSize(true);
+        $feuil->getColumnDimension('H')->setWidth(30);
+        $feuil->getColumnDimension('I')->setWidth(30);
+        $feuil->getColumnDimension('J')->setWidth(30);
+        $feuil->getColumnDimension('K')->setWidth(30);
         
         // create the writer
         $writer = $this->get('phpexcel')->createWriter($objPHPExcel, 'Excel2007');

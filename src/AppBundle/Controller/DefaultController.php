@@ -34,7 +34,17 @@ class DefaultController extends Controller
         $seuilAssurance=30;
         $seuilControlTech=30;
 
-        $alertEntretiens = $this->getDoctrine()->getRepository('AppBundle:Vehicule')->getListeAlerteInterventions();
+        $entretiens = $this->getDoctrine()->getRepository('AppBundle:Vehicule')->getListeAlerteInterventions();
+        $entretiensDepasser = [];
+        $entretiensAFaire = [];
+        foreach ($entretiens as $entretien) {
+            if ($entretien['reste']>=0 ){
+                $entretiensDepasser [] = $entretien;
+            }else{
+                $entretiensAFaire [] = $entretien;
+            }
+        }
+
         //$vehicules = $this->getDoctrine()->getRepository('AppBundle:Assurance')->getListeAlerteAssurances($seuilAssurance);
         $assuranceDepassers = $this->getDoctrine()->getRepository('AppBundle:Vehicule')->getAssuranceDepasser();
         $assuranceAlertes = $this->getDoctrine()->getRepository('AppBundle:Vehicule')->getAssuranceAlerte($seuilAssurance);
@@ -49,7 +59,8 @@ class DefaultController extends Controller
 
         $interventionImportantes = $this->getDoctrine()->getRepository('AppBundle:InterventionVehicule')->getInterventionImportantes();
         return $this->render("default/index.html.twig",array(
-            'alertEntretiens'           => $alertEntretiens,
+            'entretiensDepasser'        => $entretiensDepasser,
+            'entretiensAFaire'          => $entretiensAFaire,
             'assuranceDepassers'        => $assuranceDepassers,
             'assuranceAlertes'          => $assuranceAlertes,
             'controlTechDepassers'      => $controlTechDepassers,
@@ -305,6 +316,8 @@ class DefaultController extends Controller
            ->setDescription("Test document for Office 2005 XLSX, generated using PHP classes.")
            ->setKeywords("office 2005 openxml php")
            ->setCategory("Test result file");
+
+        //************************** */
         $objPHPExcel->setActiveSheetIndex(0)
            ->setCellValue('A1', 'Héloô')
            ->setCellValue('B2', 'world!');
@@ -315,14 +328,14 @@ class DefaultController extends Controller
         // create the writer
         $writer = $this->get('phpexcel')->createWriter($objPHPExcel, 'Excel2007');
         // The save method is documented in the official PHPExcel library
-        $writer->save('/home/smail/Documents/temp/filename.xlsx');
+        $writer->save('/home/smail/Documents/Temp/filename.xlsx');
 
 
 
-// ask the service for a excel object
-       $objPHPExcel = $this->get('phpexcel')->createPHPExcelObject();
+        // ask the service for a excel object
+        $objPHPExcel = $this->get('phpexcel')->createPHPExcelObject();
 
-       $objPHPExcel->getProperties()->setCreator("liuggio")
+        $objPHPExcel->getProperties()->setCreator("liuggio")
             ->setLastModifiedBy("Giulio De Donato")
             ->setTitle("Office 2005 XLSX Test Document")
             ->setSubject("Office 2005 XLSX Test Document")
@@ -827,18 +840,17 @@ class DefaultController extends Controller
         // echo date('H:i:s') , " Rename first worksheet" , EOL;
         $objPHPExcel->getActiveSheet()->setTitle('Invoice');
 
-/****************************** */
-/****************************** */
+        /****************************** */
+        /****************************** */
         // Create a new worksheet, after the default sheet
         // echo date('H:i:s') , " Create a second Worksheet object" , EOL;
         $objPHPExcel->createSheet();
-
+        // Add some data to the second sheet, resembling some different data types
+        // echo date('H:i:s') , " Add some data" , EOL;
+        $objPHPExcel->setActiveSheetIndex(5);
         // Llorem ipsum...
         $sLloremIpsum = 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Vivamus eget ante. Sed cursus nunc semper tortor. Aliquam luctus purus non elit. Fusce vel elit commodo sapien dignissim dignissim. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Curabitur accumsan magna sed massa. Nullam bibendum quam ac ipsum. Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Proin augue. Praesent malesuada justo sed orci. Pellentesque lacus ligula, sodales quis, ultricies a, ultricies vitae, elit. Sed luctus consectetuer dolor. Vivamus vel sem ut nisi sodales accumsan. Nunc et felis. Suspendisse semper viverra odio. Morbi at odio. Integer a orci a purus venenatis molestie. Nam mattis. Praesent rhoncus, nisi vel mattis auctor, neque nisi faucibus sem, non dapibus elit pede ac nisl. Cras turpis.';
 
-        // Add some data to the second sheet, resembling some different data types
-        // echo date('H:i:s') , " Add some data" , EOL;
-        $objPHPExcel->setActiveSheetIndex(1);
         $objPHPExcel->getActiveSheet()->setCellValue('A1', 'Terms and conditions');
         $objPHPExcel->getActiveSheet()->setCellValue('A3', $sLloremIpsum);
         $objPHPExcel->getActiveSheet()->setCellValue('A4', $sLloremIpsum);
@@ -884,10 +896,107 @@ class DefaultController extends Controller
         // echo date('H:i:s') , " Rename second worksheet" , EOL;
         $objPHPExcel->getActiveSheet()->setTitle('Terms and conditions');
 
+        $objPHPExcel->createSheet();
+        $objPHPExcel->setActiveSheetIndex(6);
 
-       //**************************** */
-       // Set active sheet index to the first sheet, so Excel opens this as the first sheet
-       $objPHPExcel->setActiveSheetIndex(0);
+        $objPHPExcel->getActiveSheet()->setCellValue('A1', 'Year')
+                              ->setCellValue('B1', 'Quarter')
+                              ->setCellValue('C1', 'Country')
+                              ->setCellValue('D1', 'Sales');
+
+        $dataArray = array(array('2010',	'Q1',	'United States',	790),
+                        array('2010',	'Q2',	'United States',	730),
+                        array('2010',	'Q3',	'United States',	860),
+                        array('2010',	'Q4',	'United States',	850),
+                        array('2011',	'Q1',	'United States',	800),
+                        array('2011',	'Q2',	'United States',	700),
+                        array('2011',	'Q3',	'United States',	900),
+                        array('2011',	'Q4',	'United States',	950),
+                        array('2010',	'Q1',	'Belgium',			380),
+                        array('2010',	'Q2',	'Belgium',			390),
+                        array('2010',	'Q3',	'Belgium',			420),
+                        array('2010',	'Q4',	'Belgium',			460),
+                        array('2011',	'Q1',	'Belgium',			400),
+                        array('2011',	'Q2',	'Belgium',			350),
+                        array('2011',	'Q3',	'Belgium',			450),
+                        array('2011',	'Q4',	'Belgium',			500),
+                        array('2010',	'Q1',	'UK',				690),
+                        array('2010',	'Q2',	'UK',				610),
+                        array('2010',	'Q3',	'UK',				620),
+                        array('2010',	'Q4',	'UK',				600),
+                        array('2011',	'Q1',	'UK',				720),
+                        array('2011',	'Q2',	'UK',				650),
+                        array('2011',	'Q3',	'UK',				580),
+                        array('2011',	'Q4',	'UK',				510),
+                        array('2010',	'Q1',	'France',			510),
+                        array('2010',	'Q2',	'France',			490),
+                        array('2010',	'Q3',	'France',			460),
+                        array('2010',	'Q4',	'France', 			590),
+                        array('2011',	'Q1',	'France',			620),
+                        array('2011',	'Q2',	'France',			650),
+                        array('2011',	'Q3',	'France',			415),
+                        array('2011',	'Q4',	'France', 			570),
+                        array('2010',	'Q1',	'Germany',			720),
+                        array('2010',	'Q2',	'Germany',			680),
+                        array('2010',	'Q3',	'Germany',			640),
+                        array('2010',	'Q4',	'Germany',			660),
+                        array('2011',	'Q1',	'Germany',			680),
+                        array('2011',	'Q2',	'Germany',			620),
+                        array('2011',	'Q3',	'Germany',			710),
+                        array('2011',	'Q4',	'Germany',			690),
+                        array('2010',	'Q1',	'Spain',			510),
+                        array('2010',	'Q2',	'Spain',			490),
+                        array('2010',	'Q3',	'Spain',			470),
+                        array('2010',	'Q4',	'Spain',			420),
+                        array('2011',	'Q1',	'Spain',			460),
+                        array('2011',	'Q2',	'Spain',			390),
+                        array('2011',	'Q3',	'Spain',			430),
+                        array('2011',	'Q4',	'Spain',			415),
+                        array('2010',	'Q1',	'Italy',			440),
+                        array('2010',	'Q2',	'Italy',			410),
+                        array('2010',	'Q3',	'Italy',			420),
+                        array('2010',	'Q4',	'Italy',			450),
+                        array('2011',	'Q1',	'Italy',			430),
+                        array('2011',	'Q2',	'Italy',			370),
+                        array('2011',	'Q3',	'Italy',			350),
+                        array('2011',	'Q4',	'Italy',			335),
+                        );
+        $objPHPExcel->getActiveSheet()->fromArray($dataArray, NULL, 'A2');
+
+        // Set title row bold
+        //echo date('H:i:s').' Set title row bold'.EOL;
+        $objPHPExcel->getActiveSheet()->getStyle('A1:D1')->getFont()->setBold(true);
+
+        // Set autofilter
+        //echo date('H:i:s').' Set autofilter'.EOL;
+        // Always include the complete filter range!
+        // Excel does support setting only the caption
+        // row, but that's not a best practise...
+        //$objPHPExcel->getActiveSheet()->setAutoFilter($objPHPExcel->getActiveSheet()->calculateWorksheetDimension());
+        $objPHPExcel->getActiveSheet()->setAutoFilter("A1:B1");
+
+        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //**************************** */
+
+                        // ENREGISTER LE FICHIER
+        
+        //**************************** */
+        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
+        // $objPHPExcel->setActiveSheetIndex(0);
 
         // create the writer
         $writer = $this->get('phpexcel')->createWriter($objPHPExcel, 'Excel2007');
@@ -898,6 +1007,8 @@ class DefaultController extends Controller
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
             'PhpExcelFileSample.xlsx'
         );
+
+
         $response->headers->set('Content-Type', 'text/vnd.ms-excel; charset=utf-8');
         $response->headers->set('Pragma', 'public');
         $response->headers->set('Cache-Control', 'maxage=1');

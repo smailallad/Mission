@@ -2,15 +2,19 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\FraisMission;
+use DateTime;
 use Doctrine\ORM\QueryBuilder;
 use AppBundle\Entity\PointageUser;
+use AppBundle\Form\PointageAutoType;
 use AppBundle\Form\PointageUserType;
 use AppBundle\Form\PointageFilterType;
+//use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-//use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 /**
 * @Route("/pointage")
@@ -25,35 +29,100 @@ class PointageController extends Controller
     public function newAction(Request $request)
     {   $pointageUser = new PointageUser();
         $form = $this->createForm(PointageUserType::class, $pointageUser);
-        
-        //if ($form->handleRequest($request)->isValid())
-        $form->handleRequest($request);
-        if ($form->isSubmitted()) {
-            if ($form->isValid()) {
-                $manager = $this->getDoctrine()->getManager();
+        $form->handleRequest($request); 
+        if ($form->isSubmitted()){
+            $manager = $this->getDoctrine()->getManager();
+            $userv = $request->request->all()["appbundle_pointageuser"]["user"];
+            $datev = $request->request->all()["appbundle_pointageuser"]["date"];
+            $pointagev = $request->request->all()["appbundle_pointageuser"]["pointage"];
+            $hTravailv = $request->request->all()["appbundle_pointageuser"]["hTravail"];
+            $hRoutev = $request->request->all()["appbundle_pointageuser"]["hRoute"];
+            $hSupv = $request->request->all()["appbundle_pointageuser"]["hSup"];
+            $obsv = $request->request->all()["appbundle_pointageuser"]["obs"];
+            foreach ($userv as $value) {
+                $pointageUser =new PointageUser();
+                $user = $manager->getRepository('AppBundle:User')->find($value);
+                $pointage = $manager->getRepository('AppBundle:Pointage')->find($pointagev);
+                $pointageUser   ->setUser($user)
+                                ->setPointage($pointage)
+                                ->setDate(new DateTime($datev))
+                                ->setHTravail($hTravailv)
+                                ->setHRoute($hRoutev)
+                                ->setHSup($hSupv)
+                                ->setObs($obsv)
+                ;
                 $manager->persist($pointageUser);
-                $manager->flush();
-                $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
-                $cryptage = $this->container->get('my.cryptage');
-                return $this->redirect($this->generateUrl('pointage_new'));
             }
+            $manager->flush();
+            return $this->redirect($this->generateUrl('pointage_index'));
         }
         return $this->render('@App/PointageUser/new.html.twig', array(
             'pointageUser' => $pointageUser,
             'form' => $form->createView(),
         ));
     }
+    
+    /**
+     * @Route("/pointage_auto/{date}",name="pointage_auto",options = { "expose" = true })
+     */
+    public function pointageAutoAction($date,Request $request)
+    {   
+        $manager = $this->getDoctrine()->getManager();
+        $interventions = $manager->getRepository('AppBundle:InterventionUser')->getInterventionsDate($date);
+        $t = array();
+        foreach ($interventions as $intervention) {
+            $user = $intervention->getUser();
+            $dist = $intervention->getIntervention()->getSite()->getWilaya()->getNom();
+            if (array_key_exists($user->getId(), $t)) {
+                if (strpos($t[$user->getId()],$dist) != false){
+                    $t[$user->getId()] = $t[$user->getId()] . ", " . $dist;
+                }
+            }else{
+                $t+=[$user->getId() => $dist];
+            }
+        }
+        foreach ($t as $key => $value) {
+            $user = $manager->getRepository('AppBundle:User')->find($key);
+            $pointage = $manager->getRepository('AppBundle:Pointage')->find(1);//Mission
+            $pointageUser = new PointageUser();
+            $pointageUser->setUser($user);
+            $pointageUser->setPointage($pointage);
+            $pointageUser->setDate(new DateTime($date));
+            $pointageUser->setObs($value);
+
+            $validator = $this->get('validator');
+            $errors = $validator->validate($pointageUser);
+
+            if (count($errors) == 0) {
+                $manager->persist($pointageUser);
+                $manager->flush();
+            }
+
+        }
+        
+        return $this->redirect($this->generateUrl('pointage_index'));
+
+    }
 
     /**
-     * @Route("/show",name="pointage_show")
+     * @Route("/{id}/pointage/user/delete",name="pointage_user_delete",options = { "expose" = true })
      */
-    public function showAction()
+    public function pointageUserDeleteAction($id)
     {
-        
-        return $this->render('@App/PointageUser/show.html.twig', array(
-            // ...
-        ));
-   }
+        $manager = $this->getDoctrine()->getManager();
+        $pointage = $manager->getRepository('AppBundle:PointageUser')->find($id);
+        $manager->remove($pointage);
+        try {
+            $manager->flush();
+        } catch(\Doctrine\DBAL\DBALException $e) {
+            $this->get('session')->getFlashBag()->add('danger', 'Impossible de supprimer cet element.');
+            /*$cryptage = $this->container->get('my.cryptage');
+            $id = $pointage->getId();
+            $id = $cryptage->my_encrypt($id);*/
+        }
+
+        return $this->redirect($this->generateUrl('pointage_index'));
+    }
 
     /**
      * @Route("/index",name="pointage_index")
@@ -62,6 +131,13 @@ class PointageController extends Controller
     {
         $manager = $this->getDoctrine()->getManager();
         $form = $this->createForm(PointageFilterType::class);
+        $formAuto = $this->createForm(PointageAutoType::class);
+
+        /*$editForm = $this->createForm(PointageUserType::class, $pointageUser, array(
+            'action' => $this->generateUrl('pointage_edit', array('id' => $cryptage->my_encrypt($pointageUser->getId()))),
+            'method' => 'PUT',
+        ));*/
+
         if (!is_null($response = $this->saveFilter($form, 'pointage', 'pointage_index'))) {
             return $response;
         }
@@ -73,13 +149,311 @@ class PointageController extends Controller
         } 
         
         $paginator = $this->filter($form, $qb, 'pointage');
-        $forme=$form->createView();
+        //$forme=$form->createView();
         return $this->render('@App/PointageUser/index.html.twig', array(
             'form'      => $form->createView(),
+            'formAuto'  => $formAuto->createView(),
             'paginator' => $paginator,
         
         ));
     }
+
+    /**
+     * @Route("/excel/pointage",name="excel_pointage",options = { "expose" = true })
+     */
+    public function excelPointageAction(){
+
+        $manager = $this->getDoctrine()->getManager();
+        $user = $this->getUser();
+        $form = $this->createForm(PointageFilterType::class);
+        $qb = $manager->getRepository('AppBundle:PointageUser')->getPointages();        
+        $pointages = $this->filter($form, $qb, 'pointage',false);
+
+        $du = ($form->get('date')->getData() !== null) ? $form->get('date')->getData()['left_date'] : null;
+        $au = ($form->get('date')->getData() !== null) ? $form->get('date')->getData()['right_date'] : null;
+
+        $fms = $manager->getRepository('AppBundle:FraisMission')->getFmsPeriode($du,$au);
+
+        $objPHPExcel = $this->get('phpexcel')->createPHPExcelObject();
+        
+        $objPHPExcel->getProperties()->setCreator($user->getNom())
+            ->setLastModifiedBy("SNC RTIE")
+            ->setTitle("SNC RTIE Pointage")
+            ->setSubject("SNC RTIE Journal Pointage")
+            ->setDescription("SNC RTIE")
+            ->setKeywords("office 2005 openxml php")
+            ->setCategory("SNC RTIE Pointage");
+        $date = time();
+
+        $feuil = $objPHPExcel->getActiveSheet();
+        
+        $feuil->setCellValue('A1', 'Journal RTIE');
+       
+        $feuil->mergeCells('A1:B1');
+        $feuil->getStyle('A1')->getFont()->setName('Candara');
+        $feuil->getStyle('A1')->getFont()->setSize(20);
+        $feuil->getStyle('A1')->getFont()->setBold(true);
+        $feuil->getStyle('A1')->getFont()->setUnderline(\PHPExcel_Style_Font::UNDERLINE_SINGLE);
+        $feuil->getStyle('A1')->getFont()->getColor()->setARGB(\PHPExcel_Style_Color::COLOR_WHITE);
+        
+        $feuil->mergeCells('C1:H1');
+        $feuil->setCellValue('C1', 'Edite le : '. date('d/m/Y') . ' Par : ' . $user->getNom());
+        $feuil->getStyle('C1')->getFont()->setName('Candara');
+        $feuil->getStyle('C1')->getFont()->setSize(12);
+        $feuil->getStyle('C1')->getFont()->setBold(true);
+        $feuil->getStyle('C1')->getFont()->setUnderline(\PHPExcel_Style_Font::UNDERLINE_SINGLE);
+        $feuil->getStyle('C1')->getFont()->getColor()->setARGB(\PHPExcel_Style_Color::COLOR_WHITE);
+        
+        
+        $feuil->getStyle('A1:F1')->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID);
+        $feuil->getStyle('A1:F1')->getFill()->getStartColor()->setARGB('FF808080');
+    
+        $feuil->setCellValue('A3', 'Filtre');
+        $feuil->getStyle('A3')->applyFromArray(
+                array(
+                    'font'    => array(
+                        'bold'      => true
+                    ),
+                    'alignment' => array(
+                        'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
+                    ),
+                    'borders' => array(
+                        'outline'     => array(
+                            'style' => \PHPExcel_Style_Border::BORDER_THIN
+                        )
+                    ),
+                    'fill' => array(
+                        'type'       => \PHPExcel_Style_Fill::FILL_GRADIENT_LINEAR,
+                        'rotation'   => 90,
+                        'startcolor' => array(
+                            'argb' => 'FFA0A0A0'
+                        ),
+                        'endcolor'   => array(
+                            'argb' => 'FFFFFFFF'
+                        )
+                    )
+                )
+        );
+        $feuil->setCellValue('A4', 'Du');
+        $feuil->setCellValue('A5', 'Au');
+
+        $feuil->setCellValue('B4',($du === null ? 'Tous' : \PHPExcel_Shared_Date::PHPToExcel($du)));
+        $feuil->setCellValue('B5',($au === null ? 'Tous' : \PHPExcel_Shared_Date::PHPToExcel($au)));
+        $feuil->getStyle('B4')->getNumberFormat()->setFormatCode("dd/mm/yyyy");
+        $feuil->getStyle('B5')->getNumberFormat()->setFormatCode("dd/mm/yyyy");
+
+        $feuil->getStyle('A4:A5')->applyFromArray(
+                array(
+                    'font'    => array(
+                        'bold'      => true
+                    ),
+                    'alignment' => array(
+                        'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_RIGHT,
+                        'vertical'   => \PHPExcel_Style_Alignment::VERTICAL_CENTER,
+
+                    ),
+                    /*'borders' => array(
+                        'top'     => array(
+                            'style' => \PHPExcel_Style_Border::BORDER_THIN
+                        )
+                    ),*/
+                    'fill' => array(
+                        'type'       => \PHPExcel_Style_Fill::FILL_GRADIENT_LINEAR,
+                        'rotation'   => 90,
+                        'startcolor' => array(
+                            'argb' => 'FFA0A0A0'
+                        ),
+                        'endcolor'   => array(
+                            'argb' => 'FFFFFFFF'
+                        )
+                    )
+                )
+        );
+        /*$feuil->getStyle('A4:A5')->applyFromArray(
+                array(
+                    'borders' => array(
+                        'left'     => array(
+                            'style' => \PHPExcel_Style_Border::BORDER_THIN
+                        )
+                    )
+                )
+        );*/
+
+        /*$feuil->getStyle('A4:A5')->applyFromArray(
+                array(
+                    'alignment' => array(
+                        'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
+                    ),
+                )
+        );
+        $feuil->getStyle('E4:F5')->applyFromArray(
+                array(
+                    'alignment' => array(
+                        'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                    ),
+                )
+        );*/
+
+        /*$feuil->getStyle('F4')->applyFromArray(
+                array(
+                    'borders' => array(
+                        'right'     => array(
+                            'style' => \PHPExcel_Style_Border::BORDER_THIN
+                        )
+                    )
+                )
+        );*/
+       /* $styleThinBlackBorderOutline = array(
+            'borders' => array(
+                'outline' => array(
+                    'style' => \PHPExcel_Style_Border::BORDER_THIN,
+                    'color' => array('argb' => 'FF000000'),
+                ),
+            ),
+        );*/
+
+        $styleThinBlackBorderAllborders = array(
+            'borders' => array(
+                'allborders' => array(
+                    'style' => \PHPExcel_Style_Border::BORDER_THIN,
+                    'color' => array('argb' => 'FF000000'),
+                ),
+            ),
+        );
+        $feuil->getStyle('A4:B5')->applyFromArray($styleThinBlackBorderAllborders);
+
+        //$feuil->getStyle('A4:F4')->applyFromArray($styleThinBlackBorderOutline);
+        //$feuil->getStyle('A5:F5')->applyFromArray($styleThinBlackBorderOutline);
+
+        $feuil->setCellValue('A7', 'Date');
+        $feuil->setCellValue('B7', 'Nom');
+        $feuil->setCellValue('C7', 'FM');
+        $feuil->setCellValue('D7', 'Obs');
+        $feuil->setCellValue('E7', 'H.Travail ');
+        $feuil->setCellValue('F7', 'H.Route');
+        $feuil->setCellValue('G7', 'H.Sup');
+        $feuil->setCellValue('H7', 'Designation');
+        $feuil->getStyle('A7:H7')->applyFromArray(
+                array(
+                    'font'    => array(
+                        'bold'      => true
+                    ),
+                    'alignment' => array(
+                        'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
+                        'vertical'   => \PHPExcel_Style_Alignment::VERTICAL_CENTER,
+                    ),
+                    'borders' => array(
+                        'top'     => array(
+                            'style' => \PHPExcel_Style_Border::BORDER_THIN
+                        )
+                    ),
+                    'fill' => array(
+                        'type'       => \PHPExcel_Style_Fill::FILL_GRADIENT_LINEAR,
+                        'rotation'   => 90,
+                        'startcolor' => array(
+                            'argb' => 'FFA0A0A0'
+                        ),
+                        'endcolor'   => array(
+                            'argb' => 'FFFFFFFF'
+                        )
+                    )
+                )
+        );
+        
+        $feuil->getStyle('A7')->applyFromArray(
+                array(
+                    'borders' => array(
+                        'left'     => array(
+                            'style' => \PHPExcel_Style_Border::BORDER_THIN
+                        )
+                    )
+                )
+        );
+        $feuil->getStyle('C7')->applyFromArray(
+                array(
+                    'alignment' => array(
+                        'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_RIGHT,
+                    ),
+                )
+        );
+        $feuil->getStyle('H7')->applyFromArray(
+                array(
+                    'borders' => array(
+                        'right'     => array(
+                            'style' => \PHPExcel_Style_Border::BORDER_THIN
+                        )
+                    )
+                )
+        );
+
+        $i = 8 ;
+        foreach ($pointages as $pointage){
+            $feuil
+                ->setCellValue('A'.$i, \PHPExcel_Shared_Date::PHPToExcel($pointage->getDate()))
+                ->setCellValue('B'.$i, $pointage->getUser()->getnom())
+                ->setCellValue('C'.$i, $this->getFms($fms,$pointage->getUser()->getId(),$pointage->getDate()))
+                ->setCellValue('D'.$i, $pointage->getObs())
+                ->setCellValue('E'.$i, $pointage->getHTravail())
+                ->setCellValue('F'.$i, $pointage->getHRoute())
+                ->setCellValue('G'.$i, $pointage->getHSup())
+                ->setCellValue('H'.$i, $pointage->getPointage()->getDesignation())
+                ;
+            $feuil->getStyle('A'.$i)->getNumberFormat()->setFormatCode("dd/mm/yyyy");
+           
+            $i++;
+        }
+        $i--;
+        $styleThinBlackBorderAllborders = array(
+            'borders' => array(
+                'allborders' => array(
+                    'style' => \PHPExcel_Style_Border::BORDER_THIN,
+                    'color' => array('argb' => 'FF000000'),
+                ),
+            ),
+        );
+        $feuil->getStyle('C7:C'.$i)->getNumberFormat()->setFormatCode(\PHPExcel_Style_NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1);
+        $feuil->getStyle('A7:H'.$i)->applyFromArray($styleThinBlackBorderAllborders);
+        
+        $feuil->getPageSetup()->setOrientation(\PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
+        $feuil->getPageSetup()->setRowsToRepeatAtTopByStartAndEnd(1,7);
+        $feuil->getHeaderFooter()->setOddFooter('&P/&N');
+
+        $feuil->getPageMargins()->setTop(0.5);
+        $feuil->getPageMargins()->setRight(0.2);
+        $feuil->getPageMargins()->setLeft(0.2);
+        $feuil->getPageMargins()->setBottom(0.5);
+        //$feuil->getPageSetup()->setFitToWidth(1);
+        
+        $feuil->getColumnDimension('A')->setAutoSize(true);
+        $feuil->getColumnDimension('B')->setAutoSize(true);
+        $feuil->getColumnDimension('C')->setAutoSize(true);
+        $feuil->getColumnDimension('D')->setAutoSize(true);
+        $feuil->getColumnDimension('E')->setAutoSize(true);
+        $feuil->getColumnDimension('F')->setAutoSize(true);
+        $feuil->getColumnDimension('G')->setAutoSize(true);
+        $feuil->getColumnDimension('H')->setAutoSize(true);
+        $objPHPExcel->getActiveSheet()->setAutoFilter("A7:H7");
+
+
+
+
+        // create the writer
+        $writer = $this->get('phpexcel')->createWriter($objPHPExcel, 'Excel2007');
+        // create the response
+        $response = $this->get('phpexcel')->createStreamedResponse($writer);
+        // adding headers
+        $nom = "Pointage_SNC_RTIE_" . date('Y-m-d__H-i-s') . ".xlsx";
+        $dispositionHeader = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,$nom
+        );
+        $response->headers->set('Content-Type', 'text/vnd.ms-excel; charset=utf-8');
+        $response->headers->set('Pragma', 'public');
+        $response->headers->set('Cache-Control', 'maxage=1');
+        $response->headers->set('Content-Disposition', $dispositionHeader);
+
+        return $response; 
+    }
+
     /**
      * @Route("/{id}/edit",name="pointage_edit")
      * id : pointage
@@ -116,7 +490,6 @@ class PointageController extends Controller
                             200);
     }
 
-
     //*********************************************************************************//
     /**
     * @route("/{field}/{type}/sort",name="pointage_sort",requirements={ "type"="ASC|DESC" })
@@ -141,6 +514,15 @@ class PointageController extends Controller
             ->getForm()
         ;
     }
+
+    protected function getFms($fms,$userId,$date){
+        foreach ($fms as $fm) {
+            if (($userId == $fm->getUser()->getId()) && ($date == $fm->getDateFm())){
+                return $fm->getMontant();
+            }
+        }
+        return 0;
+    }
     /**
      * @param string $name  session name
      * @param string $field field name
@@ -164,16 +546,16 @@ class PointageController extends Controller
             return $this->redirect($url);
         }
     }
-    protected function filter(FormInterface $form, QueryBuilder $qb, $name)
+    protected function filter(FormInterface $form, QueryBuilder $qb, $name,$paginer = true)
     {   
         if (!is_null($values = $this->getFilter($name))) {
             if ($form->submit($values)->isValid()) {
                 //$this->get('lexik_form_filter.query_builder_updater')->addFilterConditions($form, $qb);
-                $user   = $form->get('user')->getData();
-                $du = ($form->get('date')->getData() !== null) ? $form->get('date')->getData()['left_date'] : null;
-                $au = ($form->get('date')->getData() !== null) ? $form->get('date')->getData()['right_date'] : null;
-                $manager = $this->getDoctrine()->getManager();
-                // Recupere les sommes  avant pagination
+                $user       = $form->get('user')->getData();
+                $du         = ($form->get('date')->getData() !== null) ? $form->get('date')->getData()['left_date'] : null;
+                $au         = ($form->get('date')->getData() !== null) ? $form->get('date')->getData()['right_date'] : null;
+                $manager    = $this->getDoctrine()->getManager();
+
                 if ($qb !== null){
                     $qb = $manager->getRepository('AppBundle:PointageUser')->addFilterPointage($qb,$user,$du,$au);
                 }
@@ -181,20 +563,25 @@ class PointageController extends Controller
         }
         // possible sorting
         // nombre de ligne
-        
-        $session = $this->get('session');
-        $nbr_pages = $session->get("nbr_pages");
-        if ($nbr_pages == null){
-            $nbr_pages = 20;
-        };
-        $this->addQueryBuilderSort($qb, $name);
-        $request = $this->container->get('request_stack')->getCurrentRequest();
-        return $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), $nbr_pages);
+        if ($paginer == true){
+            $session = $this->get('session');
+            $nbr_pages = $session->get("nbr_pages");
+            if ($nbr_pages == null){
+                $nbr_pages = 20;
+            };
+            $this->addQueryBuilderSort($qb, $name);
+            $request = $this->container->get('request_stack')->getCurrentRequest();
+            return $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), $nbr_pages);
+        }else{
+            return $qb->getQuery()->getResult();
+        }
     }
+
     protected function getFilter($name)
     {   $request = $this->container->get('request_stack')->getCurrentRequest();
         return $request->getSession()->get('filter.' . $name);
     }
+
     protected function fAlias(QueryBuilder $qb, $name){
         $joints = current($qb->getDQLPart('join'));
         if ($joints !== false) {

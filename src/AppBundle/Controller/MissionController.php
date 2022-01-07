@@ -365,11 +365,11 @@ class MissionController extends Controller
             'action' => $this->generateUrl('mission_edit', array('id' => $cryptage->my_encrypt($mission->getId()))),
             'method' => 'PUT',
         ));
-        $depart = $request->request->get('mission')['depart'];
-        $retour = $request->request->get('mission')['retour'];
         
         if ($editForm->handleRequest($request)->isValid()) {
-
+            $depart = $request->request->get('mission')['depart'];
+            $retour = $request->request->get('mission')['retour'];
+        
             $dd = $this->getDoctrine()->getRepository('AppBundle:Intervention')->valideDate($id,$depart,$retour);
             $d1 = $dd["d1"];
             $d2 = $dd["d2"];
@@ -470,8 +470,7 @@ class MissionController extends Controller
      * @Route("/{id}/delete/mission",name="mission_delete")
      *
      */
-    public function missionDeleteAction(Mission $mission, Request $request)
-       {
+    public function missionDeleteAction(Mission $mission, Request $request){
         $form = $this->createDeleteForm($mission->getId(), 'mission_delete');
         if ($form->handleRequest($request)->isValid()) {
             $manager = $this->getDoctrine()->getManager();
@@ -509,13 +508,18 @@ class MissionController extends Controller
         return $this->redirect($this->generateUrl('mission_index'));
     }
     /**
-     * Route("/{id}/delete/mission-index",name="mission_delete_index",options = {"expose" = true})
+     * @Route("/{id}/delete/mission_index",name="mission_delete_index",options = {"expose" = true})
      * id : mission
      */
-   /* public function missionDelete2Action($id, Request $request)
-    {
+   public function missionDelete2Action($id)
+    {   
         $manager = $this->getDoctrine()->getManager();
         $mission = $this->getDoctrine()->getRepository('AppBundle:Mission')->find($id);
+        if (strpos($mission->getCode(),'M') !== false){
+            $m = 1;
+        }else{
+            $m = 0;
+        }
         if ($mission->getAvance() > 0) 
         {
             if (strpos($mission->getCode(),'M') !== false){
@@ -536,12 +540,12 @@ class MissionController extends Controller
                 }
             }
         }
-        if (strpos($mission->getCode(),'M') !== false){
+        if ($m == 1){
             return $this->redirect($this->generateUrl('mission_index'));
         }else{
             return $this->redirect($this->generateUrl('note_frais_index'));
         }
-    }*/
+    }
     /**
      * @Route("/{annee}/mission/next", name="mission_next",options = { "expose" = true })
      * 
@@ -722,7 +726,7 @@ class MissionController extends Controller
         $formCarburant->handleRequest($request); 
         if ($formCarburant->isSubmitted()){   
             if ($formCarburant->isValid()){
-                $d = $carburantMission->getDateDep();
+                $d = $carburantMission->getDate();
                 $d1 = $mission->getDepart();
                 $d2 = $mission->getRetour();
                 if (($d>=$d1) and ($d<=$d2)){
@@ -818,6 +822,23 @@ class MissionController extends Controller
             'montantCarburantMission'   => $montantCarburantMission,
             'formCarburant'             => $formCarburant->createView()
         ));
+
+    }
+    /**
+     * @Route("/{id}/missionCarburantDelete",name="mission_carburant_delete",options = { "expose" = true })
+     * id : carburantMission
+     */
+    public function missionCarburantDeleteAction($id)
+    {
+        $cryptage = $this->container->get('my.cryptage');
+        $carburantMission = $this->getDoctrine()->getRepository('AppBundle:CarburantMission')->find($id);
+        $mission = $carburantMission->getMission();
+        
+        $manager = $this->getDoctrine()->getManager();
+        $manager->remove($carburantMission);
+        $manager->flush();
+        $this->get('session')->getFlashBag()->add('success', 'Suppréssion effectuer avec sucées.');
+        return $this->redirect($this->generateUrl('mission_carburant',array('id' => $cryptage->my_encrypt($mission->getId()))));
 
     }
 
@@ -1052,9 +1073,8 @@ class MissionController extends Controller
         $form_recherche_site = $this->createForm(SiteRechercheType::class);
         $form_recherche_prestation = $this->createForm(PrestationRechercheType::class);
         $form_intervention = $this->createForm(InterventionType::class, $intervention);
-        
-        $siteid = $request->request->get('intervention')['siteid'];
-        $prestationid = $request->request->get('intervention')['prestationid'];
+        $siteid = !empty($request->request->all())  ? $request->request->all()['intervention']['siteid'] : null;
+        $prestationid = !empty($request->request->all())  ? $request->request->all()['intervention']['prestationid'] : null;
 
         if($siteid !== null)
         {   
@@ -1173,8 +1193,10 @@ class MissionController extends Controller
         $form_intervention->get('sousprojet')->setData($intervention->getPrestation()->getSousProjet()->getNom());
         $form_intervention->get('prestationnom')->setData($intervention->getPrestation()->getNom());
         
-        $siteid = $request->request->get('intervention')['siteid'];
-        $prestationid = $request->request->get('intervention')['prestationid'];
+        //$siteid = $request->request->get('intervention')['siteid'];
+        $siteid = !empty($request->request->all())  ? $request->request->all()['intervention']['siteid'] : null;
+        //$prestationid = $request->request->get('intervention')['prestationid'];
+        $prestationid = !empty($request->request->all())  ? $request->request->all()['intervention']['prestationid'] : null;
         if(($siteid !== null) and ($siteid !==""))
         {   
             $site = $this->getDoctrine()->getRepository('AppBundle:Site')->find($siteid);
@@ -1249,7 +1271,7 @@ class MissionController extends Controller
         $cryptage = $this->container->get('my.cryptage');
         $id = $cryptage->my_decrypt($id);
         $intervention = $manager->getRepository("AppBundle:Intervention")->find($id);
-        $quest = $request->request->all()["intervention_user"]["User"];      
+        $quest = $request->request->all()["intervention_user"]["User"];       
         foreach($quest as $realisateur){
             $user = $manager->getRepository("AppBundle:User")->find($realisateur);
             $interventionUser = new InterventionUser();

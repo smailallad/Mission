@@ -16,11 +16,9 @@ use AppBundle\Entity\Mission;
 use AppBundle\Entity\Fonction;
 use AppBundle\Entity\Pointage;
 use AppBundle\Entity\Vehicule;
-use AppBundle\Entity\Assurance;
 use AppBundle\Entity\Carburant;
 use AppBundle\Entity\Prestation;
 use AppBundle\Entity\SousProjet;
-use AppBundle\Entity\ControlTech;
 use AppBundle\Entity\Recrutement;
 use AppBundle\Entity\FonctionUser;
 use AppBundle\Entity\FraisMission;
@@ -133,6 +131,14 @@ class RestoreCommand extends ContainerAwareCommand
             $roles = new Roles();
             $roles 
                     ->setId(3) 
+                    ->setRolename('ROLE_FACTURATION')
+                    ;
+            $manager->persist($roles);
+            $output->write('<comment>#</comment>');
+            
+            $roles = new Roles();
+            $roles 
+                    ->setId(4) 
                     ->setRolename('ROLE_SUPER_COMPTABLE')
                     ;
             $manager->persist($roles);
@@ -140,7 +146,7 @@ class RestoreCommand extends ContainerAwareCommand
 
             $roles = new Roles();
             $roles 
-                    ->setId(4) 
+                    ->setId(5) 
                     ->setRolename('ROLE_COMPTABLE')
                     ;
             $manager->persist($roles);
@@ -148,7 +154,7 @@ class RestoreCommand extends ContainerAwareCommand
 
             $roles = new Roles();
             $roles 
-                    ->setId(5) 
+                    ->setId(6) 
                     ->setRolename('ROLE_ADMINISTRATION')
                     ;
             $manager->persist($roles);
@@ -156,7 +162,7 @@ class RestoreCommand extends ContainerAwareCommand
 
             $roles = new Roles();
             $roles 
-                    ->setId(6) 
+                    ->setId(7) 
                     ->setRolename('ROLE_ROLLOUT')
                     ;
             $manager->persist($roles);
@@ -164,15 +170,23 @@ class RestoreCommand extends ContainerAwareCommand
 
             $roles = new Roles();
             $roles 
-                    ->setId(7) 
+                    ->setId(8) 
                     ->setRolename('ROLE_BUREAU')
+                    ;
+            $manager->persist($roles);
+            $output->write('<comment>#</comment>');
+
+            $roles = new Groupes();
+            $roles 
+                    ->setId(9) 
+                    ->setRolename(['ROLE_CHEF_PARK'])
                     ;
             $manager->persist($roles);
             $output->write('<comment>#</comment>');
 
             $roles = new Roles();
             $roles 
-                    ->setId(8) 
+                    ->setId(10) 
                     ->setRolename('ROLE_USER')
                     ;
             $manager->persist($roles);
@@ -213,6 +227,15 @@ class RestoreCommand extends ContainerAwareCommand
             $groupes = new Groupes();
             $groupes 
                     ->setId(3) 
+                    ->setGroupname('FACTURATION')
+                    ->setRoles(['ROLE_FACTURATION'])
+                    ;
+            $manager->persist($groupes);
+            $output->write('<comment>#</comment>');
+
+            $groupes = new Groupes();
+            $groupes 
+                    ->setId(4) 
                     ->setGroupname('SUPER_COMPTABLE')
                     ->setRoles(['ROLE_SUPER_COMPTABLE'])
                     ;
@@ -221,7 +244,7 @@ class RestoreCommand extends ContainerAwareCommand
 
             $groupes = new Groupes();
             $groupes 
-                    ->setId(4) 
+                    ->setId(5) 
                     ->setGroupname('COMPTABLE')
                     ->setRoles(['ROLE_COMPTABLE'])
                     ;
@@ -230,7 +253,7 @@ class RestoreCommand extends ContainerAwareCommand
 
             $groupes = new Groupes();
             $groupes 
-                    ->setId(5) 
+                    ->setId(6) 
                     ->setGroupname('ADMINISTRATION')
                     ->setRoles(['ROLE_ADMINISTRATION'])
                     ;
@@ -239,7 +262,7 @@ class RestoreCommand extends ContainerAwareCommand
 
             $groupes = new Groupes();
             $groupes 
-                    ->setId(6) 
+                    ->setId(7) 
                     ->setGroupname('ROLLOUT')
                     ->setRoles(['ROLE_ROLLOUT'])
                     ;
@@ -248,7 +271,7 @@ class RestoreCommand extends ContainerAwareCommand
 
             $groupes = new Groupes();
             $groupes 
-                    ->setId(7) 
+                    ->setId(8) 
                     ->setGroupname('BUREAU')
                     ->setRoles(['ROLE_BUREAU'])
                     ;
@@ -257,7 +280,7 @@ class RestoreCommand extends ContainerAwareCommand
 
             $groupes = new Groupes();
             $groupes 
-                    ->setId(8) 
+                    ->setId(9) 
                     ->setGroupname('CHEF-PARK')
                     ->setRoles(['ROLE_CHEF_PARK'])
                     ;
@@ -266,7 +289,7 @@ class RestoreCommand extends ContainerAwareCommand
 
             $groupes = new Groupes();
             $groupes 
-                    ->setId(9) 
+                    ->setId(10) 
                     ->setGroupname('USER')
                     ->setRoles(['ROLE_USER'])
                     ;

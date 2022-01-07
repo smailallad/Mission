@@ -8,6 +8,7 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 class InterventionType extends AbstractType
 {
@@ -60,14 +61,24 @@ class InterventionType extends AbstractType
                 )
             ))
         ->add('prestationnom',TextType::class,array(
-               'label'         => 'Intervention',
+               'label'          => 'Intervention',
                 'mapped'        => false,
                 'attr'          => array(
                     'readonly'  => true
                 )
             ))
         ->add('quantite',NumberType::class)
-        ->add('designation')
+        ->add('designation',TextareaType::class,array(
+                'attr'          => array(
+                    'rows'      => 5,
+                )
+            ))
+        ->add('reserves',TextareaType::class,array(
+                'attr'          => array(
+                    'rows'      => 5,
+                )
+            ))
+
         ->add('prestationid',HiddenType::class,array(
                 'mapped'        => false,
             ))

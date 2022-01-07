@@ -53,6 +53,22 @@ class InterventionUserRepository extends \Doctrine\ORM\EntityRepository
         return $q;
     }
 
+    public function getInterventionsDate($date)
+    {
+        $q = $this->createQueryBuilder('iu');
+        $q  ->join('iu.user','u')
+            ->join('iu.intervention','i')
+            ->join('i.site','s')
+            ->join('s.wilaya','w')
+            ->addSelect('u')
+            //->addSelect("GROUP_CONCAT(DISTINCT w.nom SEPARATOR ', ') AS destination")
+            ->where('i.dateIntervention = :d')
+            ->orderBy('u.id')
+            ->setParameter('d',$date)
+            ;
+        return $q->getQuery()->getResult();
+    }
+
 
 
 }

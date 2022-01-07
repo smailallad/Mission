@@ -146,4 +146,15 @@ LEFT JOIN (
         $query->setParameter(1, 354);
         return $query->getResult();
     }
+
+    public function getFmsPeriode($du,$au){
+        $q = $this->createQueryBuilder('fm');
+        $q  ->select('fm')
+            ->andWhere('fm.dateFm >= :d1')
+            ->andWhere('fm.dateFm <= :d2')
+            ->setParameter('d1',$du)
+            ->setParameter('d2',$au)
+        ;
+        return $q->getQuery()->getResult();
+    }
 }

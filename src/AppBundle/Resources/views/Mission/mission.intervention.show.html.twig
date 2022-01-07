@@ -77,6 +77,10 @@
                     <th scope="row">Designation</th>
                     <td>{{ intervention.designation }}</td>
                 </tr>
+                <tr>
+                    <th scope="row">Reserves</th>
+                    <td>{{ intervention.reserves }}</td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -129,7 +133,7 @@
     </div>
 
     <div class="panel-footer">
-        <div class="btn-group record_actions">
+        
             {% if (appel_employe == "non") and (
             (is_granted("ROLE_ADMIN")) or
             (is_granted("ROLE_ROLLOUT") and not intervention.mission.vComptabilite ) or
@@ -140,6 +144,7 @@
                 <i class="glyphicon glyphicon-edit"></i>Modifier
             </a>
             {% endif %}
+            <a class='btn btn-primary' href="{{path('mission_index') }}"> Retour</a>
             {% if (appel_employe == "non") and ((not intervention.mission.vComptabilite and not
             intervention.mission.vRollout and not
             intervention.mission.vEmploye)) %}
@@ -147,7 +152,7 @@
                     class="glyphicon glyphicon-trash"></i> Supprimer
             </button>
             {% endif %}
-        </div>
+        
     </div>
     <div class="panel panel-default">
         <!-- Default panel contents -->
@@ -272,7 +277,7 @@
     </div>
 </div>
 
-{% endblock %}
+{% endblock %} 
 {% block js %}
 <script>
     $(document).ready(function () {

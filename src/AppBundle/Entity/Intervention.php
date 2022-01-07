@@ -62,7 +62,13 @@ class Intervention
      * @ORM\Column(name="designation", type="text",nullable=true)
      */
     private $designation;
-
+    /**
+     * @var string
+     *
+     * @ORM\Column(type="text",nullable=true)
+     */
+    private $reserves;
+    
     /**
      * @var int
      *
@@ -108,7 +114,7 @@ class Intervention
         $this->quantite = 1;
         $this->dateReception = new DateTime(date('Y-m-d'));
         $this->dateIntervention = new DateTime(date('Y-m-d'));
-        $this->setTarif(0);
+        $this->tarif=0;
         $this->interventionUsers = new \Doctrine\Common\Collections\ArrayCollection();
        
     }
@@ -418,4 +424,29 @@ class Intervention
     {
         return $this->interventionUsers->removeElement($interventionUser);
     }
+
+    /**
+     * Set reserves.
+     *
+     * @param string|null $reserves
+     *
+     * @return Intervention
+     */
+    public function setReserves($reserves = null)
+    {
+        $this->reserves = $reserves;
+
+        return $this;
+    }
+
+    /**
+     * Get reserves.
+     *
+     * @return string|null
+     */
+    public function getReserves()
+    {
+        return $this->reserves;
+    }
+
 }

@@ -19,6 +19,18 @@
                     )
                 )
 
+public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults(array(
+            'data_class'    => 'AppBundle\Entity\InterventionEntretien',
+            'method'        => 'POST',
+            'entretien'     => null,
+            'intervention'  => null,
+            'attr'          => array(
+                                'id' => 'form_add'
+                                )
+        ));
+    }
 PHPExcel
 /var/www/html/rtie3.4/vendor/phpoffice/phpexcel/Classes/PHPExcel/Calulation.php
 ligne 2946:	if (is_array($testPrevOp) and ($testPrevOp['value'] == ':')) {

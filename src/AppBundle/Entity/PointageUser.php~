@@ -4,16 +4,21 @@ namespace AppBundle\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * Pointage
  *
- * @ORM\Table(name="pointageUser")
+ * @ORM\Table(name="pointageUser",
+ * uniqueConstraints={
+ *        @UniqueConstraint(name="unique_user_date", 
+ *            columns={"user_id", "date"})
+ *    })
  * @ORM\Entity(repositoryClass="AppBundle\Repository\PointageUserRepository")
  * @UniqueEntity(fields={"date","user"},errorPath="date",message="Pointage déja effectuer pour cette employé à a cette date.")
+ * 
  */
 class PointageUser
 {   
@@ -22,7 +27,7 @@ class PointageUser
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
     
@@ -72,6 +77,9 @@ class PointageUser
 
     public function __construct(){
         //$this->date= new DateTime(date('Y-m-d'));
+        $this->hTravail = 0;
+        $this->hRoute = 0;
+        $this->hSup = 0;
     }
     
     /**

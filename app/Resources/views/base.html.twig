@@ -49,33 +49,45 @@
                         </li>
                         {% endif %}
 
-                        {% if is_granted('ROLE_BUREAU') or is_granted('ROLE_ADMINISTRATION') or
-                        is_granted('ROLE_COMPTABLE') %}
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                aria-haspopup="true" aria-expanded="false">Fichier<span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                {% if is_granted('ROLE_ADMINISTRATION') %}
-                                <li><a href="{{ path('fonction') }}">Fonctions</a></li>
-                                <li><a href="{{ path('employe_index')}}">Employés</a></li>
-                                {% endif %}
-                                {% if is_granted('ROLE_BUREAU') %}
-                                <li><a href="{{ path('site')}}">Sites</a></li>
-                                {% endif %}
-                                <!-- <li role="separator" class="divider"></li> -->
-                                {% if is_granted('ROLE_COMPTABLE') %}
-                                <li><a href="{{ path('familleDepense')}}">Famille des depenses</a></li>
-                                <li><a href="{{ path('depense')}}">Depenes</a></li>
-                                {% endif %}
-                                {% if is_granted('ROLE_GERANT') %}
-                                <li role="separator" class="divider"></li>
-                                <li><a href="{{ path ('projet')}}">Projet</a></li>
-                                <li><a href="{{ path ('sousProjet')}}">Sous Projet</a></li>
-                                <li><a href="{{ path ('prestation')}}">Prestation</a></li>
-                                {% endif %}
-                            </ul>
-                        </li>
+                        {% if is_granted('ROLE_BUREAU') or is_granted('ROLE_ADMINISTRATION') or is_granted('ROLE_COMPTABLE') %}
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                    aria-haspopup="true" aria-expanded="false">Fichier<span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    {% if is_granted('ROLE_ADMINISTRATION') %}
+                                    <li><a href="{{ path('fonction') }}">Fonctions</a></li>
+                                    <li><a href="{{ path('employe_index')}}">Employés</a></li>
+                                    {% endif %}
+                                    {% if is_granted('ROLE_BUREAU') %}
+                                    <li><a href="{{ path('site')}}">Sites</a></li>
+                                    {% endif %}
+                                    <!-- <li role="separator" class="divider"></li> -->
+                                    {% if is_granted('ROLE_COMPTABLE') %}
+                                    <li><a href="{{ path('familleDepense')}}">Famille des depenses</a></li>
+                                    <li><a href="{{ path('depense')}}">Depenes</a></li>
+                                    {% endif %}
+                                    {% if is_granted('ROLE_GERANT') %}
+                                    <li role="separator" class="divider"></li>
+                                    <li><a href="{{ path ('projet')}}">Projet</a></li>
+                                    <li><a href="{{ path ('sousProjet')}}">Sous Projet</a></li>
+                                    <li><a href="{{ path ('prestation')}}">Prestation</a></li>
+                                    {% endif %}
+                                </ul>
+                            </li>
                         {% endif %}
+
+                        {% if is_granted('ROLE_FACTURATION') %}
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                    aria-haspopup="true" aria-expanded="false">Facturation<span class="caret"></span></a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="{{ path('fonction') }}">Commande</a></li>
+                                    <li><a href="{{ path('employe_index')}}">Facture</a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
+                        
+
                         {% if is_granted('ROLE_ROLLOUT') or is_granted('ROLE_COMPTABLE') %}
                         <li><a href="{{ path('mission_index')}}">Missions {% if is_granted('ROLE_COMPTABLE') %} & Avances {% endif %}</a></li>
                         {% endif %}

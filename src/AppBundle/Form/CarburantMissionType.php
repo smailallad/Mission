@@ -19,7 +19,7 @@ class CarburantMissionType extends AbstractType
     {   
         $builder
                 ->add('date',DateType::Class, array(
-                    'label'     => 'Dateeee',
+                    'label'     => 'Date',
                     'widget'    => 'single_text',
                     'html5'     => true,
                     )

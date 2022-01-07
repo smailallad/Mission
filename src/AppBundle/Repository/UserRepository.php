@@ -36,18 +36,20 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
 
     }
     public function getNotRealisateursIntervention($intervention,$date,$mission)
-    {
+    {   // Selectionner les utilisateurs de l'intervetion [intervention]
         $qb1 = $this->getEntityManager()->createQueryBuilder();
         $qb1    ->select('DISTINCT(iu.user)')
                 ->from('AppBundle:InterventionUser', 'iu')
                 ->where('iu.intervention = :v1')
                 ;
-        
+        // Selectionner les utilisateurs des missions [date] entre date depart er date de retour
         $qb3 = $this->getEntityManager()->createQueryBuilder();
         $qb3    ->select('DISTINCT(m.user)')
                 ->from('AppBundle:Mission', 'm') 
                 ->where(':d BETWEEN m.depart AND m.retour')
+                ->andWhere('m <> :mission1')
                 ;
+        // Selectionnet les utilisateurs des mission de la date [date] des autres missions
         $qb4 = $this->getEntityManager()->createQueryBuilder();
         $qb4    ->select('DISTINCT(iuu.user)')
                 ->from('AppBundle:InterventionUser', 'iuu')
@@ -56,8 +58,7 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
                 ->andWhere('i.dateIntervention =:d1')
                 ;
 
-        //return $qb1->getQuery()->getResult(); 
-
+        
         $qb2 = $this->getEntityManager()->createQueryBuilder();
         $qb2    ->select('u')
                 ->from('AppBundle:User', 'u')
@@ -70,14 +71,46 @@ class UserRepository extends \Doctrine\ORM\EntityRepository implements UserLoade
                 ->setParameter('v1',$intervention)
                 ->setParameter('d', $date)
                 ->setParameter('mission',$mission)
+                ->setParameter('mission1', $mission)
                 ->setParameter('d1',$date)
         ;
+/*
+        $qb11 = $this->getEntityManager()->createQueryBuilder();
+        $qb11    ->select('DISTINCT(iu.user)')
+                ->from('AppBundle:InterventionUser', 'iu')
+                ->where('iu.intervention = :v1')
+                ->setParameter('v1',$intervention)
+                ;
+
+        $qb33 = $this->getEntityManager()->createQueryBuilder();
+        $qb33    ->select('DISTINCT(m.user)')
+                ->from('AppBundle:Mission', 'm') 
+                ->where(':d BETWEEN m.depart AND m.retour')
+                ->andWhere('m <> :mission1')
+                ->setParameter('d', $date)
+                ->setParameter('mission1', $mission)
+                ;
         
+        $qb44 = $this->getEntityManager()->createQueryBuilder();
+        $qb44    ->select('DISTINCT(iuu.user)')
+                ->from('AppBundle:InterventionUser', 'iuu')
+                ->join('iuu.intervention','i')
+                ->where('i.mission <>:mission')
+                ->andWhere('i.dateIntervention =:d1')
+                ->setParameter('mission',$mission)
+                ->setParameter('d1',$date)
+                ;
+        dump($date);
+        dump($qb11->getQuery()->getResult()); 
+        dump($qb33->getQuery()->getResult()); 
+        dump($qb44->getQuery()->getResult()); 
+*/
+
         return $qb2;
        
     }
     public function getChefMissionDate($date,$mission)
-    {   // Liste des chef de mission entre depart au Retour
+    {   // Liste des chef de mission de depart au Retour
         
         $qb4 = $this->getEntityManager()->createQueryBuilder();
         $qb4    ->select('DISTINCT(iu.user)')

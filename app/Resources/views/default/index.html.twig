@@ -72,9 +72,24 @@
 {% if sansAssurances != null %}
     <div class="panel panel-danger"> {# Véhicule sans assurance #}
         <div class="panel-heading">
-            <h4>Véhicule sans assurance</h4>
+            <table class="table">
+                <tr>
+                    <td>
+                        <span class="glyphicon glyphicon-hand-right"> 
+                            <a role="button" data-toggle="collapse" href="#sansAssurance" aria-expanded="false" aria-controls="sansAssurance">
+                                <b>Véhicule sans assurance</b>
+                            </a>
+                        </span>
+                    </td>
+                    <td class="text-right">
+                        <a role="button" data-toggle="collapse" href="#sansAssurance" aria-expanded="false" aria-controls="sansAssurance">
+                            <span class="badge alert-danger"> <b>{{ sansAssurances|length }}</b></span>
+                        </a>
+                    </td>
+                </tr>
+            </table>
         </div>
-        <div class="panel-body">
+        <div class="panel-body collapse" id="sansAssurance">
             <table class="table">
             <thead>
                 <tr class="danger">
@@ -97,9 +112,24 @@
 {% if sansControlTechniques != null %}
     <div class="panel panel-danger"> {# Véhicule sans controle technique #}
         <div class="panel-heading">
-            <h4>Véhicule sans controle technique</h4>
+            <table class="table">
+                <tr>
+                    <td>
+                        <span class="glyphicon glyphicon-hand-right"> 
+                            <a role="button" data-toggle="collapse" href="#sansControlTechnique" aria-expanded="false" aria-controls="sansControlTechnique">
+                                <b>Véhicule sans controle technique</b>
+                            </a>
+                        </span>
+                    </td>
+                    <td class="text-right">
+                        <a role="button" data-toggle="collapse" href="#sansControlTechnique" aria-expanded="false" aria-controls="sansControlTechnique">
+                            <span class="badge alert-danger"> <b>{{ sansControlTechniques|length }}</b></span>
+                        </a>
+                    </td>
+                </tr>
+            </table>
         </div>
-        <div class="panel-body">
+        <div class="panel-body collapse" id="sansControlTechnique">
             <table class="table">
             <thead>
                 <tr class="danger">
@@ -122,9 +152,24 @@
 {% if assuranceDepassers != null %}
     <div class="panel panel-danger"> {# Assurances dépasser #}
         <div class="panel-heading">
-            <h4>Assurances dépasser</h4>
+            <table class="table">
+                <tr>
+                    <td>
+                        <span class="glyphicon glyphicon-hand-right"> 
+                            <a role="button" data-toggle="collapse" href="#assuranceDepasser" aria-expanded="false" aria-controls="assuranceDepasser">
+                                <b>Assurances dépasser</b>
+                            </a>
+                        </span>
+                    </td>
+                    <td class="text-right">
+                        <a role="button" data-toggle="collapse" href="#assuranceDepasser" aria-expanded="false" aria-controls="assuranceDepasser">
+                            <span class="badge alert-danger"> <b>{{ assuranceDepassers|length }}</b></span>
+                        </a>
+                    </td>
+                </tr>
+            </table>
         </div>
-        <div class="panel-body">
+        <div class="panel-body collapse" id="assuranceDepasser">
             <table class="table">
             <thead>
                 <tr class="danger">
@@ -157,9 +202,24 @@
 {% if controlTechDepassers != null %}
     <div class="panel panel-danger"> {# Controle technique dépasser #}
         <div class="panel-heading">
-            <h4>Controle technique dépasser</h4>
+            <table class="table">
+                <tr>
+                    <td>
+                        <span class="glyphicon glyphicon-hand-right"> 
+                            <a role="button" data-toggle="collapse" href="#controlTechDepasser" aria-expanded="false" aria-controls="controlTechDepasser">
+                                <b>Controle technique dépasser</b>
+                            </a>
+                        </span>
+                    </td>
+                    <td class="text-right">
+                        <a role="button" data-toggle="collapse" href="#controlTechDepasser" aria-expanded="false" aria-controls="controlTechDepasser">
+                            <span class="badge alert-danger"> <b>{{ controlTechDepassers|length }}</b></span>
+                        </a>
+                    </td>
+                </tr>
+            </table>
         </div>
-        <div class="panel-body">
+        <div class="panel-body collapse" id="controlTechDepasser">
             <table class="table">
             <thead>
                 <tr class="danger">
@@ -186,12 +246,27 @@
     </div>
 {% endif %}
 
-{% if alertEntretiens != null %}
+{% if entretiensDepasser != null %}
     <div class="panel panel-danger"> {# Entretiens Dépasser #}
         <div class="panel-heading">
-            <h4>Entretiens Dépasser</h4>
+            <table class="table">
+                <tr>
+                    <td>
+                        <span class="glyphicon glyphicon-hand-right"> 
+                            <a role="button" data-toggle="collapse" href="#entretienDepasser" aria-expanded="false" aria-controls="entretienDepasser">
+                                <b>Entretiens Dépassers</b> 
+                            </a>
+                        </span>
+                    </td>
+                    <td class="text-right">
+                        <a role="button" data-toggle="collapse" href="#entretienDepasser" aria-expanded="false" aria-controls="entretienDepasser">
+                            <span class="badge alert-danger"> <b>{{entretiensDepasser|length }}</b></span>
+                        </a>
+                    </td>
+                </tr>
+            </table>
         </div>
-        <div class="panel-body">
+        <div class="panel-body collapse" id="entretienDepasser">
             <table class="table">
             <thead>
                 <tr class="danger">
@@ -204,17 +279,16 @@
                 </tr>
             </thead>
             <tbody>
-                {% for alertEntretien in alertEntretiens %}
-                    {% if alertEntretien.reste >= 0 %}
+                {% for entretienDepasser in entretiensDepasser %}
                     <tr class="danger">
-                        <td>{{ alertEntretien.nom }}</td>
-                        <td>{{ alertEntretien.designation }}</td>
-                        <td class="text-right">{{ alertEntretien.kms | number_format(0, ' ', ' ') }} Kms</td>
-                        <td class="text-right">{{ alertEntretien.dernierKms | number_format(0, ' ', ' ')}} Kms</td>
-                        <td class="text-right">{{ alertEntretien.kmsRelever | number_format(0, ' ', ' ')}} Kms</td>
-                        <td class="text-right"><b>{{ alertEntretien.reste | number_format(0, ' ', ' ')}} Kms</b></td>
+                        <td>{{ entretienDepasser.nom }}</td>
+                        <td>{{ entretienDepasser.designation }}</td>
+                        <td class="text-right">{{ entretienDepasser.kms | number_format(0, ' ', ' ') }} Kms</td>
+                        <td class="text-right">{{ entretienDepasser.dernierKms | number_format(0, ' ', ' ')}} Kms</td>
+                        <td class="text-right">{{ entretienDepasser.kmsRelever | number_format(0, ' ', ' ')}} Kms</td>
+                        <td class="text-right"><b>{{ entretienDepasser.reste | number_format(0, ' ', ' ')}} Kms</b></td>
                     </tr>
-                    {% endif %}
+
                 {% endfor %}
             </tbody>
         </table>
@@ -226,9 +300,24 @@
 {% if interventionImportantes != null %}
     <div class="panel panel-danger"> {# Entretiens non associer #}
         <div class="panel-heading">
-            <h4>Interventions importantes non associer aux marques</h4>
+            <table class="table">
+                <tr>
+                    <td>
+                        <span class="glyphicon glyphicon-hand-right"> 
+                            <a role="button" data-toggle="collapse" href="#interventionImportante" aria-expanded="false" aria-controls="interventionImportante">
+                                <b>Interventions importantes non associer aux marques</b>
+                            </a>
+                        </span>
+                    </td>
+                    <td class="text-right">
+                        <a role="button" data-toggle="collapse" href="#interventionImportante" aria-expanded="false" aria-controls="interventionImportante">
+                            <span class="badge alert-danger"> <b>{{ interventionImportantes|length }}</b></span>
+                        </a>
+                    </td>
+                </tr>
+            </table>
         </div>
-        <div class="panel-body">
+        <div class="panel-body collapse" id="interventionImportante">
             <table class="table">
             <thead>
                 <tr class="danger">
@@ -253,9 +342,24 @@
 {% if assuranceAlertes != null %}
     <div class="panel panel-info"> {# Assurances à faire #}
         <div class="panel-heading">
-            <h4>Assurances à faire</h4>
+            <table class="table">
+                <tr>
+                    <td>
+                        <span class="glyphicon glyphicon-hand-right"> 
+                            <a role="button" data-toggle="collapse" href="#assuranceAlerte" aria-expanded="false" aria-controls="assuranceAlerte">
+                                <b>Assurances à faire</b>
+                            </a>
+                        </span>
+                    </td>
+                    <td class="text-right">
+                        <a role="button" data-toggle="collapse" href="#assuranceAlerte" aria-expanded="false" aria-controls="assuranceAlerte">
+                            <span class="badge alert-info"> <b>{{ assuranceAlertes|length }}</b></span>
+                        </a>
+                    </td>
+                </tr>
+            </table>
         </div>
-        <div class="panel-body">
+        <div class="panel-body collapse" id="assuranceAlerte">
             <table class="table">
             <thead>
                 <tr class="info">
@@ -265,12 +369,12 @@
                 </tr>
             </thead>
             <tbody>
-                {% for assuranceAlertes in assuranceAlertes %}
-                    {% set difference = date(assuranceAlertes.finAssurance).diff(date('now')) %}
+                {% for assuranceAlerte in assuranceAlertes %}
+                    {% set difference = date(assuranceAlerte.finAssurance).diff(date('now')) %}
                     {% set leftDays = difference.days %}
                     <tr class="info">
-                        <td>{{ assuranceAlertes.nom }}</td>
-                        <td class="text-right">{{ assuranceAlertes.finAssurance|date("d/m/Y") }}</td>
+                        <td>{{ assuranceAlerte.nom }}</td>
+                        <td class="text-right">{{ assuranceAlerte.finAssurance|date("d/m/Y") }}</td>
                         <td class="text-right">{{ leftDays | number_format(0, ' ', ' ') }} jours</td>
 
                     </tr>
@@ -285,9 +389,24 @@
 {% if controlTechAlertes != null %}
     <div class="panel panel-info"> {# Controle technique à faire #}
         <div class="panel-heading">
-            <h4>Controle technique à faire</h4>
+            <table class="table">
+                <tr>
+                    <td>
+                        <span class="glyphicon glyphicon-hand-right"> 
+                            <a role="button" data-toggle="collapse" href="#controlTechAlerte" aria-expanded="false" aria-controls="controlTechAlerte">
+                                <b>Controle technique à faire</b>
+                            </a>
+                        </span>
+                    </td>
+                    <td class="text-right">
+                        <a role="button" data-toggle="collapse" href="#controlTechAlerte" aria-expanded="false" aria-controls="controlTechAlerte">
+                            <span class="badge alert-info"><b>{{ controlTechAlertes|length }}</b></span>
+                        </a>
+                    </td>
+                </tr>
+            </table>
         </div>
-        <div class="panel-body">
+        <div class="panel-body collapse" id = "controlTechAlerte">
             <table class="table">
             <thead>
                 <tr class="info">
@@ -314,12 +433,27 @@
     </div>
 {% endif %}
 
-{% if alertEntretiens != null %}
+{% if entretiensAFaire != null %}
     <div class="panel panel-info"> {# Entretiens à faire #}
         <div class="panel-heading">
-            <h4>Entretiens à faire</h4>
+            <table class="table">
+                <tr>
+                    <td>
+                        <span class="glyphicon glyphicon-hand-right"> 
+                            <a role="button" data-toggle="collapse" href="#entretienAFaire" aria-expanded="false" aria-controls="entretienAFaire">
+                                <b>Entretiens à faire</b>
+                            </a>
+                        </span>
+                    </td>
+                    <td class="text-right">
+                        <a role="button" data-toggle="collapse" href="#entretienAFaire" aria-expanded="false" aria-controls="entretienAFaire">
+                            <span class="badge alert-info"><b>{{ entretiensAFaire|length }}</b></span>
+                        </a>
+                    </td>
+                </tr>
+            </table>
         </div>
-        <div class="panel-body">
+        <div class="panel-body collapse" id="entretienAFaire">
             <table class="table">
             <thead>
                 <tr class="info">
@@ -332,17 +466,15 @@
                 </tr>
             </thead>
             <tbody>
-                {% for alertEntretien in alertEntretiens %}
-                    {% if alertEntretien.reste < 0 %}
+                {% for entretienAFaire in entretiensAFaire %}
                     <tr class="info">
-                        <td>{{ alertEntretien.nom }}</td>
-                        <td>{{ alertEntretien.designation }}</td>
-                        <td class="text-right">{{ alertEntretien.kms | number_format(0, ' ', ' ') }} Kms</td>
-                        <td class="text-right">{{ alertEntretien.dernierKms | number_format(0, ' ', ' ')}} Kms</td>
-                        <td class="text-right">{{ alertEntretien.kmsRelever | number_format(0, ' ', ' ')}} Kms</td>
-                        <td class="text-right"><b>{{ alertEntretien.reste | abs | number_format(0, ' ', ' ')}} Kms</b></td>
+                        <td>{{ entretienAFaire.nom }}</td>
+                        <td>{{ entretienAFaire.designation }}</td>
+                        <td class="text-right">{{ entretienAFaire.kms | number_format(0, ' ', ' ') }} Kms</td>
+                        <td class="text-right">{{ entretienAFaire.dernierKms | number_format(0, ' ', ' ')}} Kms</td>
+                        <td class="text-right">{{ entretienAFaire.kmsRelever | number_format(0, ' ', ' ')}} Kms</td>
+                        <td class="text-right"><b>{{ entretienAFaire.reste | abs | number_format(0, ' ', ' ')}} Kms</b></td>
                     </tr>
-                    {% endif %}
                 {% endfor %}
             </tbody>
         </table>
@@ -354,9 +486,24 @@
 {% if relevers != null %}
     <div class="panel panel-info"> {# Relever compteur véhicule #}
         <div class="panel-heading">
-            <h4>Relever compteur véhicule</h4>
+            <table class="table">
+                <tr>
+                    <td>
+                        <span class="glyphicon glyphicon-hand-right"> 
+                            <a role="button" data-toggle="collapse" href="#relever" aria-expanded="false" aria-controls="relever">
+                                <b>Relever compteur véhicule</b>
+                            </a>
+                        </span>
+                    </td>
+                    <td class="text-right">
+                        <a role="button" data-toggle="collapse" href="#relever" aria-expanded="false" aria-controls="relever">
+                            <span class="badge alert-info"><b>{{ relevers|length }}</b></span>
+                        </a>
+                    </td>
+                </tr>
+            </table>
         </div>
-        <div class="panel-body">
+        <div class="panel-body collapse" id="relever">
             <table class="table">
             <thead>
                 <tr class="info">
