@@ -7,15 +7,15 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * TarifPrestation
+ * BcPrestation
  *
- * @ORM\Table(name="tarif_prestation")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\TarifPrestationRepository")
+ * @ORM\Table(name="bc_prestation")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\BcPrestationRepository")
  * @UniqueEntity(fields={"prestation","zone"},
  * errorPath ="prestation",
  * message="Valeur existe déjà sur la base de donnée.")
  */
-class TarifPrestation
+class BcPrestation
 {
     /**
      * @var int
@@ -34,6 +34,12 @@ class TarifPrestation
     private $montant;
 
     /**
+     *
+     * @ORM\Column(name="qte", type="integer")
+     */
+    private $qte;
+
+    /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Prestation")
      * @Assert\NotNull(message = "Entrer une valeur.")
      * @ORM\JoinColumn(nullable=false)
@@ -47,6 +53,10 @@ class TarifPrestation
      */
     private $zone;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Bc")
+     */
+    private $bc;
 
     /**
      * Get id
@@ -63,7 +73,7 @@ class TarifPrestation
      *
      * @param float $montant
      *
-     * @return TarifPrestation
+     * @return BcPrestation
      */
     public function setMontant($montant)
     {
@@ -87,7 +97,7 @@ class TarifPrestation
      *
      * @param \AppBundle\Entity\Prestation $prestation
      *
-     * @return TarifPrestation
+     * @return BcPrestation
      */
     public function setPrestation(\AppBundle\Entity\Prestation $prestation = null)
     {
@@ -111,7 +121,7 @@ class TarifPrestation
      *
      * @param \AppBundle\Entity\Zone $zone
      *
-     * @return TarifPrestation
+     * @return BcPrestation
      */
     public function setZone(\AppBundle\Entity\Zone $zone = null)
     {
@@ -135,12 +145,60 @@ class TarifPrestation
      *
      * @param int $id
      *
-     * @return TarifPrestation
+     * @return BcPrestation
      */
     public function setId($id)
     {
         $this->id = $id;
 
         return $this;
+    }
+
+    /**
+     * Set qte.
+     *
+     * @param int $qte
+     *
+     * @return BcPrestation
+     */
+    public function setQte($qte)
+    {
+        $this->qte = $qte;
+
+        return $this;
+    }
+
+    /**
+     * Get qte.
+     *
+     * @return int
+     */
+    public function getQte()
+    {
+        return $this->qte;
+    }
+
+    /**
+     * Set bc.
+     *
+     * @param \AppBundle\Entity\Bc|null $bc
+     *
+     * @return BcPrestation
+     */
+    public function setBc(\AppBundle\Entity\Bc $bc = null)
+    {
+        $this->bc = $bc;
+
+        return $this;
+    }
+
+    /**
+     * Get bc.
+     *
+     * @return \AppBundle\Entity\Bc|null
+     */
+    public function getBc()
+    {
+        return $this->bc;
     }
 }

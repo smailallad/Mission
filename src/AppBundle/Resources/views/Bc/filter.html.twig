@@ -1,0 +1,12 @@
+{% form_theme form 'Form/bootstrap_3_layout.html.twig' %}
+{#<button type="button" class="btn btn-default filter" data-toggle="collapse" data-target="#filter">Afficher/masquer les filtres<i class="glyphicon glyphicon-angle-{{ app.session.get('filter.user') ? 'right' : 'down' }}"></i></button>#}
+{# <div id="filter" class="collapse {% if app.session.get('filter.user') %} in1{% endif %}"> #}
+<div id="filter" class="collapse in">
+    <form method="get" action="">
+        {{ form_widget(form) }}
+        <p class="btn-group">
+            <button class="btn btn-primary" type="submit" name="submit-filter"><i class="glyphicon glyphicon-filter"></i>Filtre</button>
+            <a class="btn btn-default" href="?reset-filter"><i class="glyphicon glyphicon-times"></i>Annuler les filtres</a>
+        </p>
+    </form>
+</div>

@@ -44,16 +44,16 @@
     <div class="panel-body">
         <table class="table table-hover record_properties">
             <tbody>
-                {% for tarifPrestation in tarifPrestations %}
+                {% for bcPrestation in bcPrestations %}
                 <tr>
-                    <td> Zone N° : {{ tarifPrestation.zone.id }}</td>
-                    <td class="text-right"> <b> {{ tarifPrestation.montant | number_format(2, ',', '.') }} DA</b></td>
+                    <td> Zone N° : {{ bcPrestation.zone.id }}</td>
+                    <td class="text-right"> <b> {{ bcPrestation.montant | number_format(2, ',', '.') }} DA</b></td>
                     <td class="text-right">
                         <button class="btn btn-primary" data-toggle="modal" data-target="#modalEditMontantPrestation"
-                            data-zone="{{ tarifPrestation.zone.id }}" data-id="{{ tarifPrestation.id }}" data-montant="{{ tarifPrestation.montant }}"><i class="glyphicon glyphicon-edit"></i>
+                            data-zone="{{ bcPrestation.zone.id }}" data-id="{{ bcPrestation.id }}" data-montant="{{ bcPrestation.montant }}"><i class="glyphicon glyphicon-edit"></i>
                         </button>
                         <button class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteMontantPrestation"
-                            data-id="{{ tarifPrestation.id }}"><i
+                            data-id="{{ bcPrestation.id }}"><i
                                 class="glyphicon glyphicon-trash"></i>
                         </button>
                     </td>
@@ -94,7 +94,7 @@
         </div>
     </div>
 
-<!-- Modale delete tarifPrestation-->
+<!-- Modale delete bcPrestation-->
 <div id="modalDeleteMontantPrestation" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjoutRoleLabel"
     aria-hidden="true">
     <div class="modal-dialog">
@@ -117,7 +117,7 @@
     </div>
 </div>
 
-<!-- Modale edit tarifPrestation-->
+<!-- Modale edit bcPrestation-->
 <div id="modalEditMontantPrestation" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjoutRoleLabel"
     aria-hidden="true">
     <div class="modal-dialog">
@@ -155,7 +155,7 @@
     </div>
 </div>
 
-<!-- Modale new tarifPrestation-->
+<!-- Modale new bcPrestation-->
 <div id="modalNewMontantPrestation" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjoutRoleLabel"
     aria-hidden="true">
     <div class="modal-dialog">
@@ -197,7 +197,7 @@
         $('#modalDeleteMontantPrestation').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget) // Button that triggered the modal
             var id = button.data('id') // Extract info from data-* attributes
-            var cURL = Routing.generate('tarif_prestation_delete', { id: id });
+            var cURL = Routing.generate('bcPrestation_delete', { id: id });
             //alert(cURL);
             $("#modalDeleteMontantPrestationForm").attr('action', cURL);
         })
@@ -207,9 +207,9 @@
             var id = button.data('id') // Extract info from data-* attributes
             var zone = button.data('zone');
             var montant = button.data('montant');
-            $('#tarif_prestation_montant').val(montant);
+            $('#bcPrestation_montant').val(montant);
             $('#zone').html('Zonne N° : ' + zone);
-            var cURL = Routing.generate('tarif_prestation_edit', { id: id });
+            var cURL = Routing.generate('bcPrestation_edit', { id: id });
             //alert(montant);
             $("#edit_montant_form").attr('action', cURL);
         })
@@ -219,9 +219,9 @@
             var id = button.data('id') // Extract info from data-* attributes
             //var zone = button.data('zone');
             //var montant = button.data('montant');
-            //$('#tarif_prestation_montant').val(montant);
+            //$('#bcPrestation_montant').val(montant);
             //$('#zone').html('Zonne N° : ' + zone);
-            var cURL = Routing.generate('tarif_prestation_new', { id: id });
+            var cURL = Routing.generate('bcPrestation_new', { id: id });
             //alert(montant);
             $("#new_montant_form").attr('action', cURL);
         })

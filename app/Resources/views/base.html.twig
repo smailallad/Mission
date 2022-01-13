@@ -66,12 +66,6 @@
                                     <li><a href="{{ path('familleDepense')}}">Famille des depenses</a></li>
                                     <li><a href="{{ path('depense')}}">Depenes</a></li>
                                     {% endif %}
-                                    {% if is_granted('ROLE_GERANT') %}
-                                    <li role="separator" class="divider"></li>
-                                    <li><a href="{{ path ('projet')}}">Projet</a></li>
-                                    <li><a href="{{ path ('sousProjet')}}">Sous Projet</a></li>
-                                    <li><a href="{{ path ('prestation')}}">Prestation</a></li>
-                                    {% endif %}
                                 </ul>
                             </li>
                         {% endif %}
@@ -81,7 +75,11 @@
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                     aria-haspopup="true" aria-expanded="false">Facturation<span class="caret"></span></a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="{{ path('fonction') }}">Commande</a></li>
+                                    <li><a href="{{ path ('projet')}}">Projet/Client</a></li>
+                                    <li><a href="{{ path ('sousProjet')}}">Sous Projet</a></li>
+                                    <li><a href="{{ path ('prestation')}}">Prestation</a></li>
+                                    <li role="separator" class="divider"></li>
+                                    <li><a href="{{ path('bc') }}">Bon de Commande</a></li>
                                     <li><a href="{{ path('employe_index')}}">Facture</a></li>
                                 </ul>
                             </li>

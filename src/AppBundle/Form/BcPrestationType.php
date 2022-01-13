@@ -1,12 +1,12 @@
 <?php
 namespace AppBundle\Form;
-use AppBundle\Entity\TarifPrestation;
+use AppBundle\Entity\BcPrestation;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
-class TarifPrestationType extends AbstractType
+class BcPrestationType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -25,7 +25,7 @@ class TarifPrestationType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'        => 'AppBundle\Entity\TarifPrestation',
+            'data_class'        => 'AppBundle\Entity\BcPrestation',
             'method'            => 'POST',
         ));
     }
@@ -34,7 +34,7 @@ class TarifPrestationType extends AbstractType
      */
     public function getName()
     {
-        return 'tarif_prestation';
+        return 'bcPrestation';
     }
     
 }

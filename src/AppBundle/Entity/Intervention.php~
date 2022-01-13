@@ -68,10 +68,7 @@ class Intervention
      * @ORM\Column(type="text",nullable=true)
      */
     private $reserves;
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $resrvesRegler=true;
+    
     /**
      * @var int
      *
@@ -86,6 +83,10 @@ class Intervention
      */
     private $mission;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Bc")
+     */
+    private $bc;
      /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Site")
      * @Assert\NotBlank(message="il faut affecté un site")
@@ -452,27 +453,28 @@ class Intervention
         return $this->reserves;
     }
 
+
     /**
-     * Set resrvesRegler.
+     * Set bc.
      *
-     * @param bool $resrvesRegler
+     * @param \AppBundle\Entity\Bc|null $bc
      *
      * @return Intervention
      */
-    public function setResrvesRegler($resrvesRegler)
+    public function setBc(\AppBundle\Entity\Bc $bc = null)
     {
-        $this->resrvesRegler = $resrvesRegler;
+        $this->bc = $bc;
 
         return $this;
     }
 
     /**
-     * Get resrvesRegler.
+     * Get bc.
      *
-     * @return bool
+     * @return \AppBundle\Entity\Bc|null
      */
-    public function getResrvesRegler()
+    public function getBc()
     {
-        return $this->resrvesRegler;
+        return $this->bc;
     }
 }

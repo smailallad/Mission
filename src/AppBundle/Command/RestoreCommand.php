@@ -26,7 +26,7 @@ use AppBundle\Entity\Intervention;
 use AppBundle\Entity\PointageUser;
 use AppBundle\Entity\DepenseMission;
 use AppBundle\Entity\FamilleDepense;
-use AppBundle\Entity\TarifPrestation;
+use AppBundle\Entity\BcPrestation;
 use AppBundle\Entity\CarburantMission;
 use AppBundle\Entity\InterventionUser;
 use AppBundle\Entity\EntretienVehicule;
@@ -1334,13 +1334,13 @@ class RestoreCommand extends ContainerAwareCommand
             {   $prestation = $repository->getRepository('AppBundle:Prestation')->find($recs['code_prestation']);
                 
                 $zone = $repository->getRepository('AppBundle:Zone')->find($recs['zone']);
-                $tarifPrestation    = new TarifPrestation();
-                $tarifPrestation    ->setId($id)
+                $bcPrestation    = new BcPrestation();
+                $bcPrestation    ->setId($id)
                                     ->setPrestation($prestation)
                                     ->setZone($zone)
                                     ->setMontant($recs["tarif_prestation"])
                             ;
-                $manager->persist($tarifPrestation);
+                $manager->persist($bcPrestation);
                 $id++;
                 $output->write('<comment>#</comment>');
             }
