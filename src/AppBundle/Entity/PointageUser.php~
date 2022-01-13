@@ -14,7 +14,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Table(name="pointageUser",
  * uniqueConstraints={
  *        @UniqueConstraint(name="unique_user_date", 
+<<<<<<< HEAD
  *            columns={"user_id", "date"})
+=======
+ *            columns={"user", "date"})
+>>>>>>> f7cd88e280c92cf4cb0c834bc0d8b9f4d6abc1b5
  *    })
  * @ORM\Entity(repositoryClass="AppBundle\Repository\PointageUserRepository")
  * @UniqueEntity(fields={"date","user"},errorPath="date",message="Pointage déja effectuer pour cette employé à a cette date.")
