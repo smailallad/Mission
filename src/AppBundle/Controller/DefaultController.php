@@ -979,6 +979,10 @@ class DefaultController extends Controller
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> f7cd88e280c92cf4cb0c834bc0d8b9f4d6abc1b5
 
 
 
@@ -989,7 +993,10 @@ class DefaultController extends Controller
 
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> f7cd88e280c92cf4cb0c834bc0d8b9f4d6abc1b5
         //**************************** */
 
                         // ENREGISTER LE FICHIER
