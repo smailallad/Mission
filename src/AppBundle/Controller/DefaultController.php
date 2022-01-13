@@ -978,25 +978,6 @@ class DefaultController extends Controller
         // Set active sheet index to the first sheet, so Excel opens this as the first sheet
 
 
-
-<<<<<<< HEAD
-=======
-
->>>>>>> f7cd88e280c92cf4cb0c834bc0d8b9f4d6abc1b5
-
-
-
-
-
-
-
-
-
-
-<<<<<<< HEAD
-
-=======
->>>>>>> f7cd88e280c92cf4cb0c834bc0d8b9f4d6abc1b5
         //**************************** */
 
                         // ENREGISTER LE FICHIER
