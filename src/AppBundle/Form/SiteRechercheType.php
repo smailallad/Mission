@@ -19,7 +19,7 @@ class SiteRechercheType extends AbstractType
         $builder
         ->add('client',EntityType::class,array(
             'class'         => 'AppBundle:Client',
-            'label'         => 'client',
+            'label'         => 'Client',
             //'placeholder'   => '-Choisir un client-',
             'query_builder' => function(\Doctrine\ORM\EntityRepository $c)
                                 {
@@ -28,7 +28,7 @@ class SiteRechercheType extends AbstractType
                                 }
         ))
         ->add('nom',TextType::class, array(
-            'label'         => "site",
+            'label'         => "Site",
             'required'      => false,
         ))
         ;

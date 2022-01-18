@@ -19,7 +19,7 @@ class PrestationRechercheType extends AbstractType
         $builder
         ->add('sous_projet',EntityType::class,array(
             'class'         => 'AppBundle:SousProjet',
-            'label'         => 'Equipemnt',
+            'label'         => 'Projet',
             'query_builder' => function(\Doctrine\ORM\EntityRepository $s)
                                 {
                                     return $s   ->createQueryBuilder('s')
@@ -27,7 +27,7 @@ class PrestationRechercheType extends AbstractType
                                 }
         ))
         ->add('nom',TextType::class, array(
-            'label'         => "prestation",
+            'label'         => "Intervention",
             'required'      => false,
         ))
         ;
