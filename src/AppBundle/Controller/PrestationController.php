@@ -51,7 +51,7 @@ class PrestationController extends Controller
             $manager->flush();
             //$this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
             $cryptage = $this->container->get('my.cryptage');
-            return $this->redirect($this->generateUrl('prestation_show', array('id' => $cryptage->my_encrypt($prestation->getId()))));
+            return $this->redirect($this->generateUrl('prestation'));
         }
         return $this->render('@App/Prestation/new.html.twig', array(
             'prestation' => $prestation,
@@ -73,7 +73,7 @@ class PrestationController extends Controller
         if ($editForm->handleRequest($request)->isValid()) {
             $this->getDoctrine()->getManager()->flush();
             $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
-            return $this->redirect($this->generateUrl('prestation_edit', array('id' => $cryptage->my_encrypt($id))));
+            return $this->redirect($this->generateUrl('prestation'));
         }
         return $this->render('@App/Prestation/edit.html.twig', array(
             'prestation'    => $prestation,

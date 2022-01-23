@@ -123,4 +123,18 @@ class Bc
     {
         return $this->bcResponsable;
     }
+
+    /**
+     * Set id.
+     *
+     * @param int $id
+     *
+     * @return Bc
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 }

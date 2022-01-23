@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @ORM\Table(name="prestation")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\PrestationRepository")
- * @UniqueEntity(fields = {"nom"},message ="Le nom saisie déja pour se sous projet")
+ * @UniqueEntity(fields = {"projet","nom"},message ="Prestation saisie déja pour se projet")
  */
 class Prestation
 {
@@ -20,7 +20,7 @@ class Prestation
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
@@ -31,11 +31,11 @@ class Prestation
      */
     private $nom;
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\SousProjet")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Projet")
      * @Assert\NotNull(message = "Entrer une valeur.")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $sousProjet;
+    private $projet;
 
     /**
      * Get id
@@ -76,32 +76,28 @@ class Prestation
         return $this->nom;
     }
 
+
     /**
-     * Set sousProjet
+     * Set projet.
      *
-     * @param \AppBundle\Entity\SousProjet $sousProjet
+     * @param \AppBundle\Entity\Projet $projet
      *
      * @return Prestation
      */
-    public function setSousProjet(\AppBundle\Entity\SousProjet $sousProjet = null)
+    public function setProjet(\AppBundle\Entity\Projet $projet)
     {
-        $this->sousProjet = $sousProjet;
+        $this->projet = $projet;
 
         return $this;
     }
 
     /**
-     * Get sousProjet
+     * Get projet.
      *
-     * @return \AppBundle\Entity\SousProjet
+     * @return \AppBundle\Entity\Projet
      */
-    public function getSousProjet()
+    public function getProjet()
     {
-        return $this->sousProjet;
+        return $this->projet;
     }
-        public function __toString()
-    {
-        return $this->nom;
-    }
-
 }

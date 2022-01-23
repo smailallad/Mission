@@ -67,4 +67,18 @@ class BcResponsable
         return $this->nom;
     }
 
+
+    /**
+     * Set id.
+     *
+     * @param int $id
+     *
+     * @return BcResponsable
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 }

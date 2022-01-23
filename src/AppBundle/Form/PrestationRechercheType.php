@@ -2,7 +2,7 @@
 
 namespace AppBundle\Form;
 
-use AppBundle\Entity\SousProjet;
+use AppBundle\Entity\Projet;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -17,12 +17,12 @@ class PrestationRechercheType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-        ->add('sous_projet',EntityType::class,array(
-            'class'         => 'AppBundle:SousProjet',
+        ->add('projet',EntityType::class,array(
+            'class'         => 'AppBundle:Projet',
             'label'         => 'Projet',
-            'query_builder' => function(\Doctrine\ORM\EntityRepository $s)
+            'query_builder' => function(\Doctrine\ORM\EntityRepository $p)
                                 {
-                                    return $s   ->createQueryBuilder('s')
+                                    return $p   ->createQueryBuilder('p')
                                     ;
                                 }
         ))

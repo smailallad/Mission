@@ -52,9 +52,9 @@ class InterventionType extends AbstractType
                     'class'     => 'form-control'
                 )
             ))
-        ->add('sousprojet',TextType::class,array(
+        ->add('projet',TextType::class,array(
                 'mapped'        => false,
-                'label'         => 'Equipement',
+                'label'         => 'Projet',
                 'attr'          => array(
                     'readonly'  => true,
                     //'class'     => 'form-control'
@@ -74,6 +74,7 @@ class InterventionType extends AbstractType
                 )
             ))
         ->add('reserves',TextareaType::class,array(
+                'required'  => false,
                 'attr'          => array(
                     'rows'      => 5,
                 )

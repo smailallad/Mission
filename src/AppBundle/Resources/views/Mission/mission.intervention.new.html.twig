@@ -55,9 +55,9 @@
             {{ form_errors(form_intervention.sitenom)}}
         </div>
         <div class="form-group">
-            {{ form_label(form_intervention.sousprojet)}}
-            {{ form_widget(form_intervention.sousprojet)}}
-            {{ form_errors(form_intervention.sousprojet)}}
+            {{ form_label(form_intervention.projet)}}
+            {{ form_widget(form_intervention.projet)}}
+            {{ form_errors(form_intervention.projet)}}
         </div>
 
         <div class="form-group">
@@ -150,8 +150,8 @@
             <div class="modal-body form-inline">
                 {{ form_start(form_recherche_prestation) }}
                 <div class="form-group">
-                    {{ form_label(form_recherche_prestation.sous_projet)}}
-                    {{ form_widget(form_recherche_prestation.sous_projet)}}
+                    {{ form_label(form_recherche_prestation.projet)}}
+                    {{ form_widget(form_recherche_prestation.projet)}}
                 </div>
                 <div class="form-group">
                     {{ form_label(form_recherche_prestation.nom) }}
@@ -212,23 +212,23 @@
         });
         $('#chercherPrestation').click(function (e) {
             e.preventDefault();
-            var sousprojet = $('#prestation_filter_sous_projet').val();
+            var projet = $('#prestation_filter_projet').val();
             var prestation = $('#prestation_filter_nom').val();
             if (prestation.length == 0) {
-                var cURL = Routing.generate('search_prestation', { sousprojet: sousprojet, pagenum: 0 });
+                var cURL = Routing.generate('search_prestation', { projet: projet, pagenum: 0 });
             } else {
-                var cURL = Routing.generate('search_prestation', { sousprojet: sousprojet, pagenum: 0, prestation: prestation });
+                var cURL = Routing.generate('search_prestation', { projet: projet, pagenum: 0, prestation: prestation });
             }
             listeprestations(cURL);
         });
         $('#modalPrestation').on('shown.bs.modal', function (e) {
             e.preventDefault();
-            var sousprojet = $('#prestation_filter_sous_projet').val();
+            var projet = $('#prestation_filter_projet').val();
             var prestation = $('#prestation_filter_nom').val();
             if (prestation.length == 0) {
-                var cURL = Routing.generate('search_prestation', { sousprojet: sousprojet, pagenum: 0 });
+                var cURL = Routing.generate('search_prestation', { projet: projet, pagenum: 0 });
             } else {
-                var cURL = Routing.generate('search_prestation', { sousprojet: sousprojet, pagenum: 0, prestation: prestation });
+                var cURL = Routing.generate('search_prestation', { projet: projet, pagenum: 0, prestation: prestation });
             }
             listeprestations(cURL);
         });
@@ -382,14 +382,14 @@
                     ligne = '';
                     ligne += '<tr>';
                     //ligne += '<td>';
-                    //ligne += "<button id='selectprestation' onclick='selectprestation(\"" + data.prestations[i].id + "\",\"" + data.prestations[i].sousProjet + "\",\"" + data.prestations[i].nom + "\")' class='ml-2 btn btn-primary glyphicon glyphicon-ok'>  </button> ";
+                    //ligne += "<button id='selectprestation' onclick='selectprestation(\"" + data.prestations[i].id + "\",\"" + data.prestations[i].projet + "\",\"" + data.prestations[i].nom + "\")' class='ml-2 btn btn-primary glyphicon glyphicon-ok'>  </button> ";
                     //ligne += '</td>';
                     ligne += '<td>';
-                    ligne += "<a href='#' onclick='selectprestation(\"" + data.prestations[i].id + "\",\"" + data.prestations[i].sousProjet + "\",\"" + data.prestations[i].nom + "\"); return false;'>";
+                    ligne += "<a href='#' onclick='selectprestation(\"" + data.prestations[i].id + "\",\"" + data.prestations[i].projet + "\",\"" + data.prestations[i].nom + "\"); return false;'>";
                     ligne += data.prestations[i].nom;
                     ligne += '</a></td>';
                     ligne += '<td>';
-                    ligne += data.prestations[i].sousProjet;
+                    ligne += data.prestations[i].projet;
                     ligne += '</td>';
                     ligne += ' </tr>';
                     $('#listePrestationTable > tbody:last').append(ligne);
@@ -400,12 +400,12 @@
 
     function firstprestation() {
         pagenum = 0;
-        var sousprojet = $('#prestation_filter_sous_projet').val();
+        var projet = $('#prestation_filter_projet').val();
         var prestation = $('#prestation_filter_nom').val();
         if (prestation.length == 0) {
-            var cURL = Routing.generate('search_prestation', { sousprojet: sousprojet, pagenum: pagenum });
+            var cURL = Routing.generate('search_prestation', { projet: projet, pagenum: pagenum });
         } else {
-            var cURL = Routing.generate('search_prestation', { sousprojet: sousprojet, pagenum: pagenum, prestation: prestation });
+            var cURL = Routing.generate('search_prestation', { projet: projet, pagenum: pagenum, prestation: prestation });
         }
         //    alert(cURL);
         listeprestations(cURL);
@@ -415,12 +415,12 @@
         var totalpages = $('#previousprestation').attr('data-totalpages');
         pagenum--;
         pagenum = Math.max(0, pagenum);
-        var sousprojet = $('#prestation_filter_sous_projet').val();
+        var projet = $('#prestation_filter_projet').val();
         var prestation = $('#prestation_filter_nom').val();
         if (prestation.length == 0) {
-            var cURL = Routing.generate('search_prestation', { sousprojet: sousprojet, pagenum: pagenum });
+            var cURL = Routing.generate('search_prestation', { projet: projet, pagenum: pagenum });
         } else {
-            var cURL = Routing.generate('search_prestation', { sousprojet: sousprojet, pagenum: pagenum, prestation: prestation });
+            var cURL = Routing.generate('search_prestation', { projet: projet, pagenum: pagenum, prestation: prestation });
         }
         //    alert(cURL);
         listeprestations(cURL);
@@ -431,12 +431,12 @@
         var totalpages = $('#nextprestation').attr('data-totalpages');
         pagenum++;
         pagenum = Math.min(totalpages, pagenum);
-        var sousprojet = $('#prestation_filter_sous_projet').val();
+        var projet = $('#prestation_filter_projet').val();
         var prestation = $('#prestation_filter_nom').val();
         if (prestation.length == 0) {
-            var cURL = Routing.generate('search_prestation', { sousprojet: sousprojet, pagenum: pagenum });
+            var cURL = Routing.generate('search_prestation', { projet: projet, pagenum: pagenum });
         } else {
-            var cURL = Routing.generate('search_prestation', { sousprojet: sousprojet, pagenum: pagenum, prestation: prestation });
+            var cURL = Routing.generate('search_prestation', { projet: projet, pagenum: pagenum, prestation: prestation });
         }
         //    alert(cURL);
         listeprestations(cURL);
@@ -445,20 +445,20 @@
     function lastprestation() {
         var totalpages = $('#lastprestation').attr('data-totalpages');
         pagenum = totalpages;
-        var sousprojet = $('#prestation_filter_sous_projet').val();
+        var projet = $('#prestation_filter_projet').val();
         var prestation = $('#prestation_filter_nom').val();
         if (prestation.length == 0) {
-            var cURL = Routing.generate('search_prestation', { sousprojet: sousprojet, pagenum: pagenum });
+            var cURL = Routing.generate('search_prestation', { projet: projet, pagenum: pagenum });
         } else {
-            var cURL = Routing.generate('search_prestation', { sousprojet: sousprojet, pagenum: pagenum, prestation: prestation });
+            var cURL = Routing.generate('search_prestation', { projet: projet, pagenum: pagenum, prestation: prestation });
         }
         //    alert(cURL);
         listeprestations(cURL);
         //alert("lastprestation");
     }
-    function selectprestation(id, sousprojet, nom) {
+    function selectprestation(id, projet, nom) {
         $('#intervention_prestationid').val(id);
-        $('#intervention_sousprojet').val(sousprojet);
+        $('#intervention_projet').val(projet);
         $('#intervention_prestationnom').val(nom);
         $('#modalPrestation').modal('hide');
     }

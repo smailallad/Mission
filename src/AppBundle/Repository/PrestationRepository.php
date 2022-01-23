@@ -12,13 +12,13 @@ use Doctrine\ORM\Query;
  */
 class PrestationRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function getPrestations($sousProjet,$prestation,$startRow,$maxRows)
+    public function getPrestations($projet,$prestation,$startRow,$maxRows)
     {   
         $q = $this->createQueryBuilder('p');
         $q  ->select('p.id','p.nom')
-            ->join('p.sousProjet','sp')
-            ->addSelect('sp.nom as sousProjet');
-        $q  ->where('p.sousProjet = :sousProjet');
+            ->join('p.projet','pr')
+            ->addSelect('pr.nom as projet');
+        $q  ->where('p.projet = :projet');
         if ($prestation !== null)
         {
             $q  ->andWhere($q->expr()->like('p.nom', $q->expr()->literal('%'.$prestation.'%')));
@@ -26,20 +26,20 @@ class PrestationRepository extends \Doctrine\ORM\EntityRepository
         $q  ->setFirstResult( $startRow )
             ->setMaxResults( $maxRows );
         $q  ->orderby('p.nom','ASC')
-            ->setParameter('sousProjet', $sousProjet);
+            ->setParameter('projet', $projet);
         return $q;
     }
-    public function getTotalRows($sousProjet,$prestation)
+    public function getTotalRows($projet,$prestation)
     {   
         $q = $this->createQueryBuilder('p')
             ->select('count(p)')
-            ->join('p.sousProjet','sp')
-            ->where('p.sousProjet = :sousProjet');
+            ->join('p.projet','pr')
+            ->where('p.projet = :projet');
             if ($prestation !== null)
             {
                 $q  ->andWhere($q->expr()->like('p.nom', $q->expr()->literal('%'.$prestation.'%')));
             }
-        $q  ->setParameter('sousProjet', $sousProjet);
+        $q  ->setParameter('projet', $projet);
         $q = $q->getQuery()->getResult(Query::HYDRATE_SINGLE_SCALAR);
         return $q;
     }

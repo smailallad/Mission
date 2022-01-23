@@ -14,7 +14,7 @@ class RemoveGeneratedValueCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('removeGeneratedValue')
+            ->setName('rgv')
             ->setDescription('...')
             ->addArgument('argument', InputArgument::OPTIONAL, 'Argument description')
             ->addOption('option', null, InputOption::VALUE_NONE, 'Option description')

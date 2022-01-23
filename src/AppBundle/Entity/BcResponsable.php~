@@ -18,7 +18,7 @@ class BcResponsable
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
     /**
@@ -67,4 +67,18 @@ class BcResponsable
         return $this->nom;
     }
 
+
+    /**
+     * Set id.
+     *
+     * @param int $id
+     *
+     * @return BcResponsable
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 }

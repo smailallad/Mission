@@ -18,15 +18,15 @@ class PrestationFilterType extends AbstractType
     {
         $builder
         ->add('nom',Filters\TextFilterType::class, array('label' => "Nom"))
-        ->add('sousProjet',EntityType::Class, array(
-            'label'         =>'Sous projet',
-            'class'         => 'AppBundle:SousProjet',
+        ->add('projet',EntityType::Class, array(
+            'label'         =>'Projet',
+            'class'         => 'AppBundle:Projet',
             'choice_name'   => 'nom',
             'multiple'      => false,
             'required'      => false,
-            'placeholder'   => '-Choisir un sous projet-',
-            'query_builder' => function(\Doctrine\ORM\EntityRepository $s)
-                            {   return $s->createQueryBuilder('s');
+            'placeholder'   => '-Choisir un projet-',
+            'query_builder' => function(\Doctrine\ORM\EntityRepository $p)
+                            {   return $p->createQueryBuilder('p');
                             },
             )
         )

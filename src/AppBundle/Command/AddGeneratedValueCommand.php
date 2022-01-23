@@ -14,7 +14,7 @@ class AddGeneratedValueCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('addGeneratedValue')
+            ->setName('agv')
             ->setDescription('...')
             ->addArgument('argument', InputArgument::OPTIONAL, 'Argument description')
             ->addOption('option', null, InputOption::VALUE_NONE, 'Option description')

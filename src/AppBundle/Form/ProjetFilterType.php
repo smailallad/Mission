@@ -5,8 +5,9 @@ namespace AppBundle\Form;
 use AppBundle\Entity\Projet;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Lexik\Bundle\FormFilterBundle\Filter\Form\Type as Filters;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Lexik\Bundle\FormFilterBundle\Filter\Form\Type\TextFilterType;
 
 class ProjetFilterType extends AbstractType
@@ -19,7 +20,19 @@ class ProjetFilterType extends AbstractType
         $builder
         ->add('nom',Filters\TextFilterType::class, array(
             'label' => "Nom"
-        ))
+            )
+        )
+        ->add('client',EntityType::class, array(
+            'label'         => 'Client',
+            'class'         => 'AppBundle:Client',
+            'choice_name'   => 'nom',
+            'multiple'      => false,
+            'placeholder'   => '-Choisir un client-',
+            'query_builder' => function(\Doctrine\ORM\EntityRepository $c)
+                            {   return $c->createQueryBuilder('c');
+                            },
+            )
+        )
         ;
     }/**
      * {@inheritdoc}

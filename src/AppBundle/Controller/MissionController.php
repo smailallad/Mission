@@ -1190,7 +1190,7 @@ class MissionController extends Controller
         $form_intervention = $this->createForm(InterventionType::class, $intervention);
         $form_intervention->get('sitecode')->setData($intervention->getSite()->getCode());
         $form_intervention->get('sitenom')->setData($intervention->getSite()->getNom());
-        $form_intervention->get('sousprojet')->setData($intervention->getPrestation()->getSousProjet()->getNom());
+        $form_intervention->get('projet')->setData($intervention->getPrestation()->getProjet()->getNom());
         $form_intervention->get('prestationnom')->setData($intervention->getPrestation()->getNom());
         
         //$siteid = $request->request->get('intervention')['siteid'];
@@ -1377,16 +1377,16 @@ class MissionController extends Controller
     }
 
     /**
-     * @Route("/{sousprojet}/{pagenum}/searchPrestation/{prestation}",name="search_prestation",options = { "expose" = true })
+     * @Route("/{projet}/{pagenum}/searchPrestation/{prestation}",name="search_prestation",options = { "expose" = true })
      */
-    public function searchPrestationAction($sousprojet,$pagenum,$prestation=null)
+    public function searchPrestationAction($projet,$pagenum,$prestation=null)
     {
         $manager = $this->getDoctrine()->getManager();
         $maxRows = 10 ;// parametre
         $startRow = $pagenum * $maxRows;
-        $totalRows = $manager->getRepository("AppBundle:Prestation")->getTotalRows($sousprojet,$prestation);
+        $totalRows = $manager->getRepository("AppBundle:Prestation")->getTotalRows($projet,$prestation);
         $totalpages = ceil($totalRows/$maxRows)-1;
-        $prestations = $manager->getRepository("AppBundle:Prestation")->getPrestations($sousprojet,$prestation,$startRow,$maxRows);
+        $prestations = $manager->getRepository("AppBundle:Prestation")->getPrestations($projet,$prestation,$startRow,$maxRows);
         $prestations = $prestations->getQuery()->getResult();
         return $this->json(["prestations"     => $prestations,
                             "pagenum"   => $pagenum,

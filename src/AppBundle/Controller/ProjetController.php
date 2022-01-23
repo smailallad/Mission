@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 /**
  * @Route("/projet")
- * @Security("has_role('ROLE_ADMIN')")
+ * @Security("has_role('ROLE_FACTURATION')")
  */
 class ProjetController extends Controller
 {
@@ -48,7 +48,7 @@ class ProjetController extends Controller
             $manager->flush();
             //$this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
             $cryptage = $this->container->get('my.cryptage');
-            return $this->redirect($this->generateUrl('projet_show', array('id' => $cryptage->my_encrypt($projet->getId()))));
+            return $this->redirect($this->generateUrl('projet'));
         }
         return $this->render('@App/Projet/new.html.twig', array(
             'projet' => $projet,
@@ -70,7 +70,7 @@ class ProjetController extends Controller
         if ($editForm->handleRequest($request)->isValid()) {
             $this->getDoctrine()->getManager()->flush();
             $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
-            return $this->redirect($this->generateUrl('projet_edit', array('id' => $cryptage->my_encrypt($id))));
+            return $this->redirect($this->generateUrl('projet'));
         }
         return $this->render('@App/Projet/edit.html.twig', array(
             'projet'          => $projet,

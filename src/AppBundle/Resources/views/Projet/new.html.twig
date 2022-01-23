@@ -1,14 +1,14 @@
 {% extends "base.html.twig" %}
 {% form_theme form 'Form/bootstrap_3_layout.html.twig' %}
-{% block title %}Nouvelle Famille depense - {{ parent() }}{% endblock %}
+{% block title %}Nouveau projet - {{ parent() }}{% endblock %}
 {% block bodysaisie %}
 {#{% include "@App/messages.html.twig" %}#}
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h2>Nouvelle Fonction</h2>
+        <h2>Nouveau projet</h2>
     </div>
     <div class="panel-body">
-        {{ form_start(form, {action: path('familleDepense_new')}) }}
+        {{ form_start(form, {action: path('projet_new')}) }}
         {{ form_widget(form) }}
             <p>
                 <button class="btn btn-primary" type="submit">Créer</button>

@@ -19,14 +19,14 @@ class PrestationType extends AbstractType
             'label'         => 'Nom',
             )
         )
-        ->add('sousProjet',EntityType::class, array(
-            'label'         => 'Sous projet',
-            'class'         => 'AppBundle:SousProjet',
+        ->add('projet',EntityType::class, array(
+            'label'         => 'Projet',
+            'class'         => 'AppBundle:Projet',
             'choice_name'   => 'nom',
             'multiple'      => false,
-            'placeholder'   => '-Choisir un sous projet-',
-            'query_builder' => function(\Doctrine\ORM\EntityRepository $s)
-                            {   return $s->createQueryBuilder('s');
+            'placeholder'   => '-Choisir un projet-',
+            'query_builder' => function(\Doctrine\ORM\EntityRepository $p)
+                            {   return $p->createQueryBuilder('p');
                             },
             )
         )
