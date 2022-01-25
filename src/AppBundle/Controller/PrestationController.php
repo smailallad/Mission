@@ -7,7 +7,6 @@ use AppBundle\Entity\BcPrestation;
 use AppBundle\Form\BcPrestationType;
 use AppBundle\Form\PrestationFilterType;
 use Symfony\Component\Form\FormInterface;
-use AppBundle\Form\BcPrestationNewType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 //use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -82,7 +81,7 @@ class PrestationController extends Controller
     }
     /**
      * @Route("/{id}/show",name="prestation_show")
-     * id : prestation
+     * id : prestation 
      */
     public function showAction($id)
     {   $cryptage = $this->container->get('my.cryptage');
@@ -93,10 +92,10 @@ class PrestationController extends Controller
             'action' =>  $this->generateUrl('prestation'),
             'method' => 'POST',
         ));
-        $newMontantForm = $this->createForm(BcPrestationNewType::class, New BcPrestation, array(
-            'prestation'   => $prestation,
-            'action' => $this->generateUrl('prestation'),
-            'method' => 'POST',
+        $newMontantForm = $this->createForm(BcPrestationType::class, New BcPrestation, array(
+            'prestation'    => $prestation,
+            'action'        => $this->generateUrl('prestation'),
+            'method'        => 'POST',
             
         ));
         //$form_realisateur = $this->createForm(InterventionUserType::class,$interventionUser,array('id'=>$intervention));
@@ -188,7 +187,7 @@ class PrestationController extends Controller
         $prestation = $this->getDoctrine()->getRepository('AppBundle:Prestation')->find($id);
         $bcPrestation = new BcPrestation;
         $bcPrestation->setPrestation($prestation);
-        $newMontantForm = $this->createForm(BcPrestationNewType::class, $bcPrestation);
+        $newMontantForm = $this->createForm(BcPrestationType::class, $bcPrestation);
         if ($newMontantForm->handleRequest($request)->isValid()) {
             $manager->persist($bcPrestation);
             $manager->flush();

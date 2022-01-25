@@ -1,8 +1,11 @@
 <?php
 namespace AppBundle\Form;
+use AppBundle\Entity\Zone;
 use AppBundle\Entity\BcPrestation;
+use AppBundle\Repository\ZoneRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
@@ -12,8 +15,22 @@ class BcPrestationType extends AbstractType
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
-    {
+    {   $prestation = $options['prestation'];
         $builder
+        ->add('Zone',EntityType::class, array(
+            'label'         => 'Zone',
+            'class'         => 'AppBundle:Zone',
+            'choice_name'   => 'nom',
+            'multiple'      => false,
+            'required'      => true,
+            //'attr' => array('size' => '20'),
+            'query_builder' => function(ZoneRepository $er) use($prestation)
+                                    {
+                                       return $er->getAddZone($prestation);
+                                    },
+                                    //'attr' =>array('class'=>'form-control')
+            )
+        )
         ->add('montant',NumberType::class, array(
             'label'         => 'Montant',
             )
@@ -27,6 +44,7 @@ class BcPrestationType extends AbstractType
         $resolver->setDefaults(array(
             'data_class'        => 'AppBundle\Entity\BcPrestation',
             'method'            => 'POST',
+            'prestation'        => null,
         ));
     }
     /**
@@ -34,7 +52,7 @@ class BcPrestationType extends AbstractType
      */
     public function getName()
     {
-        return 'bcPrestation';
+        return 'new_bc_prestation';
     }
     
 }

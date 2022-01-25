@@ -6,6 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class ProjetType extends AbstractType
@@ -29,6 +30,13 @@ class ProjetType extends AbstractType
                 'query_builder' => function(\Doctrine\ORM\EntityRepository $c)
                                 {   return $c->createQueryBuilder('c');
                                 },
+                )
+            )
+            ->add('date',DateType::Class, array(
+                'label' =>'Date creation projet',
+                'widget' => 'single_text',
+                'html5' => true,
+                //'attr' => ['class' => 'js-datepicker']
                 )
             )
             ;

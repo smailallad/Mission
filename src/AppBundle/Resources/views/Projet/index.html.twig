@@ -30,6 +30,7 @@
         <thead>
             <tr>
                 <th scope="col">{{ thead('projet', 'nom', 'Nom') }}</th>
+                <th scope="col">{{ thead('projet', 'date', 'Date creation projet') }}</th>
                 <th scope="col">Actions</th>
             </tr>
         </thead>
@@ -37,15 +38,14 @@
             {% for projet in paginator %}
                 <tr>
                     <td><a href="{{ path('projet_show', {id: projet.id | Mycrypt}) }}">{{ projet.nom }}</a></td>
+                    <td>{{ projet.date is empty ? "" : projet.date | date('d/m/Y') }}</td>
                     <td>
-                        <div class="btn-group">
-                            <a class="btn btn-default btn-sm" href="{{ path('projet_show', {id: projet.id | Mycrypt}) }}">
-                                <i class="glyphicon glyphicon-file"></i>voir
-                            </a>
-                            <a class="btn btn-default btn-sm" href="{{ path('projet_edit', {id: projet.id | Mycrypt}) }}">
-                                <i class="glyphicon glyphicon-edit"></i>modifier
-                            </a>
-                        </div>
+                        <a class="btn btn-primary btn-sm" href="{{ path('projet_show', {id: projet.id | Mycrypt}) }}">
+                            <i class="glyphicon glyphicon-file" title="Voir"></i>
+                        </a>
+                        <a class="btn btn-primary btn-sm" href="{{ path('projet_edit', {id: projet.id | Mycrypt}) }}">
+                            <i class="glyphicon glyphicon-edit"title = "Modifier"></i>
+                        </a>
                     </td>
                 </tr>
             {% endfor %}

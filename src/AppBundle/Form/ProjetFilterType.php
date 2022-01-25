@@ -29,7 +29,9 @@ class ProjetFilterType extends AbstractType
             'multiple'      => false,
             'placeholder'   => '-Choisir un client-',
             'query_builder' => function(\Doctrine\ORM\EntityRepository $c)
-                            {   return $c->createQueryBuilder('c');
+                            {   return $c->createQueryBuilder('c')
+                                        ->orderBy('c.nom')
+                                        ;
                             },
             )
         )

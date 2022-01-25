@@ -36,7 +36,7 @@ class VehiculeFilterType extends AbstractType
             'required'      => false,
             'placeholder'   => '-Tous-',
             'label'         => 'Active',
-            'empty_data'    => null
+            'empty_data'    => 1
     )
 )
         ;

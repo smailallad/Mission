@@ -26,7 +26,9 @@ class PrestationFilterType extends AbstractType
             'required'      => false,
             'placeholder'   => '-Choisir un projet-',
             'query_builder' => function(\Doctrine\ORM\EntityRepository $p)
-                            {   return $p->createQueryBuilder('p');
+                            {   return $p->createQueryBuilder('p')
+                                            ->orderBy('p.nom')
+                                            ;
                             },
             )
         )

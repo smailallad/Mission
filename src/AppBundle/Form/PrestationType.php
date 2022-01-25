@@ -1,6 +1,5 @@
 <?php
 namespace AppBundle\Form;
-use AppBundle\Entity\SousProjet;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -19,6 +18,10 @@ class PrestationType extends AbstractType
             'label'         => 'Nom',
             )
         )
+        ->add('qte',NumberType::class, array(
+            'label'         => 'qte'
+            )
+        )
         ->add('projet',EntityType::class, array(
             'label'         => 'Projet',
             'class'         => 'AppBundle:Projet',
@@ -26,7 +29,22 @@ class PrestationType extends AbstractType
             'multiple'      => false,
             'placeholder'   => '-Choisir un projet-',
             'query_builder' => function(\Doctrine\ORM\EntityRepository $p)
-                            {   return $p->createQueryBuilder('p');
+                            {   return $p->createQueryBuilder('p')
+                                            ->orderBy('p.nom')
+                                            ;
+                            },
+            )
+        )
+        ->add('bc',EntityType::class, array(
+            'label'         => 'Bon de commande',
+            'class'         => 'AppBundle:Bc',
+            'choice_name'   => 'num',
+            'multiple'      => false,
+            'placeholder'   => '-Choisir un BC-',
+            'query_builder' => function(\Doctrine\ORM\EntityRepository $bc)
+                            {   return $bc->createQueryBuilder('bc')
+                                            ->orderBy('bc.num')
+                                            ;
                             },
             )
         )

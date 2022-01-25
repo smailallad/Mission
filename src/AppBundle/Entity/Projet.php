@@ -39,6 +39,13 @@ class Projet
     private $client;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(type="datetime",nullable=true)
+     */
+    private $date;
+
+    /**
      * Get id
      *
      * @return int
@@ -113,5 +120,29 @@ class Projet
     public function getClient()
     {
         return $this->client;
+    }
+
+    /**
+     * Set date.
+     *
+     * @param \DateTime $date
+     *
+     * @return Projet
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * Get date.
+     *
+     * @return \DateTime
+     */
+    public function getDate()
+    {
+        return $this->date;
     }
 }

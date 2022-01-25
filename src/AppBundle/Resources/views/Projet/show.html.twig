@@ -1,10 +1,10 @@
 {% extends "base.html.twig" %}
-{% block title %}Famille depense - {{ parent() }}{% endblock %}
+{% block title %}Projet - {{ parent() }}{% endblock %}
 {% block bodysaisie %}
 {#{% include "@App/messages.html.twig" %}#}
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h4> Fonction </h4>
+        <h4> Projet </h4>
     </div>
     <div class="panel-body">
         <table class="table table-hover record_properties">
@@ -12,6 +12,10 @@
                 <tr>
                     <th scope="row">Nom</th>
                     <td>{{ projet.nom }}</td>
+                </tr>
+                <tr>
+                    <th scope="row">Date creation projet</th>
+                    <td>{{ projet.date is empty ? '' : projet.date | date('d/m/Y') }}</td>
                 </tr>
             </tbody>
         </table>
@@ -28,7 +32,28 @@
         </div>
     </div>
 </div>
-
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4>Prestations</h4>
+    </div> 
+    <div class="panel-body">
+        <table class="table table-hover record_properties">
+            <tbody> 
+               {% for prestation in prestations %}
+                <tr>
+                    <td> 
+                        <a href="{{ path('prestation_show', {id: prestation.id | Mycrypt}) }}">{{ prestation.nom }}</a>
+                    </td>
+                    <td class="text-right">
+                        <button class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteIntervention" data-id="{{ prestation.id }}"><i class="glyphicon glyphicon-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 <!-- Modale delete Fonction-->
    <div id="modalDeleteFonction" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjoutRoleLabel" aria-hidden="true">
         <div class="modal-dialog">

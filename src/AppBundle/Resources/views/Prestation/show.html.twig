@@ -27,7 +27,10 @@
     <div class="panel-footer">
         <div class="btn-group record_actions">
             <a class="btn btn-info" href="{{ path('prestation') }}">
-                <i class="glyphicon glyphicon-list"></i> Retour à la liste
+                <i class="glyphicon glyphicon-list"></i> Prestations
+            </a>
+            <a class="btn btn-info" href="{{ path('projet') }}">
+                <i class="glyphicon glyphicon-list"></i> Projets
             </a>
             <a class="btn btn-primary" href="{{ path('prestation_edit', {id: prestation.id | Mycrypt}) }}">
                 <i class="glyphicon glyphicon-edit"></i>Modifier

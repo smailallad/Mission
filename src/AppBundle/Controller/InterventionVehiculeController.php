@@ -14,7 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 /**
  * @Route("/interventionVehicule")
- * @Security("has_role('ROLE_ROLLOUT')")
+ * @Security("has_role('ROLE_CHEF_PARK')")
  */
 class InterventionVehiculeController extends Controller
 {

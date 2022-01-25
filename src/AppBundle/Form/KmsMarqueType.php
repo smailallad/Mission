@@ -5,6 +5,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
 class KmsMarqueType extends AbstractType
 {
@@ -25,7 +26,7 @@ class KmsMarqueType extends AbstractType
                             },
             )
         )
-        ->add('kms',TextType::class, array(
+        ->add('kms',NumberType::class, array(
             'label'         => 'Kms'
             )
         )

@@ -1,14 +1,15 @@
 <?php
 namespace AppBundle\Controller;
 use AppBundle\Entity\Projet;
-use Doctrine\ORM\QueryBuilder;
 use AppBundle\Form\ProjetType;
+use Doctrine\ORM\QueryBuilder;
+use AppBundle\Entity\Prestation;
 use AppBundle\Form\ProjetFilterType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 //use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 /**
  * @Route("/projet")
@@ -85,9 +86,12 @@ class ProjetController extends Controller
     {   $cryptage = $this->container->get('my.cryptage');
         $id = $cryptage->my_decrypt($id);
         $projet = $this->getDoctrine()->getRepository('AppBundle:Projet')->find($id);
+        $prestations = $this->getDoctrine()->getRepository('AppBundle:Prestation')->findByProjet($projet);
+        dump($prestations);
         $deleteForm = $this->createDeleteForm($id, 'projet_delete');
         return $this->render('@App/Projet/show.html.twig', array(
-            'projet'       => $projet,
+            'projet'        => $projet,
+            'prestations'   => $prestations,
             'delete_form'   => $deleteForm->createView()));
     }
     /**

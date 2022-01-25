@@ -20,7 +20,7 @@ class Projet
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
@@ -37,6 +37,13 @@ class Projet
      * @ORM\JoinColumn(nullable=false)
      */
     private $client;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(type="datetime")
+     */
+    private $date;
 
     /**
      * Get id
