@@ -27,7 +27,8 @@ class ProjetController extends Controller
         if (!is_null($response = $this->saveFilter($form, 'projet', 'projet'))) {
             return $response;
         }
-        $qb = $manager->getRepository('AppBundle:Projet')->createQueryBuilder('s');
+        //$qb = $manager->getRepository('AppBundle:Projet')->createQueryBuilder('s');
+        $qb = $manager->getRepository('AppBundle:Projet')->getProjets();
         $paginator = $this->filter($form, $qb, 'projet');
         $forme=$form->createView();
         return $this->render('@App/Projet/index.html.twig', array(
@@ -87,7 +88,7 @@ class ProjetController extends Controller
         $id = $cryptage->my_decrypt($id);
         $projet = $this->getDoctrine()->getRepository('AppBundle:Projet')->find($id);
         $prestations = $this->getDoctrine()->getRepository('AppBundle:Prestation')->findByProjet($projet);
-        dump($prestations);
+        
         $deleteForm = $this->createDeleteForm($id, 'projet_delete');
         return $this->render('@App/Projet/show.html.twig', array(
             'projet'        => $projet,
@@ -174,6 +175,7 @@ class ProjetController extends Controller
         if ($nbr_pages == null){
             $nbr_pages = 20;
         };
+
         $this->addQueryBuilderSort($qb, $name);
         $request = $this->container->get('request_stack')->getCurrentRequest();
         return $this->get('knp_paginator')->paginate($qb, $request->query->get('page', 1), $nbr_pages);
@@ -182,13 +184,34 @@ class ProjetController extends Controller
     {   $request = $this->container->get('request_stack')->getCurrentRequest();
         return $request->getSession()->get('filter.' . $name);
     }
-    protected function addQueryBuilderSort(QueryBuilder $qb, $name)
-    {
-        $alias = current($qb->getDQLPart('from'))->getAlias();
-        if (is_array($order = $this->getOrder($name))) {
-            $qb->orderBy($alias . '.' . $order['field'], $order['type']);
+    
+    protected function fAlias(QueryBuilder $qb, $name){
+        $joints = current($qb->getDQLPart('join'));
+        if ($joints !== false) {
+            foreach($joints as $joint){
+                $valeur = explode(".",$joint->getJoin());
+                if ($valeur[1] === $name){
+                    return $joint->getAlias();
+                }
+            }
+        }else{
+            return false;
         }
     }
+    protected function addQueryBuilderSort(QueryBuilder $qb, $name)
+    {   
+        $alias = current($qb->getDQLPart('from'))->getAlias();
+        if (is_array($order = $this->getOrder($name))) {
+            $field= $order['field'];
+            $field = explode(".",$field);
+            if (count($field)>1){
+                $qb->orderBy($this->fAlias($qb,$field[0]) . '.' . $field[1], $order['type']);
+            }else{
+                $qb->orderBy($alias . '.' . $order['field'], $order['type']);
+            }
+        }
+    }
+
     protected function getOrder($name)
     {
         $request = $this->container->get('request_stack')->getCurrentRequest();

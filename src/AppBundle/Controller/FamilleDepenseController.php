@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 /**
  * @Route("/famille/depense")
- * @Security("has_role('ROLE_ADMINISTRATION')")
+ * @Security("has_role('ROLE_FACTURATION')")
  */
 class FamilleDepenseController extends Controller
 {

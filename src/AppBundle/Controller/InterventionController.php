@@ -5,11 +5,14 @@ namespace AppBundle\Controller;
 use Doctrine\ORM\QueryBuilder;
 use AppBundle\Form\JournalFilterType;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-//use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Routing\Annotation\Route;
-
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+//use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+/**
+* @Security("has_role('ROLE_ROLLOUT')")
+ */
 class InterventionController extends Controller
 {       
     /**
@@ -140,7 +143,7 @@ class InterventionController extends Controller
     }
     protected function fAlias(QueryBuilder $qb, $name){
         $joints = current($qb->getDQLPart('join'));
-       
+        
         if ($joints !== false) {
             foreach($joints as $joint){
                 $valeur = explode(".",$joint->getJoin());
@@ -150,7 +153,7 @@ class InterventionController extends Controller
             }
         }else{
             return false;
-        }
+        } 
     }
     protected function addQueryBuilderSort(QueryBuilder $qb, $name)
     {   

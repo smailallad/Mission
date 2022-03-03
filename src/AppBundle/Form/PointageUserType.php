@@ -54,7 +54,7 @@ class PointageUserType extends AbstractType
             //->add('pointage')
             ->add('pointage',EntityType::class,array(
                 'class'         => 'AppBundle:Pointage',
-                'label'         => 'pointage',
+                'label'         => 'Pointage',
                 //'placeholder'   => '-Choisir-',
                 //'multiple'      => true,
                 //'expanded'      => true,
@@ -65,18 +65,21 @@ class PointageUserType extends AbstractType
                                     }
             ))
             ->add('hTravail', IntegerType::class, [
+                'label'     => 'Heures travaillées',
                 'attr' => [
                     'min' => 0,
                     'max' => 12
                     ]]
                 )
             ->add('hRoute',IntegerType::class, [
+                'label'     => 'Heures de route',
                 'attr' => [
                     'min' => 0,
                     'max' => 12
                     ]]
                     )
             ->add('hSup',IntegerType::class, [
+                'label'     => 'Heures suplémentaires',
                 'attr' => [
                     'min' => 0,
                     'max' => 12

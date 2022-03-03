@@ -10,4 +10,10 @@ namespace AppBundle\Repository;
  */
 class ProjetRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getProjets(){
+        $q = $this->createQueryBuilder('p');
+        $q  ->join('p.client','c')
+            ;
+        return $q;
+    }
 }

@@ -30,7 +30,8 @@
         <thead>
             <tr>
                 <th scope="col">{{ thead('projet', 'nom', 'Nom') }}</th>
-                <th scope="col">{{ thead('projet', 'date', 'Date creation projet') }}</th>
+                <th scope="col">{{ thead('projet', 'date', 'Date création du projet') }}</th>
+                <th scope="col">{{ thead('projet', 'client.nom', 'Client') }}</th>
                 <th scope="col">Actions</th>
             </tr>
         </thead>
@@ -39,6 +40,7 @@
                 <tr>
                     <td><a href="{{ path('projet_show', {id: projet.id | Mycrypt}) }}">{{ projet.nom }}</a></td>
                     <td>{{ projet.date is empty ? "" : projet.date | date('d/m/Y') }}</td>
+                    <td>{{ projet.client.nom}}</td>
                     <td>
                         <a class="btn btn-primary btn-sm" href="{{ path('projet_show', {id: projet.id | Mycrypt}) }}">
                             <i class="glyphicon glyphicon-file" title="Voir"></i>

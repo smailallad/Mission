@@ -14,7 +14,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 /**
  * @Route("/prestation")
- * @Security("has_role('ROLE_GERANT')")
+ * @Security("has_role('ROLE_FACTURATION')")
  */
 class PrestationController extends Controller
 {
