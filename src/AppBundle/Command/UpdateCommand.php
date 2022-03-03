@@ -1,48 +1,13 @@
 <?php
 namespace AppBundle\Command;
 use PDO;
-use DateTime;
-use AppBundle\Entity\Site;
-use AppBundle\Entity\User;
-use AppBundle\Entity\Zone;
-use AppBundle\Entity\Roles;
-use AppBundle\Entity\Client;
-use AppBundle\Entity\Marque;
-use AppBundle\Entity\Projet;
-use AppBundle\Entity\Wilaya;
-use AppBundle\Entity\Depense;
-use AppBundle\Entity\Groupes;
-use AppBundle\Entity\Mission;
-use AppBundle\Entity\Fonction;
-use AppBundle\Entity\Pointage;
-use AppBundle\Entity\Vehicule;
-use AppBundle\Entity\Carburant;
-use AppBundle\Entity\Prestation;
-use AppBundle\Entity\Recrutement;
-use AppBundle\Entity\BcPrestation;
-use AppBundle\Entity\FonctionUser;
-use AppBundle\Entity\FraisMission;
-use AppBundle\Entity\Intervention;
-use AppBundle\Entity\PointageUser;
-use AppBundle\Entity\DepenseMission;
-use AppBundle\Entity\FamilleDepense;
-use AppBundle\Entity\CarburantMission;
-use AppBundle\Entity\InterventionUser;
-use AppBundle\Entity\EntretienVehicule;
-use AppBundle\Entity\InterventionVehicule;
-use AppBundle\Entity\JustificationDepense;
-use AppBundle\Entity\InterventionEntretien;
-use Symfony\Component\Console\Helper\Table;
-use AppBundle\Entity\KmsInterventionVehicule;
-use Symfony\Component\Security\Core\Role\Role;
+
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 class UpdateCommand extends ContainerAwareCommand
 {  // php bin/console restore
@@ -107,6 +72,7 @@ class UpdateCommand extends ContainerAwareCommand
             }
             $output->writeln('<comment>'.str_pad('#',100-$k,'#').' 100%.</comment>');  
         }
+        exit;
         //#############################################################################################################"
         // Schema Update , ADD CONSTRAINT puis CHANGE ID
         //#############################################################################################################"

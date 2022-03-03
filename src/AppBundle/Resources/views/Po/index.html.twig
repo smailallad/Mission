@@ -1,0 +1,62 @@
+{% extends "base.html.twig" %}
+{% block title %}Liste des PO - {{ parent() }}{% endblock %}
+
+{% block bodyliste %}
+    <div class="col-md-2">
+    {% include '@App/Po/filter.html.twig' with {form: form} %}
+    </div>
+    <div class="col-md-10">
+    {#{% include "@App/messages.html.twig" %}#}
+    <h4>Liste des PO</h4>
+    {{ knp_pagination_render(paginator) }}
+    <table class="table table-striped table-hover table-bordered records_list">
+        <thead>
+            <tr>
+                <th scope="col">Num PO</th>
+                <th scope="col">Date</th>
+                <th scope="col" class="text-center">Etat</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for po in paginator %}
+                <tr>
+                    <td><a href="{{ path('po_show', {id: po.id | Mycrypt}) }}">{{ po.num }}</a></td>
+                    <td>{{ po.date is empty ? '' : po.date | date('d/m/Y') }}</td>
+                    <td class="text-center">
+                        {% if po.active %}
+                            <i class="glyphicon glyphicon-check"></i>
+                        {% else %}
+                            <i class="glyphicon glyphicon-unchecked"></i>
+                        {% endif %}
+                    </td>
+                    <td>
+                            <a class="btn btn-primary btn-sm" href="{{ path('po_show', {id: po.id | Mycrypt}) }}">
+                                <i class="glyphicon glyphicon-file" title="Voir"></i>
+                            </a>
+                            <a class="btn btn-primary btn-sm" href="{{ path('po_edit', {id: po.id | Mycrypt}) }}">
+                                <i class="glyphicon glyphicon-edit" title="Modifie"></i>
+                            </a>
+                            <a class="btn btn-danger btn-sm" href="{{ path('po_edit', {id: po.id | Mycrypt}) }}">
+                                <i class="glyphicon glyphicon-trash" title="Supprimer"></i>
+                            </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {{ knp_pagination_render(paginator) }}
+
+    <ul class="new_entry list-unstyled">
+        <li>
+            <a class="btn btn-info" href="{{ path('po_new') }}">
+                <i class="glyphicon glyphicon-plus"></i>Nouveau
+            </a>
+        </li>
+    </ul>
+</div>
+{% endblock %}
+{% block js %}
+
+{% endblock %}

@@ -31,6 +31,13 @@ class Prestation
      */
     private $nom;
     /**
+     * @var bool
+     *
+     * @ORM\Column(type="boolean")
+     */
+    private $active;
+
+    /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Projet")
      * @Assert\NotNull(message = "Entrer une valeur.")
      * @ORM\JoinColumn(nullable=false)
@@ -99,5 +106,29 @@ class Prestation
     public function getProjet()
     {
         return $this->projet;
+    }
+
+    /**
+     * Set active.
+     *
+     * @param bool $active
+     *
+     * @return Prestation
+     */
+    public function setActive($active)
+    {
+        $this->active = $active;
+
+        return $this;
+    }
+
+    /**
+     * Get active.
+     *
+     * @return bool
+     */
+    public function getActive()
+    {
+        return $this->active;
     }
 }

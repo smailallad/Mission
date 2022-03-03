@@ -28,7 +28,7 @@ class UserController extends Controller
         }
         $qb = $manager->getRepository('AppBundle:User')->createQueryBuilder('u');
         $paginator = $this->filter($form, $qb, 'user');
-        $forme=$form->createView();
+        //$forme=$form->createView();
         return $this->render('@App/User/index.html.twig', array(
             'form'      => $form->createView(),
             'paginator' => $paginator,
@@ -95,8 +95,112 @@ class UserController extends Controller
         ));
     }
 
+    /**
+     * @Route("/{id}/delete",name="admin_users_delete")
+     *
+     */
+    public function deleteAction(User $user, Request $request)
+    {
+        $manager = $this->getDoctrine()->getManager();
+        $manager->remove($user);
+        try {
+            $manager->flush();
+        } catch(\Doctrine\DBAL\DBALException $e) {
+            $this->get('session')->getFlashBag()->add('danger', 'Impossible de supprimer cet element.');
+            $cryptage = $this->container->get('my.cryptage');
+            $id = $user->getId();
+            $id = $cryptage->my_encrypt($id);
+            return $this->redirect($this->generateUrl('admin_users_show', array('id' => $id)));
+        }
+        //$this->get('session')->getFlashBag()->add('success', 'Suppression avec succès.');
+        return $this->redirect($this->generateUrl('admin_users'));
+
+        /** */
+        /*$form = $this->createDeleteForm($user->getId(), 'admin_users_delete');
+        if ($form->handleRequest($request)->isValid()) {
+            $manager = $this->getDoctrine()->getManager();
+            $manager->remove($user);
+            $manager->flush();
+        }
+        return $this->redirect($this->generateUrl('admin_users'));*/
+    }
+    
+    /**
+     * @Route("/{id}/mp",name="admin_users_updateMP").
+     *
+     */
+    public function updateMPAction($id,Request $request,\Swift_Mailer $mailer)
+    {
+        $cryptage = $this->container->get('my.cryptage');
+        $user = $this->getDoctrine()->getRepository('AppBundle:User')->find($cryptage->my_decrypt($id));
+        $passwordEncoder = $this->get('security.password_encoder');
+        $form = $this->createForm(UserMPType::Class, $user, array(
+            'action' => $this->generateUrl('admin_users_updateMP', array('id' => $id)),
+            'method' => 'POST',
+        ));
+
+        $form->handleRequest($request); 
+        if ($form->isSubmitted()){  
+            if ($form->isValid()){
+                $mp= $user->getPassword();
+                $password = $passwordEncoder->encodePassword($user, $user->getPassword());
+                $user->setPassword($password);
+                $manager = $this->getDoctrine()->getManager();
+                $manager->persist($user);
+                
+                $manager->flush();
+                $this->get('session')->getFlashBag()->add('success', 'Mot de passe changer avec succès.');
+                $adresse    = $user->getEmail();
+                $name       = $user->getNom();
+                $id         = $user->getUsername();
+                $mp         = $mp;
+                $mail       = $this->container->getParameter('mailer_user');
+                $message = (new \Swift_Message('Bonjour'))
+                    ->setFrom($mail)
+                    ->setTo($adresse)
+                    ->addBCc($mail)
+                    ->setBody(
+                        $this->renderView(
+                            // app/Resources/views/Emails/newPassword.html.twig
+                            '@App/Employe/newPassword.html.twig',
+                            [   'name'  => $name,
+                                'mp'    => $mp,
+                                'id'    => $id,
+                            ]
+                        ),
+                        'text/html'
+                    )
+
+                    // you can remove the following code if you don't define a text version for your emails
+                ;
+                // .F#-1@2ie]9o
+                //$mailer = new Swift_Mailer();
+                $mailer->send($message);
+                return $this->redirectToRoute('admin_users');
+            }
+        }
+        return $this->render('@App/User/mp.html.twig', array(
+            'user' => $user,
+            'form' => $form->createView()
+        ));
+    }
 
     //================================================================================================
+    /**
+     * Create Delete form
+     *
+     * @param integer                       $id
+     * @param string                        $route
+     * @return \Symfony\Component\Form\Form
+     */
+    protected function createDeleteForm($id, $route)
+    {
+        return $this->createFormBuilder(null, array('attr' => array('id' => 'delete')))
+            ->setAction($this->generateUrl($route, array('id' => $id)))
+            ->setMethod('DELETE')
+            ->getForm()
+        ;
+    }
     /**
     * @route("/{field}/{type}/sort",name="admin_users_sort",requirements={ "type"="ASC|DESC" })
     */
@@ -196,106 +300,5 @@ class UserController extends Controller
     {   $request = $this->container->get('request_stack')->getCurrentRequest();
         return $request->getSession()->get('filter.' . $name);
     }
-    /**
-     * @Route("/{id}/delete",name="admin_users_delete")
-     *
-     */
-    public function deleteAction(User $user, Request $request)
-    {
-        $manager = $this->getDoctrine()->getManager();
-        $manager->remove($user);
-        try {
-            $manager->flush();
-        } catch(\Doctrine\DBAL\DBALException $e) {
-            $this->get('session')->getFlashBag()->add('danger', 'Impossible de supprimer cet element.');
-            $cryptage = $this->container->get('my.cryptage');
-            $id = $user->getId();
-            $id = $cryptage->my_encrypt($id);
-            return $this->redirect($this->generateUrl('admin_users_show', array('id' => $id)));
-        }
-        //$this->get('session')->getFlashBag()->add('success', 'Suppression avec succès.');
-        return $this->redirect($this->generateUrl('admin_users'));
-
-        /** */
-        /*$form = $this->createDeleteForm($user->getId(), 'admin_users_delete');
-        if ($form->handleRequest($request)->isValid()) {
-            $manager = $this->getDoctrine()->getManager();
-            $manager->remove($user);
-            $manager->flush();
-        }
-        return $this->redirect($this->generateUrl('admin_users'));*/
-    }
-    /**
-     * Create Delete form
-     *
-     * @param integer                       $id
-     * @param string                        $route
-     * @return \Symfony\Component\Form\Form
-     */
-    protected function createDeleteForm($id, $route)
-    {
-        return $this->createFormBuilder(null, array('attr' => array('id' => 'delete')))
-            ->setAction($this->generateUrl($route, array('id' => $id)))
-            ->setMethod('DELETE')
-            ->getForm()
-        ;
-    }
-    /**
-     * @Route("/{id}/mp",name="admin_users_updateMP").
-     *
-     */
-    public function updateMPAction($id,Request $request,\Swift_Mailer $mailer)
-    {
-        $cryptage = $this->container->get('my.cryptage');
-        $user = $this->getDoctrine()->getRepository('AppBundle:User')->find($cryptage->my_decrypt($id));
-        $passwordEncoder = $this->get('security.password_encoder');
-        $form = $this->createForm(UserMPType::Class, $user, array(
-            'action' => $this->generateUrl('admin_users_updateMP', array('id' => $id)),
-            'method' => 'POST',
-        ));
-
-        $form->handleRequest($request); 
-        if ($form->isSubmitted()){  
-            if ($form->isValid()){
-                $mp= $user->getPassword();
-                $password = $passwordEncoder->encodePassword($user, $user->getPassword());
-                $user->setPassword($password);
-                $manager = $this->getDoctrine()->getManager();
-                $manager->persist($user);
-                
-                $manager->flush();
-                $this->get('session')->getFlashBag()->add('success', 'Mot de passe changer avec succès.');
-                $adresse = $user->getEmail();
-                $name   = $user->getNom();
-                $id     = $user->getUsername();
-                $mp     = $mp;
-                $mail = $this->container->getParameter('mailer_user');
-                $message = (new \Swift_Message('Bonjour'))
-                    ->setFrom($mail)
-                    ->setTo($adresse)
-                    ->setBody(
-                        $this->renderView(
-                            // app/Resources/views/Emails/newPassword.html.twig
-                            '@App/Employe/newPassword.html.twig',
-                            [   'name'  => $name,
-                                'mp'    => $mp,
-                                'id'    => $id,
-                            ]
-                        ),
-                        'text/html'
-                    )
-
-                    // you can remove the following code if you don't define a text version for your emails
-                ;
-
-                //$mailer = new Swift_Mailer();
-                $mailer->send($message);
-                return $this->redirectToRoute('admin_users');
-            }
-        }
-        return $this->render('@App/User/mp.html.twig', array(
-            'user' => $user,
-            'form' => $form->createView()
-        ));
-    }
+    
 }

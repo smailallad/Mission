@@ -7,15 +7,15 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * BcPrestation
+ * PrestationBc
  *
- * @ORM\Table(name="bc_prestation")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\BcPrestationRepository")
+ * @ORM\Table(name="prestation_bc")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\PrestationBcRepository")
  * @UniqueEntity(fields={"prestation","zone"},
  * errorPath ="prestation",
  * message="Valeur existe déjà sur la base de donnée.")
  */
-class BcPrestation
+class PrestationBc
 {
     /**
      * @var int
@@ -73,7 +73,7 @@ class BcPrestation
      *
      * @param float $montant
      *
-     * @return BcPrestation
+     * @return PrestationBc
      */
     public function setMontant($montant)
     {
@@ -97,7 +97,7 @@ class BcPrestation
      *
      * @param \AppBundle\Entity\Prestation $prestation
      *
-     * @return BcPrestation
+     * @return PrestationBc
      */
     public function setPrestation(\AppBundle\Entity\Prestation $prestation = null)
     {
@@ -121,7 +121,7 @@ class BcPrestation
      *
      * @param \AppBundle\Entity\Zone $zone
      *
-     * @return BcPrestation
+     * @return PrestationBc
      */
     public function setZone(\AppBundle\Entity\Zone $zone = null)
     {
@@ -145,7 +145,7 @@ class BcPrestation
      *
      * @param int $id
      *
-     * @return BcPrestation
+     * @return PrestationBc
      */
     public function setId($id)
     {
@@ -159,7 +159,7 @@ class BcPrestation
      *
      * @param int $qte
      *
-     * @return BcPrestation
+     * @return PrestationBc
      */
     public function setQte($qte)
     {
@@ -183,7 +183,7 @@ class BcPrestation
      *
      * @param \AppBundle\Entity\Bc|null $bc
      *
-     * @return BcPrestation
+     * @return PrestationBc
      */
     public function setBc(\AppBundle\Entity\Bc $bc = null)
     {

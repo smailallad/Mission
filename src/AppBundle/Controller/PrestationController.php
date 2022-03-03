@@ -3,8 +3,8 @@ namespace AppBundle\Controller;
 use Doctrine\ORM\QueryBuilder;
 use AppBundle\Entity\Prestation;
 use AppBundle\Form\PrestationType;
-use AppBundle\Entity\BcPrestation;
-use AppBundle\Form\BcPrestationType;
+use AppBundle\Entity\PrestationBc;
+use AppBundle\Form\PrestationBcType;
 use AppBundle\Form\PrestationFilterType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -87,12 +87,12 @@ class PrestationController extends Controller
     {   $cryptage = $this->container->get('my.cryptage');
         $id = $cryptage->my_decrypt($id);
         $prestation = $this->getDoctrine()->getRepository('AppBundle:Prestation')->find($id);
-        $bcPrestations = $this->getDoctrine()->getRepository('AppBundle:BcPrestation')->findByPrestation($id);
-        $editMontantForm = $this->createForm(BcPrestationType::class, New BcPrestation, array(
+        $prestationBcs = $this->getDoctrine()->getRepository('AppBundle:PrestationBc')->findByPrestation($id);
+        $editMontantForm = $this->createForm(PrestationBcType::class, New PrestationBc, array(
             'action' =>  $this->generateUrl('prestation'),
             'method' => 'POST',
         ));
-        $newMontantForm = $this->createForm(BcPrestationType::class, New BcPrestation, array(
+        $newMontantForm = $this->createForm(PrestationBcType::class, New PrestationBc, array(
             'prestation'    => $prestation,
             'action'        => $this->generateUrl('prestation'),
             'method'        => 'POST',
@@ -101,7 +101,7 @@ class PrestationController extends Controller
         //$form_realisateur = $this->createForm(InterventionUserType::class,$interventionUser,array('id'=>$intervention));
         $deleteForm = $this->createDeleteForm($id, 'prestation_delete');
         return $this->render('@App/Prestation/show.html.twig', array(
-            'bcPrestations'                 => $bcPrestations,
+            'prestationBcs'                 => $prestationBcs,
             'prestation'                    => $prestation,
             'delete_form'                   => $deleteForm->createView(),
             'edit_montant_form'             => $editMontantForm->createView(),
@@ -131,20 +131,20 @@ class PrestationController extends Controller
     }
 
     /**
-     * @Route("/tarif/prestation/zone/{id}/delete",name="bcPrestation_delete",options = { "expose" = true })
+     * @Route("/tarif/prestation/zone/{id}/delete",name="prestationBc_delete",options = { "expose" = true })
      *
      */
-    public function bcPrestationZoneDeleteAction($id, Request $request)
+    public function prestationBcZoneDeleteAction($id, Request $request)
     {
         $cryptage = $this->container->get('my.cryptage');
         
         $manager = $this->getDoctrine()->getManager();
-        $bcPrestation = $this->getDoctrine()->getRepository('AppBundle:BcPrestation')->find($id);
-        $prestation = $bcPrestation->getPrestation();
+        $prestationBc = $this->getDoctrine()->getRepository('AppBundle:PrestationBc')->find($id);
+        $prestation = $prestationBc->getPrestation();
         $id = $prestation->getId();
         $id = $cryptage->my_encrypt($id);
 
-        $manager->remove($bcPrestation);
+        $manager->remove($prestationBc);
         try {
             $manager->flush();
             //$this->get('session')->getFlashBag()->add('success', 'Suppression avec succès.');
@@ -155,16 +155,16 @@ class PrestationController extends Controller
     }
 
     /**
-     * @Route("/tarif/prestation/zone/{id}/edit",name="bcPrestation_edit",options = { "expose" = true })
+     * @Route("/tarif/prestation/zone/{id}/edit",name="prestationBc_edit",options = { "expose" = true })
      *
      */
-    public function bcPrestationZoneEditAction($id, Request $request)
+    public function prestationBcZoneEditAction($id, Request $request)
     {
         $cryptage = $this->container->get('my.cryptage');
         //$id = $cryptage->my_decrypt($id);
-        $bcPrestation = $this->getDoctrine()->getRepository('AppBundle:BcPrestation')->find($id);
-        $id = $bcPrestation->getPrestation()->getId();
-        $editMontantForm = $this->createForm(BcPrestationType::class, $bcPrestation);
+        $prestationBc = $this->getDoctrine()->getRepository('AppBundle:PrestationBc')->find($id);
+        $id = $prestationBc->getPrestation()->getId();
+        $editMontantForm = $this->createForm(PrestationBcType::class, $prestationBc);
         
         if ($editMontantForm->handleRequest($request)->isValid()) {
             $this->getDoctrine()->getManager()->flush();
@@ -176,20 +176,20 @@ class PrestationController extends Controller
     }
 
      /**
-     * @Route("/tarif/prestation/zone/{id}/new",name="bcPrestation_new",options = { "expose" = true })
+     * @Route("/tarif/prestation/zone/{id}/new",name="prestationBc_new",options = { "expose" = true })
      *
      */
-    public function bcPrestationZoneNewAction($id, Request $request)
+    public function prestationBcZoneNewAction($id, Request $request)
     {
         $cryptage = $this->container->get('my.cryptage');
         $manager = $this->getDoctrine()->getManager();
         //$id = $cryptage->my_decrypt($id);
         $prestation = $this->getDoctrine()->getRepository('AppBundle:Prestation')->find($id);
-        $bcPrestation = new BcPrestation;
-        $bcPrestation->setPrestation($prestation);
-        $newMontantForm = $this->createForm(BcPrestationType::class, $bcPrestation);
+        $prestationBc = new PrestationBc;
+        $prestationBc->setPrestation($prestation);
+        $newMontantForm = $this->createForm(PrestationBcType::class, $prestationBc);
         if ($newMontantForm->handleRequest($request)->isValid()) {
-            $manager->persist($bcPrestation);
+            $manager->persist($prestationBc);
             $manager->flush();
             $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
         }else{

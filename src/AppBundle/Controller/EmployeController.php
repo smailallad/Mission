@@ -3,7 +3,6 @@ namespace AppBundle\Controller;
 //use Symfony\Component\Security\Core\Security;
 use DateTime;
 use AppBundle\Entity\User;
-use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\QueryBuilder;
 use AppBundle\Form\EmployeType;
 use AppBundle\Entity\Recrutement;
@@ -80,6 +79,7 @@ class EmployeController extends Controller
                     $manager->persist($fonctionUser);
                     $manager->flush();
                   
+                    $mail       = $this->container->getParameter('mailer_user');
                     $adresse = $user->getEmail();
                     $name = $user->getNom();
                     $id   = $user->getUsername();
@@ -91,9 +91,9 @@ class EmployeController extends Controller
                     $mailer = new Swift($connection);
                     */
                     $message = (new \Swift_Message('Hello Email'))
-                        ->setFrom(' smailallad@gmail.com')
+                        ->setFrom($mail)
                         ->setTo($adresse )
-                        ->addBCc('smailallad@gmail.com')
+                        ->addBCc($mail)
                         ->setBody(
                             $this->renderView(
                                 // app/Resources/views/Emails/registration.html.twig

@@ -19,7 +19,7 @@
                 </tr>
                 <tr>
                     <th scope="row">Responsable</th>
-                    <td>{{ bc.bcResponsable.nom }}</td>
+                    <td>{{ bc.responsableBc.nom }}</td>
                 </tr>
                 <tr>
                     <th scope="row">Montant</th>
@@ -65,12 +65,12 @@
                 </tr>    
             </thead>
             <tbody>
-                {% for bcPrestation in bcPrestations %}
+                {% for prestationBc in prestationBcs %}
                 <tr>
-                    <td> {{ bcPrestation.prestation.nom }}</td>
-                    <td> {{ bcPrestation.zone.nom }}</td>
-                    <td> {{ bcPrestation.montant }}</td>
-                    <td> {{ bcPrestation.qte }}</td>
+                    <td> {{ prestationBc.prestation.nom }}</td>
+                    <td> {{ prestationBc.zone.nom }}</td>
+                    <td> {{ prestationBc.montant }}</td>
+                    <td> {{ prestationBc.qte }}</td>
                     <td> 
                         <a class="btn btn-primary" href=""><i class="glyphicon glyphicon-edit"></i></a>
                         <button class="btn btn-danger"> <i class="glyphicon glyphicon-trash"></i></button>

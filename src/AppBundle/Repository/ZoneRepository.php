@@ -14,7 +14,7 @@ class ZoneRepository extends \Doctrine\ORM\EntityRepository
 
         $qb1 = $this->getEntityManager()->createQueryBuilder();
         $qb1    ->select('DISTINCT(tp.zone)')
-                ->from('AppBundle:BcPrestation', 'tp')
+                ->from('AppBundle:PrestationBc', 'tp')
                 ->where('tp.prestation = :v1')
                 ;
 

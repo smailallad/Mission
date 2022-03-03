@@ -1,7 +1,7 @@
 <?php
 namespace AppBundle\Form;
 use AppBundle\Entity\Zone;
-use AppBundle\Entity\BcPrestation;
+use AppBundle\Entity\PrestationBc;
 use AppBundle\Repository\ZoneRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -9,7 +9,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
-class BcPrestationType extends AbstractType
+class PrestationBcType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -42,7 +42,7 @@ class BcPrestationType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'        => 'AppBundle\Entity\BcPrestation',
+            'data_class'        => 'AppBundle\Entity\PrestationBc',
             'method'            => 'POST',
             'prestation'        => null,
         ));
@@ -52,7 +52,7 @@ class BcPrestationType extends AbstractType
      */
     public function getName()
     {
-        return 'new_bc_prestation';
+        return 'new_prestation_bc';
     }
     
 }

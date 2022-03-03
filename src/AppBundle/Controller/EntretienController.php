@@ -1,5 +1,4 @@
 <?php
-
 namespace AppBundle\Controller;
 use Doctrine\ORM\QueryBuilder;
 use AppBundle\Entity\EntretienVehicule;
@@ -8,12 +7,12 @@ use AppBundle\Form\EntretienVehiculeType;
 use Symfony\Component\Form\FormInterface;
 use AppBundle\Entity\InterventionEntretien;
 use AppBundle\Form\InterventionEntretienType;
+use DateTime;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 //use Symfony\Component\Config\Definition\Exception\DuplicateKeyException;
-
 /**
  * @Route("/entretien")
  * @Security("has_role('ROLE_CHEF_PARK')")
@@ -37,7 +36,6 @@ class EntretienController extends Controller
             'form'      => $form->createView(),
             'paginator' => $paginator,
         ));
-        
     }
     /**
      * @Route("/{id}/show/{interventionEntretien}",name="entretien_show")
@@ -62,7 +60,6 @@ class EntretienController extends Controller
             $interventionEntretien->setEntretienVehicule($entretien);
             $methode = 'Post';
         }
-        
         $deleteForm = $this->createDeleteForm($id, 'entretien_delete');
         $deleteInterventionForm = $this->createDeleteForm($id, 'intervention_entretien_delete');
         $form = $this->createForm(InterventionEntretienType::class, $interventionEntretien, array(
@@ -70,7 +67,6 @@ class EntretienController extends Controller
                                                                             'id' => $cryptage->my_encrypt($id),
                                                                             'interventionEntretien' => $interventionEntretienParam,
                                                                         )),
-
             'method'        => 'PUT',
             //'entretien'     => $entretien,
             //'intervention'  => $intervention,
@@ -80,7 +76,6 @@ class EntretienController extends Controller
                 $this->getDoctrine()->getManager()->flush();
                 return $this->redirect($this->generateUrl('entretien_show', array('id' => $cryptage->my_encrypt($id))));
         }
-      
         return $this->render('@App/Entretien/show.html.twig', array(
             'entretien'                 => $entretien,
             'interventions'             => $interventions,
@@ -90,48 +85,33 @@ class EntretienController extends Controller
             'methode'                   => $methode,
         ));
     }
-
     /**
      * @Route("/new",name="entretien_new")
      */
     public function newAction(Request $request)
-    {/*
-        $site = new Site();
-        $form = $this->createForm(SiteType::class, $site);
-        if ($form->handleRequest($request)->isValid())
-        {
-            $manager = $this->getDoctrine()->getManager();
-            $manager->persist($site);
-            $manager->flush();
-            //$this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
-            $cryptage = $this->container->get('my.cryptage');
-            return $this->redirect($this->generateUrl('site_show', array('id' => $cryptage->my_encrypt($site->getId()))));
-        }
-        return $this->render('@App/Site/new.html.twig', array(
-            'site' => $site,
-            'form' => $form->createView(),
-        ));
-
-
+    {
         $cryptage = $this->container->get('my.cryptage');
-        $id = $cryptage->my_decrypt($id);
-        $site = $this->getDoctrine()->getRepository('AppBundle:Site')->find($id);
-        $editForm = $this->createForm(SiteType::class, $site, array(
-            'action' => $this->generateUrl('site_edit', array('id' => $cryptage->my_encrypt($site->getId()))),
-            'method' => 'PUT',
-        ));
-        if ($editForm->handleRequest($request)->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-            $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
-            return $this->redirect($this->generateUrl('site_edit', array('id' => $cryptage->my_encrypt($id))));
+        $entretien = new EntretienVehicule();
+        $form = $this->createForm(EntretienVehiculeType::class, $entretien);
+        if ($form->handleRequest($request)->isValid()) {
+            $lastEntretien = $this->getDoctrine()->getRepository('AppBundle:EntretienVehicule')->getLastEntretien($entretien->getVehicule());
+            //$entretien2 = $this->getDoctrine()->getRepository('AppBundle:EntretienVehicule')->getApres($entretien->getDate());
+            if ($entretien->getDate()<=$lastEntretien->getDate()){
+                $this->get('session')->getFlashBag()->add('danger', 'Date doit ete superieur à : ' . date_format($lastEntretien->getDate(),'d/m/Y') );
+            }elseif ($entretien->getKms() <= $lastEntretien->getKms()){
+                $this->get('session')->getFlashBag()->add('danger', 'Kms doit ete superieur à : ' . $lastEntretien->getKms() );
+            }else{
+                $this->getDoctrine()->getManager()->persist($entretien);
+                $this->getDoctrine()->getManager()->flush();
+                $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
+                return $this->redirect($this->generateUrl('entretien_show', array('id' => $cryptage->my_encrypt($entretien->getId()))));
+            }
         }
-        return $this->render('@App/Site/edit.html.twig', array(
-            'site'          => $site,
-            'edit_form'     => $editForm->createView(),
-        ));
-        */
+        return $this->render('@App/Entretien/new.html.twig', array(
+            'entretien'     => $entretien,
+            'form'          => $form->createView(),
+        ));        
     }
-
     /**
      * @Route("/{id}/edit",name="entretien_edit")
      */
@@ -139,25 +119,65 @@ class EntretienController extends Controller
     {   $cryptage = $this->container->get('my.cryptage');
         $id = $cryptage->my_decrypt($id);
         $entretien = $this->getDoctrine()->getRepository('AppBundle:EntretienVehicule')->find($id);
+        $entretienActuel = clone $entretien;
         $editForm = $this->createForm(EntretienVehiculeType::class, $entretien, array(
             'action' => $this->generateUrl('entretien_edit', array('id' => $cryptage->my_encrypt($entretien->getId()))),
             'method' => 'PUT',
         ));
+        $dateActuel = $entretien->getDate();
         if ($editForm->handleRequest($request)->isValid()) {
-            $entretien1 = $this->getDoctrine()->getRepository('AppBundle:EntretienVehicule')->getAvant($entretien->getDate());
-            $entretien2 = $this->getDoctrine()->getRepository('AppBundle:EntretienVehicule')->getApres($entretien->getDate());
-            $this->getDoctrine()->getManager()->flush();
-            $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
-            return $this->redirect($this->generateUrl('entretien_edit', array('id' => $cryptage->my_encrypt($id))));
+            $entretienPreview = $this->getDoctrine()->getRepository('AppBundle:EntretienVehicule')->getPreview($entretienActuel);
+            $entretienNext = $this->getDoctrine()->getRepository('AppBundle:EntretienVehicule')->getNext($entretienActuel);
+            if ($entretienNext != null){
+                if ($entretienPreview != null){
+                    if (($entretien->getDate() >= $entretienPreview->getDate()) && ($entretien->getDate() <= $entretienNext->getDate())){
+                        if ($entretien->getDate() > new DateTime(date('Y-m-d')) ){
+                            $this->get('session')->getFlashBag()->add('danger', 'Date doit etre inférieur ou égale à : ' . date('d/m/Y'));
+                        }else{
+                            if ($entretien->getKms()>=$entretienPreview->getKms() && $entretien->getKms()<=$entretienNext-getKms()){
+                                $this->getDoctrine()->getManager()->flush();
+                                $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
+                            }else{
+                                $this->get('session')->getFlashBag()->add('danger', 'Kms doit etre entre : ' .$entretienPreview->getKms().' et : '. $entretienNext->getKms());        
+                            }
+                        }
+                    }else{
+                        $this->get('session')->getFlashBag()->add('danger', 'Date doit etre entre : ' .date_format($entretienPreview->getDate(),"d/m/Y") .' et : '. date_format($entretienNext->getDate(),"d/m/Y"));
+                    }
+                }elseif ($entretien->getDate() <= $entretienNext->getDate()){
+                    if ($entretien->getKms()<=$entretienNext-getKms()){
+                        $this->getDoctrine()->getManager()->flush();
+                        $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
+                    }else{
+                        $this->get('session')->getFlashBag()->add('danger', 'Kms doit etre supérieur à : ' . $entretienNext->getKms());
+                    }
+                }else{
+                    $this->get('session')->getFlashBag()->add('danger', 'Date doit etre supérieur ou égale à : ' . date_format($entretienNext->getDate(),"d/m/Y"));
+                }
+            }elseif ($entretienPreview != null){
+                if ($entretien->getDate() >= $entretienPreview->getDate()){
+                    if ($entretien->getDate() > new DateTime(date('Y-m-d')) ){
+                        $this->get('session')->getFlashBag()->add('danger', 'Date doit etre inférieur ou égale à : ' . date('d/m/Y'));
+                    }else{
+                        if ($entretien->getKms()>=$entretienPreview->getKms()){
+                            $this->getDoctrine()->getManager()->flush();
+                            $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
+                        }else{
+                            $this->get('session')->getFlashBag()->add('danger', 'Kms doit etre inférieur à : ' . $entretienPreview->getKms());
+                        }
+                    }
+                }else{
+                    $this->get('session')->getFlashBag()->add('danger', 'Date doit etre superieur ou égale à : ' .date_format($entretienPreview->getDate(),"d/m/Y" ));
+                }
+            }else{
+                dump('ok4');
+            }
         }
         return $this->render('@App/Entretien/edit.html.twig', array(
             'entretien'     => $entretien,
             'edit_form'     => $editForm->createView(),
         ));
-    
-       
     }
-
     /**
      * @Route("/{id}/intervention/entretien/delete",name="intervention_entretien_delete",options = { "expose" = true })
      * id 
@@ -166,17 +186,14 @@ class EntretienController extends Controller
     {
         $cryptage = $this->container->get('my.cryptage');
         $manager = $this->getDoctrine()->getManager();
-        
         //$id = $cryptage->my_decrypt($id);
-       
         $intervention = $this->getDoctrine()->getRepository('AppBundle:InterventionEntretien')->find($id);
         $entretien = $intervention->getEntretienVehicule()->getId();
         $manager->remove($intervention);
         $manager->flush();
         return $this->redirect($this->generateUrl('entretien_show',array('id' => $cryptage->my_encrypt($entretien))));
     }
-
-/**
+    /**
      * @Route("/{id}/entretiendelete",name="entretien_delete",options = { "expose" = true })
      * id : entretien
      */
@@ -187,7 +204,6 @@ class EntretienController extends Controller
         try {
             $manager->flush();
         } catch(\Doctrine\DBAL\DBALException $e) {
-            
             //$this->get('session')->getFlashBag()->add('danger', 'Impossible de supprimer cet element.');
             $this->addFlash('danger', 'Impossible de supprimer cet element.');
             $cryptage = $this->container->get('my.cryptage');
@@ -198,7 +214,6 @@ class EntretienController extends Controller
         }
         $this->get('session')->getFlashBag()->add('success', 'Suppression avec succès.');
         return $this->redirect($this->generateUrl('entretien_index'));
-
     }
     //*********************************************************************************//
     /**
@@ -288,7 +303,6 @@ class EntretienController extends Controller
         if (is_array($order = $this->getOrder($name))) {
             $field= $order['field'];
             $field = explode(".",$field);
-
             if (count($field)>1){
                 $qb->orderBy($this->fAlias($qb,$field[0]) . '.' . $field[1], $order['type']);
             }else{
@@ -310,6 +324,4 @@ class EntretienController extends Controller
         $session = $request->getSession();
         return $session->has('sort.' . $name) ? $session->get('sort.' . $name) : null;
     }
-
-
 }

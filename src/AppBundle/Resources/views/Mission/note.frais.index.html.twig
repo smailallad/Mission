@@ -52,13 +52,13 @@
                 <tr>
                     <th>
                         {% if is_granted("ROLE_BUREAU") %}
-                        <a class="btn btn-primary" href="{{ path('mission_new') }}">
+                        <a class="btn btn-primary" href="{{ path('note_frais_new') }}">
                             <i class="glyphicon glyphicon-plus"></i></a>
                         {% endif %}
 
                     </th>
                     <th scope="col" colspan="2">{{ thead('mission', 'code', 'Code') }}</th>
-                    <th scope="col">{{ thead('mission', 'user', 'Chef de Mission') }}</th>
+                    <th scope="col">{{ thead('mission', 'user', "L'interessé") }}</th>
                     <th scope="col">{{ thead('mission', 'depart', 'Du') }}</th>
                     <th scope="col">{{ thead('mission', 'retour', 'Au') }}</th>
                     <th scope="col">{{ thead('mission', 'vEmploye', 'V.Employe') }}</th>

@@ -31,7 +31,7 @@
             <tr>
                 <th scope="col">{{ thead('bc', 'num', 'Num') }}</th>
                 <th scope="col">{{ thead('bc', 'date', 'Date') }}</th>
-                <th scope="col">{{ thead('bc', 'bcResponsable', 'Responsable') }}</th>
+                <th scope="col">{{ thead('bc', 'responsableBc', 'Responsable') }}</th>
                 <th>Montant</th>
                 <th>Consommé</th>
                 <th>Reste</th>
@@ -43,7 +43,7 @@
                 <tr>
                     <td><a href="{{ path('bc_show', {id: bc.id | Mycrypt}) }}">{{ bc.num }}</a></td>
                     <td>{{ bc.date | date('d/m/Y') }}</td>
-                    <td>{{ bc.bcResponsable.nom }}</td>
+                    <td>{{ bc.responsableBc.nom }}</td>
                     <td></td>
                     <td></td>
                     <td></td>

@@ -24,7 +24,7 @@ class Bc
     /**
      * @var string
      *
-     * @ORM\Column(name="num", type="string", length=255, unique=true)
+     * @ORM\Column(type="string", length=255,unique=true,nullable=false)
      */
     private $num;
     /**
@@ -32,14 +32,31 @@ class Bc
      * @ORM\Column(name="date", type="date")
      */
     private $date;
-
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\BcResponsable")
+     * @var bool
+     *
+     * @ORM\Column(type="boolean")
+     */
+    private $active;
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\ResponsableBc")
      * @Assert\NotNull(message = "Entrer une valeur.")
      * @ORM\JoinColumn(nullable=false)
     */
-    private $bcResponsable; 
-  
+    private $responsableBc; 
+    /**
+    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Po")
+    * @Assert\NotNull(message = "Entrer une valeur.")
+    * @ORM\JoinColumn(nullable=false)
+    */
+    private $po; 
+     /**
+    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Projet")
+    * @Assert\NotNull(message = "Entrer une valeur.")
+    * @ORM\JoinColumn(nullable=false)
+    */
+    private $projet;
+
     /**
      * Get id.
      *
@@ -101,27 +118,27 @@ class Bc
     
 
     /**
-     * Set bcResponsable.
+     * Set responsableBc.
      *
-     * @param \AppBundle\Entity\BcResponsable $bcResponsable
+     * @param \AppBundle\Entity\ResponsableBc $responsableBc
      *
      * @return Bc
      */
-    public function setBcResponsable(\AppBundle\Entity\BcResponsable $bcResponsable)
+    public function setResponsableBc(\AppBundle\Entity\ResponsableBc $responsableBc)
     {
-        $this->bcResponsable = $bcResponsable;
+        $this->responsableBc = $responsableBc;
 
         return $this;
     }
 
     /**
-     * Get bcResponsable.
+     * Get responsableBc.
      *
-     * @return \AppBundle\Entity\BcResponsable
+     * @return \AppBundle\Entity\ResponsableBc
      */
-    public function getBcResponsable()
+    public function getResponsableBc()
     {
-        return $this->bcResponsable;
+        return $this->responsableBc;
     }
 
     /**
@@ -136,5 +153,77 @@ class Bc
         $this->id = $id;
 
         return $this;
+    }
+
+    /**
+     * Set po.
+     *
+     * @param \AppBundle\Entity\Po $po
+     *
+     * @return Bc
+     */
+    public function setPo(\AppBundle\Entity\Po $po)
+    {
+        $this->po = $po;
+
+        return $this;
+    }
+
+    /**
+     * Get po.
+     *
+     * @return \AppBundle\Entity\Po
+     */
+    public function getPo()
+    {
+        return $this->po;
+    }
+
+    /**
+     * Set projet.
+     *
+     * @param \AppBundle\Entity\Projet $projet
+     *
+     * @return Bc
+     */
+    public function setProjet(\AppBundle\Entity\Projet $projet)
+    {
+        $this->projet = $projet;
+
+        return $this;
+    }
+
+    /**
+     * Get projet.
+     *
+     * @return \AppBundle\Entity\Projet
+     */
+    public function getProjet()
+    {
+        return $this->projet;
+    }
+
+    /**
+     * Set active.
+     *
+     * @param bool $active
+     *
+     * @return Bc
+     */
+    public function setActive($active)
+    {
+        $this->active = $active;
+
+        return $this;
+    }
+
+    /**
+     * Get active.
+     *
+     * @return bool
+     */
+    public function getActive()
+    {
+        return $this->active;
     }
 }

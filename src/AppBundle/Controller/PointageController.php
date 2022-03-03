@@ -147,13 +147,23 @@ class PointageController extends Controller
         }else{
             $qb = $manager->getRepository('AppBundle:PointageUser')->getPointages();
         } 
-        
         $paginator = $this->filter($form, $qb, 'pointage');
+
+        $date = ($form->get('date')->getData() !== null) ? $form->get('date')->getData()['left_date'] : null; 
+        if ($date !== null){
+            $nonPointer = $manager->getRepository('AppBundle:PointageUser')->nonPointer($date);
+        }else{
+            $nonPointer = null;
+        }
+        
+
         //$forme=$form->createView();
         return $this->render('@App/PointageUser/index.html.twig', array(
             'form'      => $form->createView(),
             'formAuto'  => $formAuto->createView(),
             'paginator' => $paginator,
+            'nonPointer'=> $nonPointer,
+            'jour'      => $date,
         
         ));
     }
@@ -171,9 +181,11 @@ class PointageController extends Controller
 
         $du = ($form->get('date')->getData() !== null) ? $form->get('date')->getData()['left_date'] : null;
         $au = ($form->get('date')->getData() !== null) ? $form->get('date')->getData()['right_date'] : null;
+        $employe = ($form->get('user')->getData() !== null) ? $form->get('user')->getData()->getNom() : null;
 
         $fms = $manager->getRepository('AppBundle:FraisMission')->getFmsPeriode($du,$au);
 
+        
         $objPHPExcel = $this->get('phpexcel')->createPHPExcelObject();
         
         $objPHPExcel->getProperties()->setCreator($user->getNom())
@@ -236,19 +248,21 @@ class PointageController extends Controller
         );
         $feuil->setCellValue('A4', 'Du');
         $feuil->setCellValue('A5', 'Au');
+        $feuil->setCellValue('A6', 'Employé');
 
         $feuil->setCellValue('B4',($du === null ? 'Tous' : \PHPExcel_Shared_Date::PHPToExcel($du)));
         $feuil->setCellValue('B5',($au === null ? 'Tous' : \PHPExcel_Shared_Date::PHPToExcel($au)));
+        $feuil->setCellValue('B6',($employe === null ? 'Tous' : $employe));
         $feuil->getStyle('B4')->getNumberFormat()->setFormatCode("dd/mm/yyyy");
         $feuil->getStyle('B5')->getNumberFormat()->setFormatCode("dd/mm/yyyy");
 
-        $feuil->getStyle('A4:A5')->applyFromArray(
+        $feuil->getStyle('A4:A6')->applyFromArray(
                 array(
                     'font'    => array(
                         'bold'      => true
                     ),
                     'alignment' => array(
-                        'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_RIGHT,
+                        'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
                         'vertical'   => \PHPExcel_Style_Alignment::VERTICAL_CENTER,
 
                     ),
@@ -268,6 +282,15 @@ class PointageController extends Controller
                         )
                     )
                 )
+        );
+        $feuil->getStyle('B4:B6')->applyFromArray(
+            array(
+                'alignment' => array(
+                    'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_LEFT,
+                    'vertical'   => \PHPExcel_Style_Alignment::VERTICAL_CENTER,
+
+                ),
+            )
         );
         /*$feuil->getStyle('A4:A5')->applyFromArray(
                 array(
@@ -320,20 +343,20 @@ class PointageController extends Controller
                 ),
             ),
         );
-        $feuil->getStyle('A4:B5')->applyFromArray($styleThinBlackBorderAllborders);
+        $feuil->getStyle('A4:B6')->applyFromArray($styleThinBlackBorderAllborders);
 
         //$feuil->getStyle('A4:F4')->applyFromArray($styleThinBlackBorderOutline);
         //$feuil->getStyle('A5:F5')->applyFromArray($styleThinBlackBorderOutline);
 
-        $feuil->setCellValue('A7', 'Date');
-        $feuil->setCellValue('B7', 'Nom');
-        $feuil->setCellValue('C7', 'FM');
-        $feuil->setCellValue('D7', 'Obs');
-        $feuil->setCellValue('E7', 'H.Travail ');
-        $feuil->setCellValue('F7', 'H.Route');
-        $feuil->setCellValue('G7', 'H.Sup');
-        $feuil->setCellValue('H7', 'Designation');
-        $feuil->getStyle('A7:H7')->applyFromArray(
+        $feuil->setCellValue('A8', 'Date');
+        $feuil->setCellValue('B8', 'Nom');
+        $feuil->setCellValue('C8', 'FM');
+        $feuil->setCellValue('D8', 'Obs');
+        $feuil->setCellValue('E8', 'H.Travail ');
+        $feuil->setCellValue('F8', 'H.Route');
+        $feuil->setCellValue('G8', 'H.Sup');
+        $feuil->setCellValue('H8', 'Designation');
+        $feuil->getStyle('A8:H8')->applyFromArray(
                 array(
                     'font'    => array(
                         'bold'      => true
@@ -360,7 +383,7 @@ class PointageController extends Controller
                 )
         );
         
-        $feuil->getStyle('A7')->applyFromArray(
+        $feuil->getStyle('A8')->applyFromArray(
                 array(
                     'borders' => array(
                         'left'     => array(
@@ -369,14 +392,14 @@ class PointageController extends Controller
                     )
                 )
         );
-        $feuil->getStyle('C7')->applyFromArray(
+        $feuil->getStyle('C8')->applyFromArray(
                 array(
                     'alignment' => array(
                         'horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_RIGHT,
                     ),
                 )
         );
-        $feuil->getStyle('H7')->applyFromArray(
+        $feuil->getStyle('H8')->applyFromArray(
                 array(
                     'borders' => array(
                         'right'     => array(
@@ -386,7 +409,7 @@ class PointageController extends Controller
                 )
         );
 
-        $i = 8 ;
+        $i = 9 ;
         foreach ($pointages as $pointage){
             $feuil
                 ->setCellValue('A'.$i, \PHPExcel_Shared_Date::PHPToExcel($pointage->getDate()))
@@ -411,11 +434,11 @@ class PointageController extends Controller
                 ),
             ),
         );
-        $feuil->getStyle('C7:C'.$i)->getNumberFormat()->setFormatCode(\PHPExcel_Style_NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1);
-        $feuil->getStyle('A7:H'.$i)->applyFromArray($styleThinBlackBorderAllborders);
+        $feuil->getStyle('C8:C'.$i)->getNumberFormat()->setFormatCode(\PHPExcel_Style_NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1);
+        $feuil->getStyle('A8:H'.$i)->applyFromArray($styleThinBlackBorderAllborders);
         
         $feuil->getPageSetup()->setOrientation(\PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
-        $feuil->getPageSetup()->setRowsToRepeatAtTopByStartAndEnd(1,7);
+        $feuil->getPageSetup()->setRowsToRepeatAtTopByStartAndEnd(1,8);
         $feuil->getHeaderFooter()->setOddFooter('&P/&N');
 
         $feuil->getPageMargins()->setTop(0.5);
@@ -432,7 +455,7 @@ class PointageController extends Controller
         $feuil->getColumnDimension('F')->setAutoSize(true);
         $feuil->getColumnDimension('G')->setAutoSize(true);
         $feuil->getColumnDimension('H')->setAutoSize(true);
-        $objPHPExcel->getActiveSheet()->setAutoFilter("A7:H7");
+        $objPHPExcel->getActiveSheet()->setAutoFilter("A8:H8");
 
 
 

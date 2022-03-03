@@ -1,71 +1,116 @@
 {% extends "base.html.twig" %}
-{% block title %}Liste pointages - {{ parent() }}{% endblock %}
-
+{% block title %}
+    Liste pointages -
+        
+    {{ parent() }}
+{% endblock %}
 {% macro thead(name, field, label) %}
     {% spaceless %}
         {% set sort = app.session.get('sort.' ~ name) %}
         {% if sort and sort.field == field %}
             {% if sort.type == 'DESC' %}
-                <a href="{{ path('pointage_sort', {field: field, type: 'ASC'}) }}">{{ label }} <i class="glyphicon glyphicon-sort-by-attributes-alt"></i></a>
+                <a href="{{ path('pointage_sort', {field: field, type: 'ASC'}) }}">
+                    {{ label }}
+                    <i class="glyphicon glyphicon-sort-by-attributes-alt"></i>
+                </a>
             {% elseif sort.type == 'ASC' %}
-                <a href="{{ path('pointage_sort', {field: field, type: 'DESC'}) }}">{{ label }} <i class="glyphicon glyphicon-sort-by-attributes"></i></a>
+                <a href="{{ path('pointage_sort', {field: field, type: 'DESC'}) }}">
+                    {{ label }}
+                    <i class="glyphicon glyphicon-sort-by-attributes"></i>
+                </a>
             {% endif %}
         {% else %}
-            <a href="{{ path('pointage_sort', {field: field, type: 'ASC'}) }}">{{ label }} <i class="glyphicon glyphicon-sort"></i></a>
+            <a href="{{ path('pointage_sort', {field: field, type: 'ASC'}) }}">
+                {{ label }}
+                <i class="glyphicon glyphicon-sort"></i>
+            </a>
         {% endif %}
     {% endspaceless %}
 {% endmacro %}
-
 {% from _self import thead %}
-
 {% block detail %}
-<div class="panel panel-default">
+    <div class="panel panel-default">
         <div class="panel-heading">
             <h4>
-                <a class="mr-2" href="{{ path('excel_pointage')}}">
-                    <img src="{{ asset('icones/Excel-icon.png') }}" title="Exporter vers excel.">
-                </a>
-            </h4>
+                <a class="mr-2" href="{{ path('excel_pointage') }}">
+                    <img src="{{ asset('icones/Excel-icon.png') }}" title="Exporter vers excel."></a>
+                </h4>
+            </div>
+            <div class="panel-body">
+                {% include '@App/PointageUser/filter.html.twig' with {form: form} %}
+            </div>
         </div>
-        <div class="panel-body">
-            {% include '@App/PointageUser/filter.html.twig' with {form: form} %}
-        </div>
-    </div>
-    
-{% endblock %}
-
-{% block  contenu %}
-    <h4>Pointages</h4>
-    {{ knp_pagination_render(paginator) }}
-    <table class="table table-striped table-hover table-bordered records_list">
-        <thead>
-            <tr>
-                <th scope="col">{{ thead('pointage', 'date', 'Date') }}</th>
-                <th scope="col">{{ thead('pointage', 'user.nom', 'Nom') }}</th>
-                <th scope="col">{{ thead('pointage', 'pointage.designation','Désignation')}}</th>
-                <th class= "text-center">Heures de route</th>
-                <th class= "text-center">Heures de travail</th>
-                <th class= "text-center">Heures de supp</th>
-                <th class= "text-center">Obs</th>
-                <th scope="col">Actions</th>
+    {% endblock %}
+    {% block  contenu %}
+        <h4>
+            Pointages
+                    
+        </h4>
+        {{ knp_pagination_render(paginator) }}
+        <table class="table table-striped table-hover table-bordered records_list">
+            <thead>
+                <tr>
+                    <th scope="col">
+                        {{ thead('pointage', 'date', 'Date') }}
+                    </th>
+                </th>
+                <th scope="col">
+                    {{ thead('pointage', 'user.nom', 'Nom') }}
+                </th>
+                <th scope="col">
+                    {{ thead('pointage', 'pointage.designation','Désignation') }}
+                </th>
+                <th class="text-center">
+                    Heures de route
+                                    
+                </th>
+                <th class="text-center">
+                    Heures de travail
+                                    
+                </th>
+                <th class="text-center">
+                    Heures de supp
+                                    
+                </th>
+                <th class="text-center">
+                    Obs
+                                    
+                </th>
+                <th scope="col">
+                    Actions
+                                    
+                </th>
             </tr>
         </thead>
         <tbody>
             {% for pointage in paginator %}
                 <tr>
-                    <td>{{ pointage.date | date('d/m/Y') }}</td>
-                    <td>{{ pointage.user.nom }}</td>
-                    <td>{{ pointage.pointage.designation }}</td>
-                    <td class= "text-center">{{ pointage.hRoute }}</td>
-                    <td class= "text-center">{{ pointage.hTravail }}</td>
-                    <td class= "text-center">{{ pointage.hSup }}</td>
-                    <td class= "text-center">{{ pointage.obs }}</td>
+                    <td>
+                        {{ pointage.date | date('d/m/Y') }}
+                    </td>
+                    <td>
+                        {{ pointage.user.nom }}
+                    </td>
+                    <td>
+                        {{ pointage.pointage.designation }}
+                    </td>
+                    <td class="text-center">
+                        {{ pointage.hRoute }}
+                    </td>
+                    <td class="text-center">
+                        {{ pointage.hTravail }}
+                    </td>
+                    <td class="text-center">
+                        {{ pointage.hSup }}
+                    </td>
+                    <td class="text-center">
+                        {{ pointage.obs }}
+                    </td>
                     <td>
                         <a class="btn btn-primary" title="Modifier" href="{{ path('pointage_edit', {id: pointage.id | Mycrypt}) }}">
                             <i class="glyphicon glyphicon-edit"></i>
                         </a>
-                        <button class="btn btn-danger" data-toggle="modal" title="Supprimer" data-target="#modalDeletePointage"
-                            data-id="{{ pointage.id }}">
+                        <button class="btn btn-danger" data-toggle="modal" title="Supprimer" data-target="#modalDeletePointage" data-id="{{ pointage.id }}">
                             <i class="glyphicon glyphicon-trash"></i>
                         </button>
                     </td>
@@ -73,85 +118,127 @@
             {% endfor %}
         </tbody>
     </table>
-
     {{ knp_pagination_render(paginator) }}
-
     <ul class="new_entry list-unstyled">
         <li>
             <a class="btn btn-info" href="{{ path('pointage_new') }}">
-                <i class="glyphicon glyphicon-plus"></i>Nouveau
+                <i class="glyphicon glyphicon-plus"></i>
+                Nouveau
+                            
             </a>
-            <button class="btn btn-info" data-toggle="modal" data-target="#modalAutoPointage"><i class="glyphicon glyphicon-plus"></i> Pointage Auto</button>
+            <button class="btn btn-info" data-toggle="modal" data-target="#modalAutoPointage">
+                <i class="glyphicon glyphicon-plus"></i>
+                Pointage Auto
+                            
+            </button>
         </li>
     </ul>
+    <h5>
+        Liste des employés non pointer le : {{ jour is empty ? '' : jour|localizeddate('full', 'none', 'fr')}} 
+            
+    </h5>
+    <div class="panel panel-danger">
+    <div class="panel-heading">
+        <table class="table table-hover">
+            {% for employe in nonPointer %}
+                <tr>
+                    <td><span class="glyphicon glyphicon-hand-right"> {{ employe.nom }} </span> </td>
+                </tr>
+            {% endfor %}
+            
+        </table>
+    </div>
+    </div>
 
-    <!-- Modale Pointage Auto -->
-    <div id="modalAutoPointage" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjoutRoleLabel" aria-hidden="true">
+
+<!-- Modale Pointage Auto -->
+<div id="modalAutoPointage" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjoutRoleLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4>Pointage Auto</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                                            
+                    </button>
+                    <h4>
+                        Pointage Auto
+                                            
+                    </h4>
                 </div>
                 <div class="modal-body">
-                    
                     {{ form_start(formAuto) }}
                     {{ form_widget(formAuto) }}
-                        <button class="btn btn-danger" type="submit"><i class="glyphicon glyphicon-trash-o"></i> Creer</button>
-                        <button class="btn btn-primary" data-dismiss="modal">Annuler</button>
-                        <input name="modal" type="hidden" value="0">
-                    {{ form_end(formAuto) }}
+                    <button class="btn btn-danger" type="submit">
+                        <i class="glyphicon glyphicon-trash-o"></i>
+                        Creer
+                                            
+                    </button>
+                    <button class="btn btn-primary" data-dismiss="modal">
+                        Annuler
+                                            
+                    </button>
+                    <input name="modal" type="hidden" value="0">
+                        {{ form_end(formAuto) }}
+                    </div>
+                </div>
+            </div>
+        </div><!-- Modale delete Pointage--><div id="modalDeletePointage" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalDeletePointageLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                                                    
+                        </button>
+                        <h4>
+                            Confirmer la suppression
+                                                    
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            Vous êtes sur le point de supprimer ce Pointage, cette procédure est irréversible.
+                                                    
+                        </p>
+                        <p>
+                            Voulez-vous poursuivre?
+                                                    
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <form name="form" id="modalDeletePointageForm" action="#" method="post">
+                            <button class="btn btn-danger" type="submit">
+                                <i class="glyphicon glyphicon-trash"></i>
+                                Supprimer
+                                                                
+                            {#  #}
+                            </button>
+                            <button class="btn btn-primary" data-dismiss="modal">
+                                Non
+                                                            
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Modale delete Pointage-->
-    <div id="modalDeletePointage" class="modal fade" tabindex="-1" role="dialog"
-        aria-labelledby="modalDeletePointageLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4>Confirmer la suppression</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Vous êtes sur le point de supprimer ce Pointage, cette procédure est irréversible.</p>
-                    <p>Voulez-vous poursuivre?</p>
-                </div>
-                <div class="modal-footer">
-                    <form name="form" id="modalDeletePointageForm" action="#" method="post">
-                        <button class="btn btn-danger" type="submit"><i class="glyphicon glyphicon-trash"></i>
-                            Supprimer</button>
-                        <button class="btn btn-primary" data-dismiss="modal">Non</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-{% endblock %}
-
-{% block js %}
-<script>
-    $(document).ready(function () {
-        $('#modalDeletePointage').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget) // Button that triggered the modal
-            var id = button.data('id') // Extract info from data-* attributes
-            var cURL = Routing.generate('pointage_user_delete', { id: id });
-            //alert(cURL);
-            $("#modalDeletePointageForm").attr('action', cURL);
-        });
-
-        $("#form_pointage_auto" ).submit(function( event ) {
-        var date =$('#pointage_auto_date').val();
-        var cURL = Routing.generate('pointage_auto', { date: date });
-        //alert(cURL);
-        $("#form_pointage_auto").attr('action', cURL);
-        //event.preventDefault(); 
-        });
-
-        
-
-    })
-</script>
-{% endblock %}
+    {% endblock %}
+    {% block js %}
+        <script>$(document).ready(function () {
+$('#modalDeletePointage').on('show.bs.modal', function (event) {
+var button = $(event.relatedTarget) // Button that triggered the modal
+var id = button.data('id') // Extract info from data-* attributes
+var cURL = Routing.generate('pointage_user_delete', {id: id});
+// alert(cURL);
+$("#modalDeletePointageForm").attr('action', cURL);
+});
+$("#form_pointage_auto").submit(function (event) {
+var date = $('#pointage_auto_date').val();
+var cURL = Routing.generate('pointage_auto', {date: date});
+// alert(cURL);
+$("#form_pointage_auto").attr('action', cURL);
+// event.preventDefault();
+});
+})</script>
+    {% endblock %}
+    

@@ -16,7 +16,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class SiteController extends Controller
 {
     /**
-     * @Route("/site",name="site")
+     * @Route("/site",name="site") 
      */
     public function indexAction()
     {   

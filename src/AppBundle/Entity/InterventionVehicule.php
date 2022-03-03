@@ -37,7 +37,7 @@ class InterventionVehicule
     private $unite;
 
     /**
-     * @ORM\Column(type="boolean",nullable=true)
+     * @ORM\Column(type="boolean",nullable=false)
      */
     private $important;
 

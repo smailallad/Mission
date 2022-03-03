@@ -36,9 +36,8 @@ class VehiculeFilterType extends AbstractType
             'required'      => false,
             'placeholder'   => '-Tous-',
             'label'         => 'Active',
-            'empty_data'    => 1
-    )
-)
+            )
+        )
         ;
     }/**
      * {@inheritdoc}

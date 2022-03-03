@@ -84,12 +84,12 @@ class BcController extends Controller
     {   $cryptage = $this->container->get('my.cryptage');
         $id = $cryptage->my_decrypt($id);
         $bc = $this->getDoctrine()->getRepository('AppBundle:Bc')->find($id);
-        $bcPrestations = $this->getDoctrine()->getRepository('AppBundle:BcPrestation')->findByBc($id);
+        $prestationBcs = $this->getDoctrine()->getRepository('AppBundle:PrestationBc')->findByBc($id);
 
         $deleteForm = $this->createDeleteForm($id, 'bc_delete');
         return $this->render('@App/Bc/show.html.twig', array(
             'bc'          => $bc,
-            'bcPrestations' => $bcPrestations,
+            'prestationBcs' => $prestationBcs,
             'delete_form'   => $deleteForm->createView()));
     }
     /**

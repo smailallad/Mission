@@ -50,7 +50,7 @@ class Site
      * @JoinColumn(name="client_id", referencedColumnName="id",nullable=false)
      * @Assert\NotNull(message = "Entrer une valeur.")
     */
-    private $client;
+    private $client; 
 
     public function __construct()
     {

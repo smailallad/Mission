@@ -40,9 +40,9 @@ class BcFilterType extends AbstractType
             ],
             )
         )
-        ->add('bcResponsable',EntityType::Class, array(
+        ->add('responsableBc',EntityType::Class, array(
             'label'         => 'Responsable',
-            'class'         => 'AppBundle:BcResponsable',
+            'class'         => 'AppBundle:ResponsableBc',
             'choice_name'   => 'nom',
             'multiple'      => false,
             'required'      => false,

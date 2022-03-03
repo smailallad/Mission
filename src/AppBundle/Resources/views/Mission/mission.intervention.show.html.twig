@@ -1,6 +1,5 @@
 {% set appel_employe = app.session.get('appel_employe') %}
 {% set appel_journal = app.session.get('appel_journal') %}
-
 {% extends "base.html.twig" %}
 {% block title %}Intervention - {{ parent() }}{% endblock %}
 {% block detail %}
@@ -34,7 +33,6 @@
     </div>
 </div>
 {% endblock %}
-
 {% block contenu %}
 {#{% include "@App/messages.html.twig" %}#}
 <div class="panel panel-default">
@@ -90,7 +88,6 @@
     <div class="panel-body">
         <table class="table table-hover record_properties">
             <tbody>
-
                 <tr>
                     <th scope="row">Employé</th>
                     <td>
@@ -127,13 +124,10 @@
                         </h4>
                     </td>
                 </tr>
-
             </tbody>
         </table>
     </div>
-
-    <div class="panel-footer">
-        
+    <div class="panel-footer"> 
             {% if (appel_employe == "non") and (
             (is_granted("ROLE_ADMIN")) or
             (is_granted("ROLE_ROLLOUT") and not intervention.mission.vComptabilite ) or
@@ -144,7 +138,7 @@
                 <i class="glyphicon glyphicon-edit"></i>Modifier
             </a>
             {% endif %}
-            <a class='btn btn-primary' href="{{path('mission_index') }}"> Retour</a>
+            <a class="btn btn-primary mr-2" href="{{ path('mission_intervention',{id: intervention.mission.id | Mycrypt }) }}">Retour</a>
             {% if (appel_employe == "non") and ((not intervention.mission.vComptabilite and not
             intervention.mission.vRollout and not
             intervention.mission.vEmploye)) %}
@@ -152,7 +146,6 @@
                     class="glyphicon glyphicon-trash"></i> Supprimer
             </button>
             {% endif %}
-        
     </div>
     <div class="panel panel-default">
         <!-- Default panel contents -->
@@ -200,7 +193,6 @@
         </div>
     </div>
 </div>
-
 <!-- Modale delete Intervention-->
 <div id="modalDeleteIntervention" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjoutRoleLabel"
     aria-hidden="true">
@@ -226,7 +218,6 @@
         </div>
     </div>
 </div>
-
 <!-- Modale delete Realisateur-->
 <div id="modalDeleteRealisateur" class="modal fade" tabindex="-1" role="dialog"
     aria-labelledby="modalDeleteRealisateurLabel" aria-hidden="true">
@@ -250,7 +241,6 @@
         </div>
     </div>
 </div>
-
 <!-- Modale add realisateur-->
 <div id="modalAddRealisateur" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjoutRoleLabel"
     aria-hidden="true">
@@ -271,12 +261,10 @@
                 {{ form_end(form_realisateur) }}
             </div>
             <div class="modal-footer">
-
             </div>
         </div>
     </div>
 </div>
-
 {% endblock %} 
 {% block js %}
 <script>

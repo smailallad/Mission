@@ -6,6 +6,7 @@ use AppBundle\Form\AvanceType;
 use Doctrine\ORM\QueryBuilder;
 use AppBundle\Form\MissionType;
 use AppBundle\Entity\Prestation;
+use AppBundle\Form\NoteFraisType;
 use AppBundle\Entity\FraisMission;
 use AppBundle\Entity\Intervention;
 use AppBundle\Entity\DepenseMission;
@@ -23,10 +24,10 @@ use Symfony\Component\Form\FormInterface;
 use AppBundle\Form\PrestationRechercheType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+//use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-//use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 /**
  * @Route("/mission")
@@ -343,6 +344,40 @@ class MissionController extends Controller
         ));
     }
     /**
+     * @Route("/new/notefrais",name="note_frais_new")
+     */
+    public function noteFraisNewAction(Request $request)
+    {
+        $manager = $this->getDoctrine()->getManager();
+        $mission = new Mission();
+        $form = $this->createForm(NoteFraisType::class, $mission);
+        if ($form->handleRequest($request)->isValid())
+        {
+            //$annee = $form['annee']->getData();
+            $annee = $request->request->get('note_frais')['annee'];
+            $anneeMission = $mission->getDepart()->format('Y');
+            /*if ($mission->getRetour() < $mission->getDepart())
+            {
+                $this->get('session')->getFlashBag()->add('danger', ' La date de départ doit être inférieur à la date de retour.');
+            }else*/
+            if( $annee != $anneeMission)
+            {
+                $this->get('session')->getFlashBag()->add('danger', " L'année [date de départ] doit être la même année du champ [année].");
+            }else
+            {
+                $manager->persist($mission);
+                $manager->flush();
+                //$this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
+                $cryptage = $this->container->get('my.cryptage');
+                return $this->redirect($this->generateUrl('note_frais_show', array('id' => $cryptage->my_encrypt($mission->getId()))));
+            }
+        }
+        return $this->render('@App/Mission/note.frais.new.html.twig', array(
+            'mission' => $mission,
+            'form'    => $form->createView(),
+        ));
+    }
+    /**
      * @Route("/{id}/edit/mission",name="mission_edit")
      * id : mission
      */
@@ -467,11 +502,45 @@ class MissionController extends Controller
             'delete_form'               => $deleteForm->createView()));
     }
     /**
+     * @Route("/{id}/show/notefrais",name="note_frais_show")
+     * id : mission
+     */
+    public function noteFraisShowAction($id)
+    {   $cryptage = $this->container->get('my.cryptage');
+        $id = $cryptage->my_decrypt($id);
+        $mission = $this->getDoctrine()->getRepository('AppBundle:Mission')->find($id);
+        $destination = $this->getDoctrine()->getRepository('AppBundle:Intervention')->getDestination($id);
+
+        $montantDepenseMission      = $this->getDoctrine()->getRepository('AppBundle:DepenseMission')->getMontantDepenseMissions($id);
+        $montantCarburantMission    = $this->getDoctrine()->getRepository('AppBundle:CarburantMission')->getMontantCarburantMissions($id);
+        //$montantFmMission           = $this->getDoctrine()->getRepository('AppBundle:FraisMission')->getMontantFmMissions($id);
+        
+        $montantDepenseMission      = $montantDepenseMission['total'] !== null ? $montantDepenseMission['total'] : 0;
+        $montantCarburantMission    = $montantCarburantMission['total'] !== null ? $montantCarburantMission['total'] : 0;
+        //$montantFmMission           = $montantFmMission['total'] !== null  ? $montantFmMission['total'] : 0;
+
+        
+
+        $deleteForm = $this->createDeleteForm($id, 'mission_delete');
+        return $this->render('@App/Mission/mission.show.html.twig', array(
+            'mission'                   => $mission,
+            'destination'               => $destination,
+            'montantDepenseMission'     => $montantDepenseMission,
+            'montantCarburantMission'   => $montantCarburantMission,
+            //'montantFmMission'          => $montantFmMission,
+            'delete_form'               => $deleteForm->createView()));
+    }
+    /**
      * @Route("/{id}/delete/mission",name="mission_delete")
      *
      */
     public function missionDeleteAction(Mission $mission, Request $request){
         $form = $this->createDeleteForm($mission->getId(), 'mission_delete');
+        if (strpos($mission->getCode(),'M') !== false){
+            $m = 1;
+        }else{
+            $m = 0;
+        }
         if ($form->handleRequest($request)->isValid()) {
             $manager = $this->getDoctrine()->getManager();
             if ($mission->getAvance() > 0)
@@ -484,8 +553,13 @@ class MissionController extends Controller
                     $this->get('session')->getFlashBag()->add('danger', "Impossible de supprimer une node de frais avec avance. Veuillez contacté le service comptablité pour effacer l'avance sur note de frais.");
                     $cryptage = $this->container->get('my.cryptage'); 
                 }
-               $id = $cryptage->my_encrypt($id);
-                return $this->redirect($this->generateUrl('mission_show', array('id' => $id)));
+                $id = $cryptage->my_encrypt($id);
+                if ($m == 1){
+                    return $this->redirect($this->generateUrl('mission_show', array('id' => $id)));
+                }else{
+                    return $this->redirect($this->generateUrl('note_frais_show', array('id' => $id)));
+                }
+                //return $this->redirect($this->generateUrl('mission_show', array('id' => $id)));
             }else
             {
                 $manager->remove($mission);
@@ -501,12 +575,23 @@ class MissionController extends Controller
                         $cryptage = $this->container->get('my.cryptage');
                     }
                     $id = $cryptage->my_encrypt($id);
-                    return $this->redirect($this->generateUrl('mission_show', array('id' => $id)));
+                    if ($m == 1){
+                        return $this->redirect($this->generateUrl('mission_show', array('id' => $id)));
+                    }else{
+                        return $this->redirect($this->generateUrl('note_frais_show', array('id' => $id)));
+                    }
+                    //return $this->redirect($this->generateUrl('mission_show', array('id' => $id)));
                 }
             }
         }
-        return $this->redirect($this->generateUrl('mission_index'));
+        //return $this->redirect($this->generateUrl('mission_index'));
+        if ($m == 1){
+            return $this->redirect($this->generateUrl('mission_index'));
+        }else{
+            return $this->redirect($this->generateUrl('note_frais_index'));
+        }
     }
+    
     /**
      * @Route("/{id}/delete/mission_index",name="mission_delete_index",options = {"expose" = true})
      * id : mission
@@ -557,11 +642,21 @@ class MissionController extends Controller
         return $this->json(["code" =>$code],200);
     }
     /**
+     * @Route("/{annee}/notefrais/next", name="note_frais_next",options = { "expose" = true })
+     * 
+     */
+    public function missionNoteFraisNextAction($annee): Response
+    {
+        $manager = $this->getDoctrine()->getManager();
+        $code = $manager->getRepository("AppBundle:Mission")->getNextNoteFrais($annee);
+        return $this->json(["code" =>$code],200);
+    }
+    /**
      * @Route("/{id}/mission_intervention",name="mission_intervention")
      * id : mission
      */
     public function missionInterventionAction($id){
-        $cryptage = $this->container->get('my.cryptage');
+        $cryptage = $this->container->get('my.cryptage'); 
         $id = $cryptage->my_decrypt($id);
         $mission                    = $this->getDoctrine()->getRepository('AppBundle:Mission')->find($id);
         $destination                = $this->getDoctrine()->getRepository('AppBundle:Intervention')->getDestination($id);
@@ -1355,7 +1450,7 @@ class MissionController extends Controller
             $this->get('session')->getFlashBag()->add('success', 'Invalidation avec succès.');
         }
         return $this->json(["msg" =>''],200);
-    }
+    } 
 
     /**
      * @Route("/{client}/{pagenum}/searchSite/{site}",name="search_site",options = { "expose" = true })
@@ -1367,7 +1462,7 @@ class MissionController extends Controller
         $startRow = $pagenum * $maxRows;
         $totalRows = $manager->getRepository("AppBundle:Site")->getTotalRows($client,$site);
         $totalpages = ceil($totalRows/$maxRows)-1;
-        $sites = $manager->getRepository("AppBundle:Site")->getSites($client,$site,$startRow,$maxRows);
+        $sites = $manager->getRepository("AppBundle:Site")->getSitess($client,$site,$startRow,$maxRows);
         $sites = $sites->getQuery()->getResult();
         return $this->json(["sites"     => $sites,
                             "pagenum"   => $pagenum,
@@ -2781,7 +2876,7 @@ class MissionController extends Controller
         // t = C : Note de grais
         $t = $name === 'mission' ? 'M' : 'C';
         if (!is_null($values = $this->getFilter($name))) {
-            if ($form->submit($values)->isValid()) {
+            if ($form->submit($values)->isValid()) { 
                 $code   = $form->get('code')->getData();
                 $depart = ($form->get('depart')->getData() !== null) ? $form->get('depart')->getData()['left_date'] : null;
                 $retour = ($form->get('depart')->getData() !== null) ? $form->get('depart')->getData()['right_date'] : null;

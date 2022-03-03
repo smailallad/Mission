@@ -1,7 +1,5 @@
 <?php
-
 namespace AppBundle\Repository;
-
 /**
  * EntretienVehiculeRepository
  *
@@ -16,49 +14,43 @@ class EntretienVehiculeRepository extends \Doctrine\ORM\EntityRepository
         $q  ->join('e.user','u')
             ->join('e.vehicule','v')
             ;
-        
-            
         return $q;//->getQuery()->getResult();
     }
-
-    public function getPreview($date,$vehicule)
+    public function getPreview($entretien)
     {   
         $q = $this->createQueryBuilder('e');
         $q  ->where('e.date < :d')
             ->join('e.vehicule','v')
             ->andWhere('v.id =:v')
             ->orderBy('e.date','DESC')
-            ->setParameter('d', $date)
-            ->setParameter('v', $vehicule)
+            ->setParameter('d', $entretien->getDate())
+            ->setParameter('v', $entretien->getVehicule())
             ;
-        
-            
         $res = $q->getQuery()->getResult();
-        if (count($res)>0) {
-            return $res[0]->getKms();
+        if ($res != null) {
+            $res = $res [0];
         }else{
             return null;
         }
+        return $res;
     }
-
-    public function getNext($date,$vehicule)
+    public function getNext($entretien)
     {   
         $q = $this->createQueryBuilder('e');
         $q  ->where('e.date > :d')
             ->join('e.vehicule','v')
             ->andWhere('v.id =:v')
             ->orderBy('e.date','ASC')
-            ->setParameter('d', $date)
-            ->setParameter('v', $vehicule)
+            ->setParameter('d', $entretien->getDate())
+            ->setParameter('v', $entretien->getVehicule())
             ;
-        
-            
         $res = $q->getQuery()->getResult();
-        if (count($res)>0) {
-            return $res[0]->getKms();
+        if ($res != null) {
+            $res = $res [0];
         }else{
             return null;
         }
+        return $res;
     }
     public function getLastEntretien($vehicule)
     {   
@@ -66,12 +58,9 @@ class EntretienVehiculeRepository extends \Doctrine\ORM\EntityRepository
         $q  ->join('e.vehicule','v')
             ->where('v.id =:v')
             ->orderBy('e.date','DESC')
-            ->setParameter('v', $vehicule)
+            ->setParameter('v', $vehicule) 
             ;
-        
-            
         $res = $q->getQuery()->getResult();
-
         if (count($res)>0) {
             return $res[0];
         }else{

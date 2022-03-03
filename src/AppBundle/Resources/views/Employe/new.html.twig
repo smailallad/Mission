@@ -37,7 +37,7 @@
             possible += '0123456789';
             possible += '![]{}()%&*$#^<>~@|';
             var text = '';
-            console.log(possible);
+            //console.log(possible);
             for(var i=0; i < id; i++) {
               text += possible.charAt(Math.floor(Math.random() * possible.length));
             }
@@ -50,11 +50,24 @@
             str = str.replace(/[\s]{2,}/g," "); // Enlève les espaces doubles, triples, etc.
             str = str.replace(/^[\s]/, ""); // Enlève les espaces au début
             str = str.replace(/[\s]$/,""); // Enlève les espaces à la fin
+            var email = str;
             str = str.replace(/ /g,".");
+            //console.log(str);
+            var t = email.split(' ');
+            email = "";
+            for (i = t.length -1;i>=0; i--){
+                if (email == ""){
+                    email = t[i];
+                }else{
+                    email = email + '.' + t[i];
+                }
+            }
+            email = email + '@rtie-dz.com';
             var pw = password(10);
 
             $('#employe_username').val(str);
             $('#employe_password').val(pw);
+            $('#employe_email').val(email);
 
         })
 

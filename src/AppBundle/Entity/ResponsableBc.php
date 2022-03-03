@@ -1,17 +1,15 @@
 <?php
 namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\JoinColumn;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  *
- * @ORM\Table(name="bc_responsable")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\BcResponsableRepository")
- * @UniqueEntity(fields={"num"},message="Valeur existe déjà sur la base de donnée.")
+ * @ORM\Table(name="responsable_bc")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ResponsableBcRepository")
+ * @UniqueEntity(fields={"nom"},message="Valeur existe déjà sur la base de donnée.")
  */
-class BcResponsable
+class ResponsableBc
 { 
     /**
      * @var int
@@ -43,7 +41,7 @@ class BcResponsable
      *
      * @param string $nom
      *
-     * @return BcResponsable
+     * @return ResponsableBc
      */
     public function setNom($nom)
     {
@@ -73,7 +71,7 @@ class BcResponsable
      *
      * @param int $id
      *
-     * @return BcResponsable
+     * @return ResponsableBc
      */
     public function setId($id)
     {

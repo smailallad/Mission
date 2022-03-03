@@ -99,7 +99,7 @@ class MissionRepository extends \Doctrine\ORM\EntityRepository{
         $q ->select($q->expr()->max('m.code') );
         $q ->where($q->expr()->like('m.code', $q->expr()->literal($annee.'%')));
         $res = $q->getQuery()->getResult()[0][1];
-        if ($res = null)
+        if ($res === null)
         {
             $res = $annee."0001";
         }

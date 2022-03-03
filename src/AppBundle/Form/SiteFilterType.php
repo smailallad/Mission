@@ -22,7 +22,7 @@ class SiteFilterType extends AbstractType
         ->add('nom',Filters\TextFilterType::class, array('label' => "Nom"))
         ->add('nouveau', ChoiceType::Class, array(
                     'choices'       => array(
-                        'Nouveau'       => 1,
+                        'Nouveau'   => 1,
                         'Valider'   => 0
                     ),
                     'required'      => false,

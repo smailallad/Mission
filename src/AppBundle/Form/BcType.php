@@ -29,9 +29,9 @@ class BcType extends AbstractType
             'html5'     => true,
             )
         )
-        ->add('bcResponsable',EntityType::class, array(
+        ->add('responsableBc',EntityType::class, array(
             'label'         => 'Responsable',
-            'class'         => 'AppBundle:bcResponsable',
+            'class'         => 'AppBundle:responsableBc',
             'choice_name'   => 'nom',
             'multiple'      => false,
             'placeholder'   => '-Choisir un responsable-',

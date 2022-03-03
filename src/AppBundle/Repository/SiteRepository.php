@@ -9,7 +9,7 @@ use Doctrine\ORM\Query;
  */
 class SiteRepository extends \Doctrine\ORM\EntityRepository
 {
-    public function getSites($client,$site,$startRow,$maxRows)
+    public function getSitess($client,$site,$startRow,$maxRows)
     {   
         $q = $this->createQueryBuilder('s');
         $q  ->select('s.id','s.code','s.nom')

@@ -26,6 +26,24 @@ class PointageUserRepository extends \Doctrine\ORM\EntityRepository
         return $q;//->getQuery()->getResult();
     }
 
+    public function nonPointer($d)
+    {
+        $qb1 = $this->getEntityManager()->createQueryBuilder();
+        $qb1    ->select('DISTINCT(pu.user)')
+                ->from('AppBundle:PointageUser', 'pu')
+                ->where('pu.date = :d')
+                ;
+        $qb2 = $this->getEntityManager()->createQueryBuilder();
+        $qb2    ->select('u')
+                ->from('AppBundle:User', 'u')
+                ->where('u.active = true')
+                ->andWhere($qb1->expr()->notIn('u', $qb1->getDQL()))
+                ->orderBy('u.nom')
+                ->setParameter('d', $d)
+        ;
+        return $qb2->getQuery()->getResult();
+    }
+
     public function addFilterPointage($q,$user,$du,$au){
         
         

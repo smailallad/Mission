@@ -66,8 +66,8 @@ class RecrutementRepository extends \Doctrine\ORM\EntityRepository
     }
     public function getRecrutementFonction($user,$recruter)
     {
-        $em = $this->getEntityManager();
-        $qb = $em->createQueryBuilder();
+        //$em = $this->getEntityManager();
+        //$qb = $em->createQueryBuilder();
         $q = $this->createQueryBuilder('r')
             ->leftJoin('r.licenciement','l','WITH','r.user = :user')
             ->where('r.recruter >= :recruter')

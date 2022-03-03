@@ -5,8 +5,17 @@ parameters:
     database_name: rtie3.4
     database_user: smail
     database_password: Ads2160396!
+
     mailer_transport: gmail
-    mailer_host: null
-    mailer_user: smailallad@gmail.com
+    mailer_host: smtp.gmail.com
+    mailer_user: alladsmail@gmail.com
     mailer_password: InesSilya
+
+#    mailer_transport: smtp
+#    mailer_host: rtie-dz.com
+#    mailer_user: rtie-info@rtie-dz.com
+#    mailer_port: 25
+#    mailer_timeout : 30
+#    mailer_password: .F#-1@2ie]9o
+
     secret: 939ac14fa98c6a2cf0a8825bdcbac8df685a3872

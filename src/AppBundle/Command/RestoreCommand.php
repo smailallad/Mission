@@ -19,7 +19,7 @@ use AppBundle\Entity\Vehicule;
 use AppBundle\Entity\Carburant;
 use AppBundle\Entity\Prestation;
 use AppBundle\Entity\Recrutement;
-use AppBundle\Entity\BcPrestation;
+use AppBundle\Entity\PrestationBc;
 use AppBundle\Entity\FonctionUser;
 use AppBundle\Entity\FraisMission;
 use AppBundle\Entity\Intervention;
@@ -1551,7 +1551,7 @@ class RestoreCommand extends ContainerAwareCommand
                         if ($carburant->getId() == 2){ // Gas-oil
                             $vehicule = $repository->getRepository('AppBundle:Vehicule')->find(2); // Toyata A
                         }else { // Essance
-                            $vehicule = $repository->getRepository('AppBundle:Vehicule')->find(3); // Ford A A
+                            $vehicule = $repository->getRepository('AppBundle:Vehicule')->find(3); // Ford A
                         }
                     }
                     $carburantMission = new CarburantMission();
@@ -1604,7 +1604,7 @@ class RestoreCommand extends ContainerAwareCommand
                 $manager = $this->getContainer()->get('doctrine')->resetManager();
             }
             //*** Correction du carburant pour vehicle
-            //*** Essance pour Ford A et Gas-oil pour Toyaota A
+            //*** Essance pour Ford A et Gas-oil pour Toyata A
             $reqd = $dbd->prepare("UPDATE  carburant_mission SET vehicule_id = 3  WHERE vehicule_id in(1,2,6,7,8,9) and carburant_id in(1,3)");
             if (!$reqd->execute()) {
                 $output->writeln('');
@@ -1615,6 +1615,13 @@ class RestoreCommand extends ContainerAwareCommand
                 $output->writeln('');
                 $output->write('<error>' . $reqd->errorInfo()[2] . '</error>');
             }
+            //*** Suppression Gas-oil, Essance et Sans-plan dans l'entity dépense */
+            $reqd = $dbd->prepare("DELETE  FROM depense WHERE id in(2,3,4)");
+            if (!$reqd->execute()) {
+                $output->writeln('');
+                $output->write('<error>' . $reqd->errorInfo()[2] . '</error>');
+            }
+
             $output->writeln('<comment>'.str_pad('#',100-$k,'#').' 100%.</comment>');
             //*** Frais Mission ***************************************************************************************
             $output->write('<info>' . str_pad('Copier Frais Mission',30,'.'). ': </info>');
@@ -1714,13 +1721,13 @@ class RestoreCommand extends ContainerAwareCommand
             foreach ($ress as $recs)
             {   $prestation = $repository->getRepository('AppBundle:Prestation')->find($recs['code_prestation']);
                 $zone = $repository->getRepository('AppBundle:Zone')->find($recs['zone']);
-                $bcPrestation    = new BcPrestation();
-                $bcPrestation    ->setId($id)
+                $prestationBc    = new PrestationBc();
+                $prestationBc    ->setId($id)
                                     ->setPrestation($prestation)
                                     ->setZone($zone)
                                     ->setMontant($recs["tarif_prestation"])
                             ;
-                $manager->persist($bcPrestation);
+                $manager->persist($prestationBc);
                 $id++;
                 if ($c == $pas ){
                 $output->write('<comment>#</comment>');

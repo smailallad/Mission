@@ -38,7 +38,7 @@ class EntretienVehiculeType extends AbstractType
                                             ;
                                 },
                     )
-            )
+                )
             ->add('user',EntityType::class, array(
                 'class'         => 'AppBundle:User',
                 'label'         => 'Chauffeur',
@@ -51,11 +51,15 @@ class EntretienVehiculeType extends AbstractType
                                             ;
                                 },
                             )
-            )
+                )
             ->add('kms',NumberType::class,array(
                 'label'     => 'Kms',
-            ))
-            ->add('obs',TextareaType::class)
+                )
+            )
+            ->add('obs',TextareaType::class,array(
+                'required'      => false,
+                )
+            )
         ;
     }/**
      * {@inheritdoc}
