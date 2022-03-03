@@ -18,7 +18,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class PrestationBc
 {
     /**
-     * @var int
+     * @var int 
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
