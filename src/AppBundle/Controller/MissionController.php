@@ -1021,7 +1021,7 @@ class MissionController extends Controller
             
             $d = $userIntervention->getIntervention()->getDateIntervention();
             $user =$userIntervention->getUser();
-            $wilaya = $userIntervention->getIntervention()->getSite()->getWilaya()->getNom();
+            //$wilaya = $userIntervention->getIntervention()->getSite()->getWilaya()->getNom();
             $montantFm = $userIntervention->getIntervention()->getSite()->getWilaya()->getMontantFm();
             
             $fm = $this->getDoctrine()->getRepository('AppBundle:FraisMission')->findBy(['user'=>$user,'dateFm'=>$d]);

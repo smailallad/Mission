@@ -43,4 +43,12 @@ class PrestationRepository extends \Doctrine\ORM\EntityRepository
         $q = $q->getQuery()->getResult(Query::HYDRATE_SINGLE_SCALAR);
         return $q;
     }
+    public function getPrestationsProjet($projet)
+    {   
+        $q = $this->createQueryBuilder('p');
+        $q  ->join('p.projet','pr')
+            ->andwhere('p.projet = :projet')
+            ->setParameter('projet', $projet);
+        return $q;
+    }
 }

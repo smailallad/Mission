@@ -1,11 +1,10 @@
 {% extends "base.html.twig" %}
 {% block title %}Liste des PO - {{ parent() }}{% endblock %}
-
 {% block bodyliste %}
-    <div class="col-md-2">
+<div class="col-md-2">
     {% include '@App/Po/filter.html.twig' with {form: form} %}
-    </div>
-    <div class="col-md-10">
+</div>
+<div class="col-md-10">
     {#{% include "@App/messages.html.twig" %}#}
     <h4>Liste des PO</h4>
     {{ knp_pagination_render(paginator) }}
@@ -14,40 +13,41 @@
             <tr>
                 <th scope="col">Num PO</th>
                 <th scope="col">Date</th>
+                <th scope="col">Projet</th>
                 <th scope="col" class="text-center">Etat</th>
                 <th scope="col"></th>
             </tr>
         </thead>
         <tbody>
             {% for po in paginator %}
-                <tr>
-                    <td><a href="{{ path('po_show', {id: po.id | Mycrypt}) }}">{{ po.num }}</a></td>
-                    <td>{{ po.date is empty ? '' : po.date | date('d/m/Y') }}</td>
-                    <td class="text-center">
-                        {% if po.active %}
-                            <i class="glyphicon glyphicon-check"></i>
-                        {% else %}
-                            <i class="glyphicon glyphicon-unchecked"></i>
-                        {% endif %}
-                    </td>
-                    <td>
-                            <a class="btn btn-primary btn-sm" href="{{ path('po_show', {id: po.id | Mycrypt}) }}">
-                                <i class="glyphicon glyphicon-file" title="Voir"></i>
-                            </a>
-                            <a class="btn btn-primary btn-sm" href="{{ path('po_edit', {id: po.id | Mycrypt}) }}">
-                                <i class="glyphicon glyphicon-edit" title="Modifie"></i>
-                            </a>
-                            <a class="btn btn-danger btn-sm" href="{{ path('po_edit', {id: po.id | Mycrypt}) }}">
-                                <i class="glyphicon glyphicon-trash" title="Supprimer"></i>
-                            </a>
-                    </td>
-                </tr>
+            <tr>
+                <td><a href="{{ path('po_show', {id: po.id | Mycrypt}) }}">{{ po.num }}</a></td>
+                <td>{{ po.date is empty ? '' : po.date | date('d/m/Y') }}</td>
+                <td>{{ po.projet.nom }}</td>
+                <td class="text-center">
+                    {% if po.active %}
+                    <i class="glyphicon glyphicon-check"></i>
+                    {% else %}
+                    <i class="glyphicon glyphicon-unchecked"></i>
+                    {% endif %}
+                </td>
+                <td>
+                    <a class="btn btn-primary btn-sm" href="{{ path('po_show', {id: po.id | Mycrypt}) }}">
+                        <i class="glyphicon glyphicon-file" title="Voir"></i>
+                    </a>
+                    <a class="btn btn-primary btn-sm" href="{{ path('po_edit', {id: po.id | Mycrypt}) }}">
+                        <i class="glyphicon glyphicon-edit" title="Modifie"></i>
+                    </a>
+                    <button class="btn btn-danger" data-toggle="modal" title="Supprimer" data-target="#modalDeletePo"
+                        data-id="{{ po.id }}">
+                        <i class="glyphicon glyphicon-trash"></i>
+                    </button>
+                </td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>
-
     {{ knp_pagination_render(paginator) }}
-
     <ul class="new_entry list-unstyled">
         <li>
             <a class="btn btn-info" href="{{ path('po_new') }}">
@@ -56,7 +56,42 @@
         </li>
     </ul>
 </div>
+<!-- Modale delete PO-->
+<div id="modalDeletePo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalDeletePoLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>Confirmer la suppression</h4>
+            </div>
+            <div class="modal-body">
+                <p>Vous êtes sur le point de supprimer ce PO, cette procédure est irréversible.</p>
+                <p>Voulez-vous poursuivre?</p>
+            </div>
+            <div class="modal-footer">
+                <form name="form" id="modalDeletePoForm" action="#" method="post">
+                    <button class="btn btn-danger" type="submit"><i class="glyphicon glyphicon-trash"></i>
+                        Supprimer</button>
+                    <button class="btn btn-primary" data-dismiss="modal">Non</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 {% block js %}
-
+<script>
+    $(document).ready(function() {
+        $('#modalDeletePo').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var id = button.data('id') // Extract info from data-* attributes
+            var cURL = Routing.generate('po_delete', {
+                id: id
+            });
+            //alert(cURL);
+            $("#modalDeletePoForm").attr('action', cURL);
+        })
+    })
+</script>
 {% endblock %}

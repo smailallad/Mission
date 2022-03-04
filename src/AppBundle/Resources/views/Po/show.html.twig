@@ -8,7 +8,7 @@
     <div class="panel-body">
         <table class="table table-hover record_properties">
             <tbody>
-                 <tr>
+                <tr>
                     <th scope="row">Num PO</th>
                     <td>{{ po.num }}</td>
                 </tr>
@@ -16,13 +16,15 @@
                     <th scope="row">date</th>
                     <td>{{ po.date is empty ? '' : po.date | date('d/m/Y') }}</td>
                 </tr>
+                <th scope="row">Projet</th>
+                <td>{{ po.projet.nom }}</td>
                 <tr>
                     <th>Active</th>
                     <td>
                         {% if po.active %}
-                            <i class="glyphicon glyphicon-check"></i>
+                        <i class="glyphicon glyphicon-check"></i>
                         {% else %}
-                            <i class="glyphicon glyphicon-unchecked"></i>
+                        <i class="glyphicon glyphicon-unchecked"></i>
                         {% endif %}
                     </td>
                 </tr>
@@ -38,7 +40,8 @@
             <a class="btn btn-primary" href="{{ path('po_edit', {id: po.id | Mycrypt}) }}">
                 <i class="glyphicon glyphicon-edit"></i>Modifier
             </a>
-            <button class="btn btn-danger" data-toggle="modal" data-target="#modalDeletepo"><i class="glyphicon glyphicon-trash"></i> Supprimer</button>
+            <button class="btn btn-danger" data-toggle="modal" data-target="#modalDeletepo"><i
+                    class="glyphicon glyphicon-trash"></i> Supprimer</button>
             {% endif %}
         </div>
     </div>
@@ -75,11 +78,11 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4>Liste des BC / WO</h4>
-    </div> 
+    </div>
     <div class="panel-body">
         <table class="table table-hover record_properties">
             <tbody>
-               {% for bc in bcs %}
+                {% for bc in bcs %}
                 <tr>
                     <td> {{ bc.num }}</td>
                 </tr>
@@ -89,7 +92,8 @@
     </div>
 </div>
 <!-- Modale delete po-->
-<div id="modalDeletepo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjoutRoleLabel" aria-hidden="true">
+<div id="modalDeletepo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjoutRoleLabel"
+    aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -102,9 +106,9 @@
             <div class="modal-footer">
                 {{ form_start(delete_form) }}
                 {{ form_widget(delete_form) }}
-                    <button class="btn btn-danger" type="submit"><i class="glyphicon glyphicon-trash-o"></i> Oui</button>
-                    <button class="btn btn-primary" data-dismiss="modal">Non</button>
-                    <input name="modal" type="hidden" value="0">
+                <button class="btn btn-danger" type="submit"><i class="glyphicon glyphicon-trash-o"></i> Oui</button>
+                <button class="btn btn-primary" data-dismiss="modal">Non</button>
+                <input name="modal" type="hidden" value="0">
                 {{ form_end(delete_form) }}
             </div>
         </div>
@@ -137,19 +141,19 @@
 
 {% endblock %}
 {% block js %}
-<script> 
-$(document).ready(function () {
-    $('#modalDeleteIntervention').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget) // Button that triggered the modal
-        var id = button.data('id') // Extract info from data-* attributes
-        var po = button.data('po') // Extract info from data-* attributes
-        var cURL = Routing.generate('kmspo_delete', { id: id,po: po });
-        //alert(cURL);
-        $("#modalDeleteInterventionForm").attr('action', cURL);
+<script>
+    $(document).ready(function() {
+        $('#modalDeleteIntervention').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var id = button.data('id') // Extract info from data-* attributes
+            var po = button.data('po') // Extract info from data-* attributes
+            var cURL = Routing.generate('kmspo_delete', {
+                id: id,
+                po: po
+            });
+            //alert(cURL);
+            $("#modalDeleteInterventionForm").attr('action', cURL);
+        })
     })
-
-})
-
-
 </script>
 {% endblock %}

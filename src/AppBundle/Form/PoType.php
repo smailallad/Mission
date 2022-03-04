@@ -4,6 +4,7 @@ namespace AppBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 
@@ -21,7 +22,19 @@ class PoType extends AbstractType
                 'widget'    => 'single_text',
                 'html5'     => true,
                 )
-            );
+            )
+            ->add('projet',EntityType::class, array(
+                'label'         => 'Projet',
+                'class'         => 'AppBundle:Projet',
+                'choice_name'   => 'nom',
+                'multiple'      => false,
+                'placeholder'   => '-Choisir un projet-',
+                'query_builder' => function(\Doctrine\ORM\EntityRepository $p)
+                                {   return $p->createQueryBuilder('p');
+                                },
+                )
+            )
+            ;
     }/**
      * {@inheritdoc}
      */

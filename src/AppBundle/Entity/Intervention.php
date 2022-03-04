@@ -84,10 +84,6 @@ class Intervention
     private $mission;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Bc")
-     */
-    private $bc;
-     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Site")
      * @Assert\NotBlank(message="il faut affecté un site")
      */
@@ -453,28 +449,4 @@ class Intervention
         return $this->reserves;
     }
 
-
-    /**
-     * Set bc.
-     *
-     * @param \AppBundle\Entity\Bc|null $bc
-     *
-     * @return Intervention
-     */
-    public function setBc(\AppBundle\Entity\Bc $bc = null)
-    {
-        $this->bc = $bc;
-
-        return $this;
-    }
-
-    /**
-     * Get bc.
-     *
-     * @return \AppBundle\Entity\Bc|null
-     */
-    public function getBc()
-    {
-        return $this->bc;
-    }
 }

@@ -1,7 +1,7 @@
 {% extends "base.html.twig" %}
 {% block title %}Prestation - {{ parent() }}{% endblock %}
 {% block bodysaisie %}
-
+{#{% include "@App/messages.html.twig" %}#}
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4> Prestation </h4>
@@ -88,6 +88,79 @@
     </div>
 </div>
 
+<!-- Modale edit prestationBc-->
+<div id="modalEditMontantPrestation" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjoutRoleLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>Modifier le montant</h4>
+            </div>
+            
+            <div class="modal-body">
+                <table class="table table-hover record_properties">
+                    <tbody>
+                        <tr>
+                            <th scope="row">Préstation</th>
+                            <td>{{ prestation.nom }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Zone</th>
+                            <td id ="zone">Zone</td>
+                        </tr>
+                    </tbody>
+                </table>
+                {{ form_start(edit_montant_form, {'attr': {'id': 'edit_montant_form'}}) }}
+                {{ form_widget(edit_montant_form) }}
+            </div>
+            <div class="modal-footer">
+               
+                <button class="btn btn-danger" type="submit"><i class="glyphicon glyphicon-trash-o"></i> Valider</button>
+                <button class="btn btn-primary" data-dismiss="modal">Non</button>
+                <input name="modal" type="hidden" value="0">
+                
+            </div>
+            {{ form_end(edit_montant_form) }}
+        </div>
+    </div>
+</div>
+
+<!-- Modale new prestationBc-->
+<div id="modalNewMontantPrestation" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjoutRoleLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>Ajouter </h4>
+            </div>
+
+            <div class="modal-body">
+                <table class="table table-hover record_properties">
+                    <tbody>
+                        <tr>
+                            <th scope="row">Préstation</th>
+                            <td>{{ prestation.nom }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                {{ form_start(new_montant_form, {'attr': {'id': 'new_montant_form'}}) }}
+                {{ form_widget(new_montant_form) }}
+            </div>
+            <div class="modal-footer">
+
+                <button class="btn btn-danger" type="submit"><i class="glyphicon glyphicon-trash-o"></i>
+                    Valider</button>
+                <button class="btn btn-primary" data-dismiss="modal">Non</button>
+                <input name="modal" type="hidden" value="0">
+
+            </div>
+            {{ form_end(new_montant_form) }}
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 {% block js %}
 <script> 
@@ -98,6 +171,30 @@
             var cURL = Routing.generate('prestationBc_delete', { id: id });
             //alert(cURL);
             $("#modalDeleteMontantPrestationForm").attr('action', cURL);
+        })
+
+        $('#modalEditMontantPrestation').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var id = button.data('id') // Extract info from data-* attributes
+            var zone = button.data('zone');
+            var montant = button.data('montant');
+            $('#prestationBc_montant').val(montant);
+            $('#zone').html('Zonne N° : ' + zone);
+            var cURL = Routing.generate('prestationBc_edit', { id: id });
+            //alert(montant);
+            $("#edit_montant_form").attr('action', cURL);
+        })
+
+        $('#modalNewMontantPrestation').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var id = button.data('id') // Extract info from data-* attributes
+            //var zone = button.data('zone');
+            //var montant = button.data('montant');
+            //$('#prestationBc_montant').val(montant);
+            //$('#zone').html('Zonne N° : ' + zone);
+            var cURL = Routing.generate('prestationBc_new', { id: id });
+            //alert(montant);
+            $("#new_montant_form").attr('action', cURL);
         })
     })
 </script>

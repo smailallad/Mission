@@ -3,12 +3,12 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * po
  *
  * @ORM\Table(name="po")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\poRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\PoRepository")
  */
 class Po
 {
@@ -37,6 +37,12 @@ class Po
      * @ORM\Column(type="boolean")
      */
     private $active;
+    /**
+    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Projet")
+    * @Assert\NotNull(message = "Entrer une valeur.")
+    * @ORM\JoinColumn(nullable=false)
+    */
+    private $projet;
 
     /**
      * Get id.

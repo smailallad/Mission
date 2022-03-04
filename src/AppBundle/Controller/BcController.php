@@ -1,9 +1,12 @@
 <?php
 namespace AppBundle\Controller;
 use AppBundle\Entity\Bc;
+use AppBundle\Entity\PrestationBc;
 use AppBundle\Form\BcType;
 use Doctrine\ORM\QueryBuilder;
 use AppBundle\Form\BcFilterType;
+use AppBundle\Form\PrestationBcType;
+//use AppBundle\Entity\PrestationBc;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -83,14 +86,45 @@ class BcController extends Controller
     public function showAction($id)
     {   $cryptage = $this->container->get('my.cryptage');
         $id = $cryptage->my_decrypt($id);
-        $bc = $this->getDoctrine()->getRepository('AppBundle:Bc')->find($id);
-        $prestationBcs = $this->getDoctrine()->getRepository('AppBundle:PrestationBc')->findByBc($id);
-
+        $bc             = $this->getDoctrine()->getRepository('AppBundle:Bc')->find($id);
+        $prestationBcs  = $this->getDoctrine()->getRepository('AppBundle:PrestationBc')->findByBc($id);
+        $somme          = $this->getDoctrine()->getRepository('AppBundle:PrestationBc')->getSomme($id);
         $deleteForm = $this->createDeleteForm($id, 'bc_delete');
         return $this->render('@App/Bc/show.html.twig', array(
-            'bc'          => $bc,
+            'bc'            => $bc,
+            'somme'         => $somme,
             'prestationBcs' => $prestationBcs,
-            'delete_form'   => $deleteForm->createView()));
+            'delete_form'   => $deleteForm->createView())
+        );
+    }
+
+    /**
+     * @Route("/bd/add/{id}/prestation",name="bc_add_prestation")
+     */
+    public function bcAddPrestation($id,Request $request)
+    {
+        $cryptage = $this->container->get('my.cryptage');
+        $id = $cryptage->my_decrypt($id);
+        $prestationBc = new PrestationBc();
+        $bc             = $this->getDoctrine()->getRepository('AppBundle:Bc')->find($id);
+        $prestationBc->setBc($bc);
+        $projet = $bc->getProjet();
+        $client = $projet->getClient();
+        /* $form_realisateur = $this->createForm(InterventionUserType::class,$interventionUser,array('id'=>$intervention,'date'=>$intervention->getDateIntervention(),'mission'=>$mission)); */
+        $form = $this->createForm(PrestationBcType::class,$prestationBc,['projet'=>$projet,"client"=>$client]);
+        if ($form->handleRequest($request)->isValid())
+        {
+            $manager = $this->getDoctrine()->getManager();
+            $manager->persist($prestationBc);
+            $manager->flush();
+            return $this->redirect($this->generateUrl('bc_show', array('id' => $cryptage->my_encrypt($id))));
+        }
+        return $this->render('@App/Bc/add.prestation.html.twig', array(
+            'bc'            => $bc,
+            'projet'        => $projet,
+            'client'        => $client,
+            'form'          => $form->createView())
+        );
     }
     /**
      * @Route("/{id}/delete",name="bc_delete")

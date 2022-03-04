@@ -3,14 +3,12 @@
 namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ManyToOne;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  *
  * @ORM\Table(name="prestation_bc")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\ResponsableBcRepository")
- * @UniqueEntity(fields={"nom"},message="Valeur existe déjà sur la base de donnée.")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\PrestationBcRepository")
  */
 class PrestationBc
 {
@@ -23,12 +21,6 @@ class PrestationBc
      */
     private $id;
     /**
-    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Bc")
-    * @Assert\NotNull(message = "Entrer une valeur.")
-    * @ORM\JoinColumn(nullable=false)
-    */
-    private $bc;
-    /**
     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Zone")
     * @Assert\NotNull(message = "Entrer une valeur.")
     * @ORM\JoinColumn(nullable=false)
@@ -40,7 +32,16 @@ class PrestationBc
     * @ORM\JoinColumn(nullable=false)
     */
     private $prestation;
-
+    /**
+    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Site")
+    */
+    private $site;
+    /**
+    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Bc")
+    * @Assert\NotNull(message = "Entrer une valeur.")
+    * @ORM\JoinColumn(nullable=false)
+    */
+    private $bc;
     /**
      * @var float
      *
@@ -56,6 +57,7 @@ class PrestationBc
     private $qte;
 
     
+
 
     /**
      * Get id.
@@ -116,30 +118,6 @@ class PrestationBc
     }
 
     /**
-     * Set bc.
-     *
-     * @param \AppBundle\Entity\Bc $bc
-     *
-     * @return PrestationBc
-     */
-    public function setBc(\AppBundle\Entity\Bc $bc)
-    {
-        $this->bc = $bc;
-
-        return $this;
-    }
-
-    /**
-     * Get bc.
-     *
-     * @return \AppBundle\Entity\Bc
-     */
-    public function getBc()
-    {
-        return $this->bc;
-    }
-
-    /**
      * Set zone.
      *
      * @param \AppBundle\Entity\Zone $zone
@@ -185,5 +163,53 @@ class PrestationBc
     public function getPrestation()
     {
         return $this->prestation;
+    }
+
+    /**
+     * Set site.
+     *
+     * @param \AppBundle\Entity\Site $site
+     *
+     * @return PrestationBc
+     */
+    public function setSite(\AppBundle\Entity\Site $site)
+    {
+        $this->site = $site;
+
+        return $this;
+    }
+
+    /**
+     * Get site.
+     *
+     * @return \AppBundle\Entity\Site
+     */
+    public function getSite()
+    {
+        return $this->site;
+    }
+
+    /**
+     * Set bc.
+     *
+     * @param \AppBundle\Entity\Bc $bc
+     *
+     * @return PrestationBc
+     */
+    public function setBc(\AppBundle\Entity\Bc $bc)
+    {
+        $this->bc = $bc;
+
+        return $this;
+    }
+
+    /**
+     * Get bc.
+     *
+     * @return \AppBundle\Entity\Bc
+     */
+    public function getBc()
+    {
+        return $this->bc;
     }
 }

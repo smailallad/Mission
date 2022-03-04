@@ -35,6 +35,10 @@ class Facture
      */
     private $date;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Bc")
+     */
+    private $bc;
 
     /**
      * Get id
@@ -106,5 +110,29 @@ class Facture
         $this->id = $id;
 
         return $this;
+    }
+
+    /**
+     * Set bc.
+     *
+     * @param \AppBundle\Entity\Bc|null $bc
+     *
+     * @return Facture
+     */
+    public function setBc(\AppBundle\Entity\Bc $bc = null)
+    {
+        $this->bc = $bc;
+
+        return $this;
+    }
+
+    /**
+     * Get bc.
+     *
+     * @return \AppBundle\Entity\Bc|null
+     */
+    public function getBc()
+    {
+        return $this->bc;
     }
 }

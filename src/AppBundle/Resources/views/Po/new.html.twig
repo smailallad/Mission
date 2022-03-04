@@ -1,16 +1,33 @@
-{% extends 'base.html.twig' %}
-
+{% extends "base.html.twig" %}
+{% form_theme form 'Form/bootstrap_3_layout.html.twig' %}
+{% block title %}Nouveau Site - {{ parent() }}{% endblock %}
 {% block bodysaisie %}
-    <h1>Po creation</h1>
-
-    {{ form_start(form) }}
+{#{% include "@App/messages.html.twig" %}#}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h2>Nouveau PO</h2>
+    </div>
+    <div class="panel-body">
+        {{ form_start(form, {action: path('po_new')}) }}
         {{ form_widget(form) }}
-        <input type="submit" value="Create" />
-    {{ form_end(form) }}
+            <p>
+                <button class="btn btn-primary" type="submit">Valider</button>
+            </p>
+        {{ form_end(form) }}
+    </div>
+    <div class="panel-footer">
+        <div class="btn-group record_actions">
+            <a class="btn btn-info" href="{{ path('po_index') }}">
+                <i class="glyphicon glyphicon-list"></i> Liste
+            </a>
+        </div>
+    </div>
 
-    <ul>
-        <li>
-            <a href="{{ path('po_index') }}">Back to the list</a>
-        </li>
-    </ul>
+
+{% endblock %}
+
+{% block js %}
+<script>
+
+</script>
 {% endblock %}
