@@ -59,7 +59,7 @@ class PoController extends Controller
             $em->persist($po);
             $em->flush();
 
-            return $this->redirectToRoute('po_show', array('id' => $po->getId()));
+            return $this->redirectToRoute('po_index');
         }
 
         return $this->render('@App/Po/new.html.twig', array(
@@ -96,8 +96,11 @@ class PoController extends Controller
      * @Route("/{id}/edit", name="po_edit")
      * @Method({"GET", "POST"})
      */
-    public function editAction(Request $request, Po $po)
+    public function editAction(Request $request,$id)
     {
+        $cryptage = $this->container->get('my.cryptage');
+        $id = $cryptage->my_decrypt($id);
+        $po = $this->getDoctrine()->getRepository('AppBundle:Po')->find($id);
         $deleteForm = $this->createDeleteForm($po,'po_index');
         $editForm = $this->createForm('AppBundle\Form\PoType', $po);
         $editForm->handleRequest($request);
@@ -105,7 +108,7 @@ class PoController extends Controller
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('po_edit', array('id' => $po->getId()));
+            return $this->redirectToRoute('po_index');
         }
 
         return $this->render('@App/Po/edit.html.twig', array(
@@ -116,23 +119,23 @@ class PoController extends Controller
     }
 
     /**
-     * Deletes a po entity.
-     *
-     * @Route("/{id}", name="po_delete")
-     * @Method("DELETE")
+     * @Route("Po/{id}/delete",name="po_delete",options = { "expose" = true })
      */
-    public function deleteAction(Request $request, Po $po)
+    public function deleteAction($id)
     {
-        $form = $this->createDeleteForm($po,'po_index');
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->remove($po);
-            $em->flush();
+        $manager = $this->getDoctrine()->getManager();
+        $po = $manager->getRepository('AppBundle:Po')->find($id);
+        $manager->remove($po);
+        try {
+            $manager->flush();
+        } catch(\Doctrine\DBAL\DBALException $e) {
+            $this->get('session')->getFlashBag()->add('danger', 'Impossible de supprimer cet element.');
+            /* $cryptage = $this->container->get('my.cryptage');
+            $id = $po->getId();
+            $id = $cryptage->my_encrypt($id); */
         }
 
-        return $this->redirectToRoute('po_index');
+        return $this->redirect($this->generateUrl('po_index'));
     }
 
     /**

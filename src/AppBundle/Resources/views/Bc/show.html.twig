@@ -22,12 +22,20 @@
                     <td>{{ bc.responsableBc.nom }}</td>
                 </tr>
                 <tr>
+                    <th scope="row">Projet</th>
+                    <td>{{ bc.projet.nom }}</td>
+                </tr>
+                <tr>
+                <th scope="row">Client</th>
+                <td>{{ bc.projet.client.nom }}</td>
+            </tr>
+                <tr>
                     <th scope="row">Montant</th>
-                    <td>0,00</td>
+                    <td>{{ somme | number_format(2,',',' ')}}</td>
                 </tr>
                 <tr>
                     <th scope="row">Montant consommé</th>
-                    <td>0,00</td>
+                    <td></td>
                 </tr>
                 <tr>
                     <th scope="row">Montant restant</th>
@@ -44,7 +52,8 @@
             <a class="btn btn-primary" href="{{ path('bc_edit', {id: bc.id | Mycrypt}) }}">
                 <i class="glyphicon glyphicon-edit"></i>Modifier
             </a>
-            <button class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteBc"><i class="glyphicon glyphicon-trash"></i> Supprimer</button>
+            <button class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteBc"><i
+                    class="glyphicon glyphicon-trash"></i> Supprimer</button>
         </div>
     </div>
 </div>
@@ -58,61 +67,65 @@
             <thead>
                 <tr>
                     <th>Prestations</th>
+                    <th>Site</th>
                     <th>Zone</th>
                     <th>Montant</th>
                     <th>Quantité</th>
                     <th></th>
-                </tr>    
+                </tr>
             </thead>
             <tbody>
                 {% for prestationBc in prestationBcs %}
                 <tr>
                     <td> {{ prestationBc.prestation.nom }}</td>
+                    <td> {{ prestationBc.site is empty ? '' : prestationBc.site.nom }}</td>
                     <td> {{ prestationBc.zone.nom }}</td>
-                    <td> {{ prestationBc.montant }}</td>
+                    <td> {{ prestationBc.montant | number_format(2,',',' ') }}</td>
                     <td> {{ prestationBc.qte }}</td>
-                    <td> 
+                    <td>
                         <a class="btn btn-primary" href=""><i class="glyphicon glyphicon-edit"></i></a>
                         <button class="btn btn-danger"> <i class="glyphicon glyphicon-trash"></i></button>
                     </td>
                 </tr>
-                    
+
                 {% endfor %}
             </tbody>
         </table>
     </div>
     <div class="panel-footer">
-        <button class="btn btn-primary"> <i class="glyphicon glyphicon-plus"></i></button>
+        <a class="btn btn-primary" href="{{ path('bc_add_prestation', {id: bc.id | Mycrypt}) }}">
+            <i class="glyphicon glyphicon-plus"></i>Ajouter
+        </a>
     </div>
-    
+
 </div>
 <!-- Modale delete Bc-->
-   <div id="modalDeleteBc" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjoutRoleLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4>Confirmer la suppression</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Veuillez confimer la suppression </p>
-                </div>
-                <div class="modal-footer">
-                    {{ form_start(delete_form) }}
-                    {{ form_widget(delete_form) }}
-                        <button class="btn btn-danger" type="submit"><i class="glyphicon glyphicon-trash-o"></i> Oui</button>
-                        <button class="btn btn-primary" data-dismiss="modal">Non</button>
-                        <input name="modal" type="hidden" value="0">
-                    {{ form_end(delete_form) }}
-                </div>
+<div id="modalDeleteBc" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjoutRoleLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4>Confirmer la suppression</h4>
+            </div>
+            <div class="modal-body">
+                <p>Veuillez confimer la suppression </p>
+            </div>
+            <div class="modal-footer">
+                {{ form_start(delete_form) }}
+                {{ form_widget(delete_form) }}
+                <button class="btn btn-danger" type="submit"><i class="glyphicon glyphicon-trash-o"></i> Oui</button>
+                <button class="btn btn-primary" data-dismiss="modal">Non</button>
+                <input name="modal" type="hidden" value="0">
+                {{ form_end(delete_form) }}
             </div>
         </div>
     </div>
-
+</div>
 
 {% endblock %}
 {% block js %}
-<script> 
+<script>
 
 </script>
 {% endblock %}

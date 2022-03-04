@@ -10,4 +10,16 @@ namespace AppBundle\Repository;
  */
 class PrestationBcRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getSomme($bc)
+    {   
+        $q = $this->createQueryBuilder('p')
+        ->select('SUM(p.montant * p.qte) AS somme')
+        ->where('p.bc = :bc')
+        ->setParameter('bc',$bc);
+        ;
+        //return $q->getQuery()->getResult()[0];
+        return $q->getQuery()->getSingleScalarResult();
+
+    }
+
 }

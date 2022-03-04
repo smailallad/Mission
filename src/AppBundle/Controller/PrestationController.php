@@ -87,25 +87,22 @@ class PrestationController extends Controller
     {   $cryptage = $this->container->get('my.cryptage');
         $id = $cryptage->my_decrypt($id);
         $prestation = $this->getDoctrine()->getRepository('AppBundle:Prestation')->find($id);
-        $prestationBcs = $this->getDoctrine()->getRepository('AppBundle:PrestationBc')->findByPrestation($id);
+       /*  $prestationBcs = $this->getDoctrine()->getRepository('AppBundle:PrestationBc')->findByPrestation($id);
         $editMontantForm = $this->createForm(PrestationBcType::class, New PrestationBc, array(
             'action' =>  $this->generateUrl('prestation'),
-            'method' => 'POST',
+            'method' => 'POST', 
         ));
         $newMontantForm = $this->createForm(PrestationBcType::class, New PrestationBc, array(
             'prestation'    => $prestation,
             'action'        => $this->generateUrl('prestation'),
             'method'        => 'POST',
             
-        ));
+        )); */
         //$form_realisateur = $this->createForm(InterventionUserType::class,$interventionUser,array('id'=>$intervention));
         $deleteForm = $this->createDeleteForm($id, 'prestation_delete');
         return $this->render('@App/Prestation/show.html.twig', array(
-            'prestationBcs'                 => $prestationBcs,
             'prestation'                    => $prestation,
             'delete_form'                   => $deleteForm->createView(),
-            'edit_montant_form'             => $editMontantForm->createView(),
-            'new_montant_form'              => $newMontantForm->createView(),
             )
         );
     }

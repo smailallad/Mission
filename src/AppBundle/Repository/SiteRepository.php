@@ -44,4 +44,13 @@ class SiteRepository extends \Doctrine\ORM\EntityRepository
         $q = $q->getQuery()->getResult(Query::HYDRATE_SINGLE_SCALAR);
         return $q;
     }
+
+    public function getSitesClient($client)
+    {   
+        $q = $this->createQueryBuilder('s');
+        $q  ->join('s.client','c')
+            ->andwhere('s.client = :client')
+            ->setParameter('client', $client);
+        return $q;
+    }
 }

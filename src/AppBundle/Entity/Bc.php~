@@ -50,13 +50,7 @@ class Bc
     * @ORM\JoinColumn(nullable=false)
     */
     private $po; 
-     /**
-    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Projet")
-    * @Assert\NotNull(message = "Entrer une valeur.")
-    * @ORM\JoinColumn(nullable=false)
-    */
-    private $projet;
-
+    
     /**
      * Get id.
      *
@@ -178,31 +172,6 @@ class Bc
     {
         return $this->po;
     }
-
-    /**
-     * Set projet.
-     *
-     * @param \AppBundle\Entity\Projet $projet
-     *
-     * @return Bc
-     */
-    public function setProjet(\AppBundle\Entity\Projet $projet)
-    {
-        $this->projet = $projet;
-
-        return $this;
-    }
-
-    /**
-     * Get projet.
-     *
-     * @return \AppBundle\Entity\Projet
-     */
-    public function getProjet()
-    {
-        return $this->projet;
-    }
-
     /**
      * Set active.
      *

@@ -131,4 +131,8 @@ class Prestation
     {
         return $this->active;
     }
+    public function __toString()
+    {
+        return $this->nom;
+    }
 }

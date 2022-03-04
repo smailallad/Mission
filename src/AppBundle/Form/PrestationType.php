@@ -19,10 +19,10 @@ class PrestationType extends AbstractType
             'label'         => 'Nom',
             )
         )
-        ->add('qte',NumberType::class, array(
+        /* ->add('qte',NumberType::class, array(
             'label'         => 'qte'
             )
-        )
+        ) */
         ->add('projet',EntityType::class, array(
             'label'         => 'Projet',
             'class'         => 'AppBundle:Projet',
@@ -36,7 +36,7 @@ class PrestationType extends AbstractType
                             },
             )
         )
-        ->add('bc',EntityType::class, array(
+        /* ->add('bc',EntityType::class, array(
             'label'         => 'Bon de commande',
             'class'         => 'AppBundle:Bc',
             'choice_name'   => 'num',
@@ -48,7 +48,7 @@ class PrestationType extends AbstractType
                                             ;
                             },
             )
-        )
+        ) */
         ;
     }/**
      * {@inheritdoc}
