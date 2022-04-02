@@ -91,7 +91,11 @@ class PrestationController extends Controller
         $prestation = $this->getDoctrine()->getRepository('AppBundle:Prestation')->find($id);
        /*  $prestationBcs = $this->getDoctrine()->getRepository('AppBundle:PrestationBc')->findByPrestation($id);
         $editMontantForm = $this->createForm(PrestationBcType::class, New PrestationBc, array(
+<<<<<<< HEAD
             'action' =>  $this->generateUrl('prestation_index'),
+=======
+            'action' =>  $this->generateUrl('prestation'),
+>>>>>>> c4c86e1f6dacdb75bcb034443d12a868987ff8f1
             'method' => 'POST', 
         ));
         $newMontantForm = $this->createForm(PrestationBcType::class, New PrestationBc, array(

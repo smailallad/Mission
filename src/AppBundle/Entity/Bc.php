@@ -56,6 +56,7 @@ class Bc
     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Po")
     */
     private $po; 
+<<<<<<< HEAD
      /**
     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Projet")
     * @Assert\NotNull(message = "Entrer une valeur du projet.")
@@ -63,6 +64,9 @@ class Bc
     */
     private $projet;
 
+=======
+    
+>>>>>>> c4c86e1f6dacdb75bcb034443d12a868987ff8f1
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\PrestationBc",mappedBy="bc")
      */
@@ -198,6 +202,7 @@ class Bc
     {
         return $this->po;
     }
+<<<<<<< HEAD
     /**
      * Set active.
      *
@@ -272,6 +277,8 @@ class Bc
         return $this->projet;
     }
 
+=======
+>>>>>>> c4c86e1f6dacdb75bcb034443d12a868987ff8f1
     /**
      * Set otp.
      *

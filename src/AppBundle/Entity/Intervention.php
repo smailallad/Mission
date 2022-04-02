@@ -422,6 +422,7 @@ class Intervention
         return $this->reserves;
     }
 
+<<<<<<< HEAD
 
     /**
      * Set prestationBc.
@@ -446,4 +447,6 @@ class Intervention
     {
         return $this->prestationBc;
     }
+=======
+>>>>>>> c4c86e1f6dacdb75bcb034443d12a868987ff8f1
 }

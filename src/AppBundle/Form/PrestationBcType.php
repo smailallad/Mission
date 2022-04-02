@@ -22,6 +22,7 @@ class PrestationBcType extends AbstractType
         ->add('prestation',EntityType::class, array(
             'label'         => 'Prestation',
             'class'         => 'AppBundle:Prestation',
+<<<<<<< HEAD
             'choice_name'   => 'nom',
             'multiple'      => false,
             //'required'      => true,
@@ -29,6 +30,37 @@ class PrestationBcType extends AbstractType
             'query_builder' => function(PrestationRepository $er) use($projet)
                                     {
                                        return $er->getPrestationsProjet($projet);
+=======
+            'choice_name'   => 'nom',
+            'multiple'      => false,
+            'required'      => true,
+            //'attr' => array('size' => '20'),
+            'query_builder' => function(PrestationRepository $er) use($projet)
+                                    {
+                                       return $er->getPrestationsProjet($projet);
+                                    },
+                                    //'attr' =>array('class'=>'form-control')
+            )
+        )
+        ->add('zone',EntityType::class, array(
+            'label'         => 'Zone',
+            'class'         => 'AppBundle:Zone',
+            'choice_name'   => 'nom',
+            'multiple'      => false,
+            'required'      => true,
+            )
+        )
+        ->add('site',EntityType::class, array(
+            'label'         => 'Site',
+            'class'         => 'AppBundle:Site',
+            'choice_name'   => 'nom',
+            'multiple'      => false,
+            'required'      => false,
+            //'attr' => array('size' => '20'),
+            'query_builder' => function(SiteRepository $er) use($client)
+                                    {
+                                       return $er->getSitesClient($client);
+>>>>>>> c4c86e1f6dacdb75bcb034443d12a868987ff8f1
                                     },
                                     //'attr' =>array('class'=>'form-control')
             )
@@ -78,6 +110,10 @@ class PrestationBcType extends AbstractType
             //'required'      => false,
             )
         )
+        ->add('qte',NumberType::class, array(
+            'label'         => 'Quantité',
+            )
+        )
         ;
     }/**
      * {@inheritdoc}
@@ -87,7 +123,11 @@ class PrestationBcType extends AbstractType
         $resolver->setDefaults(array(
             'data_class'        => 'AppBundle\Entity\PrestationBc',
             'method'            => 'POST',
+<<<<<<< HEAD
             'projet'            => null,
+=======
+            'projet'        => null,
+>>>>>>> c4c86e1f6dacdb75bcb034443d12a868987ff8f1
             'client'            => null,
         ));
     }

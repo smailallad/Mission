@@ -37,6 +37,7 @@ class Po
      * @ORM\Column(type="boolean")
      */
     private $active;
+<<<<<<< HEAD
    
     public function __construct()
     {
@@ -46,6 +47,15 @@ class Po
     {
         return $this->num;
     }
+=======
+    /**
+    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Projet")
+    * @Assert\NotNull(message = "Entrer une valeur.")
+    * @ORM\JoinColumn(nullable=false)
+    */
+    private $projet;
+
+>>>>>>> c4c86e1f6dacdb75bcb034443d12a868987ff8f1
     /**
      * Get id.
      *

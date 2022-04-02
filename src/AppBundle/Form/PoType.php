@@ -23,8 +23,12 @@ class PoType extends AbstractType
                 'html5'     => true,
                 )
             )
+<<<<<<< HEAD
             ->add('active')
             /* ->add('projet',EntityType::class, array(
+=======
+            ->add('projet',EntityType::class, array(
+>>>>>>> c4c86e1f6dacdb75bcb034443d12a868987ff8f1
                 'label'         => 'Projet',
                 'class'         => 'AppBundle:Projet',
                 'choice_name'   => 'nom',
@@ -34,7 +38,11 @@ class PoType extends AbstractType
                                 {   return $p->createQueryBuilder('p');
                                 },
                 )
+<<<<<<< HEAD
             ) */
+=======
+            )
+>>>>>>> c4c86e1f6dacdb75bcb034443d12a868987ff8f1
             ;
     }/**
      * {@inheritdoc}

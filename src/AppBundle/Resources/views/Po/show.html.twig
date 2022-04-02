@@ -16,6 +16,8 @@
                     <th scope="row">date</th>
                     <td>{{ po.date is empty ? '' : po.date | date('d/m/Y') }}</td>
                 </tr>
+                <th scope="row">Projet</th>
+                <td>{{ po.projet.nom }}</td>
                 <tr>
                     <th>Active</th>
                     <td>

@@ -46,6 +46,7 @@ class SiteRepository extends \Doctrine\ORM\EntityRepository
         $q = $q->getQuery()->getResult(Query::HYDRATE_SINGLE_SCALAR);
         return $q;
     }
+<<<<<<< HEAD
     public function getTotalRowsSiteClientZone($client,$site,$zone)
     {   
         $q = $this->createQueryBuilder('s')
@@ -65,11 +66,14 @@ class SiteRepository extends \Doctrine\ORM\EntityRepository
         $q = $q->getQuery()->getResult(Query::HYDRATE_SINGLE_SCALAR);
         return $q;
     }
+=======
+>>>>>>> c4c86e1f6dacdb75bcb034443d12a868987ff8f1
 
     public function getSitesClient($client)
     {   
         $q = $this->createQueryBuilder('s');
         $q  ->join('s.client','c')
+<<<<<<< HEAD
             ->where('s.client = :client')
             ->setParameter('client', $client);
         return $q;
@@ -96,4 +100,10 @@ class SiteRepository extends \Doctrine\ORM\EntityRepository
         $q  ->orderby('s.code','ASC');
         return $q;   
     }
+=======
+            ->andwhere('s.client = :client')
+            ->setParameter('client', $client);
+        return $q;
+    }
+>>>>>>> c4c86e1f6dacdb75bcb034443d12a868987ff8f1
 }
