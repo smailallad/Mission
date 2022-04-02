@@ -13,11 +13,7 @@ class PrestationBcRepository extends \Doctrine\ORM\EntityRepository
     public function getSomme($bc)
     {   
         $q = $this->createQueryBuilder('p')
-<<<<<<< HEAD
         ->select('SUM(p.montant * p.quantite) AS somme')
-=======
-        ->select('SUM(p.montant * p.qte) AS somme')
->>>>>>> c4c86e1f6dacdb75bcb034443d12a868987ff8f1
         ->where('p.bc = :bc')
         ->setParameter('bc',$bc);
         ;
@@ -26,7 +22,6 @@ class PrestationBcRepository extends \Doctrine\ORM\EntityRepository
 
     }
 
-<<<<<<< HEAD
     public function findPrestationIntervention($bc,$prestation,$zone)
     {
         $q = $this->createQueryBuilder('pb')
@@ -45,6 +40,4 @@ class PrestationBcRepository extends \Doctrine\ORM\EntityRepository
     }
     
 
-=======
->>>>>>> c4c86e1f6dacdb75bcb034443d12a868987ff8f1
 }

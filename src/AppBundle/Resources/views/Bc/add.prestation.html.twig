@@ -3,7 +3,6 @@
 {% block title %}
 BC -{{ parent() }}
 {% endblock %}
-<<<<<<< HEAD
 
 {% block detailSaisie %}
 
@@ -153,65 +152,11 @@ BC -{{ parent() }}
             <div class="modal-footer">
                 <div id="btnNavigationSite" class="text-left"></div>
             </div>
-=======
-{% block bodysaisie %}
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h4>Bon de commande</h4>
-    </div>
-    <div class="panel panel-body">
-        <table class="table table-hover record_properties">
-            <tbody>
-                <tr>
-                    <th scope="row"> Numéro</th>
-                    <td>{{ bc.num }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">Date</th>
-                    <td>{{ bc.date | date('d/m/Y') }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">Projet</th>
-                    <td>{{ bc.projet.nom }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">Client</th>
-                    <td>{{ bc.projet.client.nom }}</td>
-                </tr>
-            </tbody>
-        </table>
-
-    </div>
-</div>
-<div class="panel panel-default">
-    <div class="panel panel-heading"><h4>Prestation</h4></div>
-    <div class="panel-body">
-        {{ form_start(form, {action: path('bc_add_prestation',{id: bc.id | Mycrypt})}) }}
-        {{ form_widget(form) }}
-        <p>
-            <button class="btn btn-primary" type="submit">
-                Valider
-            </button>
-        </p>
-        {{ form_end(form) }}
-    </div>
-    <div class="panel-footer">
-        <div class="btn-group record_actions">
-            <a class="btn btn-info" href="{{ path('bc_show',{id: bc.id | Mycrypt}) }}">
-                <i class="glyphicon glyphicon-list"></i>
-                Retour
-            </a>
->>>>>>> c4c86e1f6dacdb75bcb034443d12a868987ff8f1
         </div>
     </div>
 </div>
 {% endblock %}
 {% block js %}
-<<<<<<< HEAD
 <script src="{{ asset('js/js/add.prestation.js')}}"></script>
 <script src="{{ asset('js/js/add.prestation.site.js')}}"></script>
-=======
-<script>
-</script>
->>>>>>> c4c86e1f6dacdb75bcb034443d12a868987ff8f1
 {% endblock %}

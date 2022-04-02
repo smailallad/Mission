@@ -1,17 +1,11 @@
 <?php
 namespace AppBundle\Controller;
 use AppBundle\Entity\Bc;
-use AppBundle\Entity\PrestationBc;
 use AppBundle\Form\BcType;
 use Doctrine\ORM\QueryBuilder;
 use AppBundle\Form\BcFilterType;
-<<<<<<< HEAD
 use AppBundle\Entity\PrestationBc;
 use AppBundle\Form\PrestationBcType;
-=======
-use AppBundle\Form\PrestationBcType;
-//use AppBundle\Entity\PrestationBc;
->>>>>>> c4c86e1f6dacdb75bcb034443d12a868987ff8f1
 use Symfony\Component\Form\FormInterface;
 use AppBundle\Form\SiteRechercheClientType;
 use Symfony\Component\HttpFoundation\Request;
@@ -116,11 +110,7 @@ class BcController extends Controller
     }
 
     /**
-<<<<<<< HEAD
      * @Route("/bc/add/{id}/prestation",name="bc_add_prestation")
-=======
-     * @Route("/bd/add/{id}/prestation",name="bc_add_prestation")
->>>>>>> c4c86e1f6dacdb75bcb034443d12a868987ff8f1
      */
     public function bcAddPrestation($id,Request $request)
     {
@@ -131,32 +121,24 @@ class BcController extends Controller
         $prestationBc->setBc($bc);
         $projet = $bc->getProjet();
         $client = $projet->getClient();
-<<<<<<< HEAD
         $form_recherche_site = $this->createForm(SiteRechercheClientType::class);
         
         //$zone  = $this->getDoctrine()->getRepository('AppBundle:Zone')->findAll();
-=======
-        /* $form_realisateur = $this->createForm(InterventionUserType::class,$interventionUser,array('id'=>$intervention,'date'=>$intervention->getDateIntervention(),'mission'=>$mission)); */
->>>>>>> c4c86e1f6dacdb75bcb034443d12a868987ff8f1
         $form = $this->createForm(PrestationBcType::class,$prestationBc,['projet'=>$projet,"client"=>$client]);
         if ($form->handleRequest($request)->isValid())
         {
             $manager = $this->getDoctrine()->getManager();
-<<<<<<< HEAD
             $site = $request->request->get('prestation_bc')['siteId'];
             if ($site != null)
             {
                 $site = $manager->getRepository('AppBundle:Site')->find($site);
                 $prestationBc->setSite($site);
             }
-=======
->>>>>>> c4c86e1f6dacdb75bcb034443d12a868987ff8f1
             $manager->persist($prestationBc);
             $manager->flush();
             return $this->redirect($this->generateUrl('bc_show', array('id' => $cryptage->my_encrypt($id))));
         }
         return $this->render('@App/Bc/add.prestation.html.twig', array(
-<<<<<<< HEAD
             'bc'                    => $bc,
             'projet'                => $projet,
             'client'                => $client,
@@ -202,12 +184,6 @@ class BcController extends Controller
             'form'                  => $form->createView(),
             'form_recherche_site'   => $form_recherche_site->createView(),
             )
-=======
-            'bc'            => $bc,
-            'projet'        => $projet,
-            'client'        => $client,
-            'form'          => $form->createView())
->>>>>>> c4c86e1f6dacdb75bcb034443d12a868987ff8f1
         );
     }
 
