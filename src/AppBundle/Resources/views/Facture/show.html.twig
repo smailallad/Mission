@@ -1,0 +1,177 @@
+{% extends "base.html.twig" %}
+{% block title %}
+    Facture - {{ parent() }}
+{% endblock %}
+{% block bodyliste %}
+    <div class="col-md-2">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4> Facture </h4>
+            </div>
+            <div class="panel-body">
+                <table class="table table-hover record_properties">
+                    <tbody>
+                        <tr>
+                            <th scope="row">Num</th>
+                            <td>{{ facture.num }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Date</th>
+                            <td>{{ facture.date | date('d/m/Y') }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">BC</th>
+                            <td>{{ facture.bc.num }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Projet</th>
+                            <td>{{ facture.bc.projet.nom }}</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Client</th>
+                            <td>{{ facture.bc.projet.client.nom }}/td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Montant HT</th>
+                            <td class="text-right">DA</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Tva</th>
+                            <td class="text-right">{{ facture.tva }}%</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Montant TTC</th>
+                            <td class="text-right">DA</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="panel-footer">
+                <div class="btn-group record_actions">
+                    <a class="btn btn-info" title="Liste des factures" href="{{ path('facture_index') }}">
+                        <i class="glyphicon glyphicon-list"></i>
+                    </a>
+                    <a class="btn btn-primary" title="Modifier la facture" href="{{ path('facture_edit', {id: facture.id | Mycrypt}) }}">
+                        <i class="glyphicon glyphicon-edit"></i>
+                    </a>
+                    <button class="btn btn-danger" title="Supprimer la facture" data-toggle="modal" data-target="#modalDeleteFacture">
+                        <i class="glyphicon glyphicon-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4>interventions:</h4>
+            </div>
+            <div class="panel-body">
+                <table class="table table-hover record_properties">
+                    <tbody>
+                        {% for intervention in interventions %}
+                            <tr title="{{ intervention.designation }}" {% if intervention.prestationBc == null %} class="danger" {% endif %}>
+                                <td>{{ intervention.dateIntervention | date('d/m/Y') }}</td>
+                                <td>{{ intervention.mission.code }}</td>
+                                <td>{{ intervention.site.code }}</td>
+                                <td>{{ intervention.site.nom }}</td>
+                                <td>{{ intervention.site.wilaya.nom }}</td>
+                                <td>{{ intervention.site.wilaya.zone.nom }}</td>
+                                <td>{{ intervention.prestation.nom }}</td>
+                                <td>{{ intervention.quantite }}</td>
+                                <td class="text-right">{{ intervention.prestationBc is empty  ?  '' : (intervention.prestationBc.montant) | number_format(2,',',' ') }}</td>
+                                <td class="text-right">
+                                    <a title="assossier au BC" class="btn btn-primary" href="{{ path('facture_prestation_intervention', {facture: facture.id | Mycrypt,bc: facture.bc.id | Mycrypt,prestation: intervention.prestation.id | Mycrypt, zone : intervention.site.wilaya.zone.id | Mycrypt}) }}">
+                                        <i class="glyphicon glyphicon-paperclip"></i>
+                                    </a>
+                                    <button title="Retirer la prestation de la facture" class="btn btn-danger" data-toggle="modal" data-target="#modalDeletePrestation" data-id="{{ intervention.id }}">
+                                        <i class="glyphicon glyphicon-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="panel-footer">
+                <a class="btn btn-primary" href="{{ path('interventions_non_facturer', {facture: facture.id | Mycrypt}) }}">
+                    Ajouter des interventions
+                </a>
+            </div>
+        </div>
+    </div>
+    <!-- Modale delete Facture-->
+    <div id="modalDeleteFacture" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjoutRoleLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                    <h4>Confirmer la suppression</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Veuillez confimer la suppression </p>
+                </div>
+                <div class="modal-footer">
+                    {{ form_start(delete_form) }}
+                    {{ form_widget(delete_form) }}
+                    <button class="btn btn-danger" type="submit">
+                        <i class="glyphicon glyphicon-trash-o"></i>Oui
+                    </button>
+                    <button class="btn btn-primary" data-dismiss="modal">Non</button>
+                    <input name="modal" type="hidden" value="0">
+                    {{ form_end(delete_form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modale delete Prestation-->
+    <div id="modalDeletePrestation" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalDeletePrestationLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4>Confirmer la suppression</h4>
+                </div>
+                <div class="modal-body">
+                    <p
+                        Vous êtes sur le point de supprimer cet élément, cette procédure est irréversible.
+                                                
+                    </p>
+                    <p>
+                        Voulez-vous poursuivre?
+                                                
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <form name="form" id="modalDeletePrestationForm" action="#" method="post">
+                        <button class="btn btn-danger" type="submit">
+                            <i class="glyphicon glyphicon-trash"></i>
+                            Supprimer
+                                                        
+                        </button>
+                        <button class="btn btn-primary" data-dismiss="modal">
+                            Annuler
+                                                        
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+{% block js %}
+    <script> 
+$(document).ready(function () {
+    $('#modalDeletePrestation').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget) // Button that triggered the modal
+        var id = button.data('id') // Extract info from data-* attributes
+        var cURL = Routing.generate('prestation_facture_delete', { id: id });
+        $("#modalDeletePrestationForm").attr('action', cURL);
+    })
+
+})
+
+
+</script>
+{% endblock %}

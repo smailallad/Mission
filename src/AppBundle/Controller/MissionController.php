@@ -1411,7 +1411,7 @@ class MissionController extends Controller
         {   $this->get('session')->getFlashBag()->add('success', 'Validation avec succès.');
         }else
         {
-            $this->get('session')->getFlashBag()->add('success', 'Invalidation avec succès.');
+            $this->get('session')->getFlashBag()->add('success', 'Dévalider avec succès.');
         }
         return $this->json(["msg" =>''],200);
     }
@@ -1429,7 +1429,7 @@ class MissionController extends Controller
         {   $this->get('session')->getFlashBag()->add('success', 'Validation avec succès.');
         }else
         {
-            $this->get('session')->getFlashBag()->add('success', 'Invalidation avec succès.');
+            $this->get('session')->getFlashBag()->add('success', 'Dévalider avec succès.');
         }
         return $this->json(["msg" =>''],200);
     }
@@ -1447,49 +1447,12 @@ class MissionController extends Controller
         {   $this->get('session')->getFlashBag()->add('success', 'Validation avec succès.');
         }else
         {
-            $this->get('session')->getFlashBag()->add('success', 'Invalidation avec succès.');
+            $this->get('session')->getFlashBag()->add('success', 'Dévalider avec succès.');
         }
         return $this->json(["msg" =>''],200);
     } 
 
-    /**
-     * @Route("/{client}/{pagenum}/searchSite/{site}",name="search_site",options = { "expose" = true })
-     */
-    public function searchSiteAction($client,$pagenum,$site=null)
-    {
-        $manager = $this->getDoctrine()->getManager();
-        $maxRows = 10 ;// parametre
-        $startRow = $pagenum * $maxRows;
-        $totalRows = $manager->getRepository("AppBundle:Site")->getTotalRows($client,$site);
-        $totalpages = ceil($totalRows/$maxRows)-1;
-        $sites = $manager->getRepository("AppBundle:Site")->getSitess($client,$site,$startRow,$maxRows);
-        $sites = $sites->getQuery()->getResult();
-        return $this->json(["sites"     => $sites,
-                            "pagenum"   => $pagenum,
-                            "totalpages"=> $totalpages,
-                            ],
-                            200);
-    }
-
-    /**
-     * @Route("/{projet}/{pagenum}/searchPrestation/{prestation}",name="search_prestation",options = { "expose" = true })
-     */
-    public function searchPrestationAction($projet,$pagenum,$prestation=null)
-    {
-        $manager = $this->getDoctrine()->getManager();
-        $maxRows = 10 ;// parametre
-        $startRow = $pagenum * $maxRows;
-        $totalRows = $manager->getRepository("AppBundle:Prestation")->getTotalRows($projet,$prestation);
-        $totalpages = ceil($totalRows/$maxRows)-1;
-        $prestations = $manager->getRepository("AppBundle:Prestation")->getPrestations($projet,$prestation,$startRow,$maxRows);
-        $prestations = $prestations->getQuery()->getResult();
-        return $this->json(["prestations"     => $prestations,
-                            "pagenum"   => $pagenum,
-                            "totalpages"=> $totalpages,
-                            ],
-                            200);
-    }
-
+    
      /**
      * @Security("has_role('ROLE_COMPTABLE')")
      * @Route("/excel/note/frais/{id}",name="excel_note_frais",options = {"expose" = true})

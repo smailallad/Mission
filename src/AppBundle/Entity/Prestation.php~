@@ -39,7 +39,7 @@ class Prestation
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Projet")
-     * @Assert\NotNull(message = "Entrer une valeur.")
+     * @Assert\NotNull(message = "Entrer une valeur du projet.")
      * @ORM\JoinColumn(nullable=false)
      */
     private $projet;

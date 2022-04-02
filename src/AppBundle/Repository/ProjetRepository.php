@@ -16,4 +16,11 @@ class ProjetRepository extends \Doctrine\ORM\EntityRepository
             ;
         return $q;
     }
+    public function getProjetsClient($client){
+        $q = $this->createQueryBuilder('p')
+            ->where('p.client = :client')
+            ->setParameter('client',$client)
+            ;
+        return $q->getQuery()->getResult();
+    }
 }

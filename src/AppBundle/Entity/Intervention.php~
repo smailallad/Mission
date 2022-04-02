@@ -50,13 +50,6 @@ class Intervention
     private $dateIntervention;
 
     /**
-     * @var float
-     *
-     * @ORM\Column(name="tarif", type="float")
-     */
-    private $tarif;
-
-    /**
      * @var string
      *
      * @ORM\Column(name="designation", type="text",nullable=true)
@@ -105,6 +98,10 @@ class Intervention
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Facture")
      */
     private $facture;
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\PrestationBc")
+     */
+    private $prestationBc;
 
     /**
      * Constructor
@@ -191,30 +188,6 @@ class Intervention
     public function getDateIntervention()
     {
         return $this->dateIntervention;
-    }
-
-    /**
-     * Set tarif
-     *
-     * @param float $tarif
-     *
-     * @return Intervention
-     */
-    public function setTarif($tarif)
-    {
-        $this->tarif = $tarif;
-
-        return $this;
-    }
-
-    /**
-     * Get tarif
-     *
-     * @return float
-     */
-    public function getTarif()
-    {
-        return $this->tarif;
     }
 
     /**
@@ -449,4 +422,28 @@ class Intervention
         return $this->reserves;
     }
 
+
+    /**
+     * Set prestationBc.
+     *
+     * @param \AppBundle\Entity\PrestationBc|null $prestationBc
+     *
+     * @return Intervention
+     */
+    public function setPrestationBc(\AppBundle\Entity\PrestationBc $prestationBc = null)
+    {
+        $this->prestationBc = $prestationBc;
+
+        return $this;
+    }
+
+    /**
+     * Get prestationBc.
+     *
+     * @return \AppBundle\Entity\PrestationBc|null
+     */
+    public function getPrestationBc()
+    {
+        return $this->prestationBc;
+    }
 }

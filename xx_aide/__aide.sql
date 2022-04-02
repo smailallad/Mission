@@ -230,3 +230,20 @@ WHERE v2_language.id = 1
 
  $builder->add('name', 'text', array('constraints' => array(new NotBlank(array('message' => 'Name cannot be blank')), new Length(array('min' => 3, 'minMessage' => 'Name is too short')), 'label' => 'Name')))
  $builder->add('name', 'text', array('constraints' => array(new NotBlank(array('message' => 'Name cannot be blank')), new Length(array('min' => 3, 'minMessage' => 'Name is too short'))), 'label' => 'Name'))    
+
+
+                    {{ form_label(form.siteCode) }}
+            <div class="input-group">
+            {{ form_widget(form.siteCode) }}
+
+       
+                    <button id="listeSite" class="btn btn-primary form-control" data-toggle="modal"
+                        data-target="#modalSite">
+                        <i class="glyphicon glyphicon-search"></i>
+                    </button>
+
+
+                    <button id="deleteSite" class="btn btn-danger form-control">
+                        <i class="glyphicon glyphicon-trash"></i>
+                    </button>
+            </div>

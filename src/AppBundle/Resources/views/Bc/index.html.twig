@@ -31,11 +31,13 @@
             <tr>
                 <th scope="col">{{ thead('bc', 'num', 'Num') }}</th>
                 <th scope="col">{{ thead('bc', 'date', 'Date') }}</th>
+                <th scope="col">{{ thead('bc', 'po.num', 'PO') }}</th>
                 <th scope="col">{{ thead('bc', 'responsableBc', 'Responsable') }}</th>
-                <th>Montant</th>
-                <th>Consommé</th>
-                <th>Reste</th>
-                <th scope="col">Actions</th>
+                <th scope="col">{{ thead('bc', 'projet.nom', 'Projet') }}</th>
+                <th scope="col">{{ thead('bc', 'projet.client.nom', 'Client') }}</th>  
+                <th class="text-right">Montant</th>
+                <th class="text-right">Consommé</th>
+                <th class="text-right">Resté</th>
             </tr>
         </thead>
         <tbody>
@@ -43,17 +45,20 @@
                 <tr>
                     <td><a href="{{ path('bc_show', {id: bc.id | Mycrypt}) }}">{{ bc.num }}</a></td>
                     <td>{{ bc.date | date('d/m/Y') }}</td>
+                    <td>{{ bc.po is empty ? '' : bc.po.num}}</td>
                     <td>{{ bc.responsableBc.nom }}</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td>
-                        <a class="btn btn-primary" href="{{ path('bc_show', {id: bc.id | Mycrypt}) }}">
-                            <i class="glyphicon glyphicon-file"></i>voir
-                        </a>
-                        <a class="btn btn-primary" href="{{ path('bc_edit', {id: bc.id | Mycrypt}) }}">
-                            <i class="glyphicon glyphicon-edit"></i>modifier
-                        </a>
+                    <td>{{ bc.projet.nom}}</td>
+                    <td>{{ bc.projet.client.nom}}</td>
+                    <td class="text-right">{% set s = 0 %} 
+                        {% for p in bc.prestationBcs %}
+                        {% set s =  s + (p.montant * p.quantite) %}
+                        {% endfor %}
+                        {{ s | number_format(2, ',', ' ') }}
+                    </td>
+                    <td class="text-right">
+                        {{ consommer[bc.id] | number_format(2, ',', ' ') }}</td>
+                    <td class="text-right">
+                        {{ (s - consommer[bc.id]) | number_format(2, ',', ' ') }}
                     </td>
                 </tr>
             {% endfor %}

@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-//use Symfony\Component\Config\Definition\Exception\DuplicateKeyException;
+
 /**
  * @Route("/entretien")
  * @Security("has_role('ROLE_CHEF_PARK')")
@@ -215,7 +215,9 @@ class EntretienController extends Controller
         $this->get('session')->getFlashBag()->add('success', 'Suppression avec succès.');
         return $this->redirect($this->generateUrl('entretien_index'));
     }
-    //*********************************************************************************//
+
+
+    //*********************************************************************************
     /**
     * @route("/{field}/{type}/sort",name="entretien_sort",requirements={ "type"="ASC|DESC" })
     */
@@ -310,14 +312,7 @@ class EntretienController extends Controller
             }
         }
     }
-    /*
-    protected function addQueryBuilderSort(QueryBuilder $qb, $name)
-    {
-        $alias = current($qb->getDQLPart('from'))->getAlias();
-        if (is_array($order = $this->getOrder($name))) {
-            $qb->orderBy($alias . '.' . $order['field'], $order['type']);
-        }
-    }*/
+    
     protected function getOrder($name)
     {
         $request = $this->container->get('request_stack')->getCurrentRequest();

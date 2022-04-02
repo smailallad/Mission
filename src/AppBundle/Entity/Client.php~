@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * Client
@@ -18,6 +19,7 @@ class Client
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({"site"})     
      */
     private $id;
 
@@ -25,6 +27,8 @@ class Client
      * @var string
      *
      * @ORM\Column(name="nom", type="string", length=255, unique=true)
+     * @Groups({"site"}) 
+     * @Groups({"site_json"})       
      */
     private $nom; 
 

@@ -12,9 +12,10 @@ class SiteRepository extends \Doctrine\ORM\EntityRepository
     public function getSitess($client,$site,$startRow,$maxRows)
     {   
         $q = $this->createQueryBuilder('s');
-        $q  ->select('s.id','s.code','s.nom')
+        $q  ->select('s')
             ->join('s.client','c')
-            ->addSelect('c.nom as client');
+            ->join('s.wilaya','w');
+            //->addSelect('c.nom as client');
         $q  ->where('s.client = :client');
         if ($site !== null)
         {
@@ -22,13 +23,14 @@ class SiteRepository extends \Doctrine\ORM\EntityRepository
                 $q->expr()->like('s.code', $q->expr()->literal('%'.$site.'%')),
                 $q->expr()->like('s.nom', $q->expr()->literal('%'.$site.'%'))));
         }
+        
         $q  ->setFirstResult( $startRow )
             ->setMaxResults( $maxRows );
         $q  ->orderby('s.code','ASC')
             ->setParameter('client', $client);
         return $q;
     }
-    public function getTotalRows($client,$site)
+    public function getTotalRowsSiteClient($client,$site)
     {   
         $q = $this->createQueryBuilder('s')
             ->select('count(s)')
@@ -44,13 +46,54 @@ class SiteRepository extends \Doctrine\ORM\EntityRepository
         $q = $q->getQuery()->getResult(Query::HYDRATE_SINGLE_SCALAR);
         return $q;
     }
+    public function getTotalRowsSiteClientZone($client,$site,$zone)
+    {   
+        $q = $this->createQueryBuilder('s')
+            ->select('count(s)')
+            ->join('s.client','c')
+            ->join('s.wilaya','w')
+            ->Where('w.zone = :zone')
+            ->andwhere('s.client = :client');
+            if ($site !== null)
+            {
+                $q  ->andWhere($q->expr()->orX(
+                    $q->expr()->like('s.code', $q->expr()->literal('%'.$site.'%')),
+                    $q->expr()->like('s.nom', $q->expr()->literal('%'.$site.'%'))));
+            }
+        $q  ->setParameter('client', $client);
+        $q  ->setParameter('zone', $zone);
+        $q = $q->getQuery()->getResult(Query::HYDRATE_SINGLE_SCALAR);
+        return $q;
+    }
 
     public function getSitesClient($client)
     {   
         $q = $this->createQueryBuilder('s');
         $q  ->join('s.client','c')
-            ->andwhere('s.client = :client')
+            ->where('s.client = :client')
             ->setParameter('client', $client);
         return $q;
+    }
+    public function getSiteClientZone($client,$site,$zone,$startRow,$maxRows)
+    {
+        $q = $this->createQueryBuilder('s');
+        $q  ->join('s.client','c')
+            ->join('s.wilaya','w')
+            //->join('w.zone','z')
+            ->where('s.client = :client')
+            ->andwhere('w.zone = :zone');
+            if ($site !== null)
+            {
+                $q  ->andWhere($q->expr()->orX(
+                    $q->expr()->like('s.code', $q->expr()->literal('%'.$site.'%')),
+                    $q->expr()->like('s.nom', $q->expr()->literal('%'.$site.'%'))));
+            }
+        $q  ->setParameter('client', $client)
+            ->setParameter('zone', $zone);
+        
+        $q  ->setFirstResult( $startRow )
+            ->setMaxResults( $maxRows );
+        $q  ->orderby('s.code','ASC');
+        return $q;   
     }
 }

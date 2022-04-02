@@ -37,16 +37,14 @@ class Po
      * @ORM\Column(type="boolean")
      */
     private $active;
-    /**
-    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Projet")
-    * @Assert\NotNull(message = "Entrer une valeur.")
-    * @ORM\JoinColumn(nullable=false)
-    */
-    private $projet;
-
+   
     public function __construct()
     {
         $this->active = true;
+    }
+    public function __toString()
+    {
+        return $this->num;
     }
     /**
      * Get id.
@@ -130,27 +128,4 @@ class Po
         return $this->active;
     }
 
-    /**
-     * Set projet.
-     *
-     * @param \AppBundle\Entity\Projet $projet
-     *
-     * @return Po
-     */
-    public function setProjet(\AppBundle\Entity\Projet $projet)
-    {
-        $this->projet = $projet;
-
-        return $this;
-    }
-
-    /**
-     * Get projet.
-     *
-     * @return \AppBundle\Entity\Projet
-     */
-    public function getProjet()
-    {
-        return $this->projet;
-    }
 }

@@ -236,5 +236,51 @@ class InterventionRepository extends \Doctrine\ORM\EntityRepository
         return $q->getQuery()->getResult();
 
     }
+
+    public function getInterventionsNonFacturer($date,$projet)
+    {
+        $q = $this->createQueryBuilder('i');
+        $q  ->join('i.prestation','p')
+            ->join('i.site','s')
+            ->join('s.wilaya','w')
+            //->join('p.projet','pr')
+            ->addSelect('p')
+            ->addSelect('s')
+            ->addSelect('w')
+            //->addSelect('pr')
+            ->where('i.dateIntervention <= :d')
+            ->andWhere('i.facture IS NULL')
+            ->andWhere('i.quantite > 0')
+            ->andWhere('p.projet = :projet')
+            ->orderBy('i.dateIntervention','ASC')
+            ->setParameter('d',$date)
+            ->setParameter('projet',$projet)
+            ;
+        return $q->getQuery()->getResult();
+    }
     
+    public function findInterventionsFactureApresDate($facture,$date)
+    {
+        $q = $this->createQueryBuilder('i')
+            ->where('i.facture = :facture')
+            ->andWhere('i.dateIntervention > :date')
+            ->setParameter('facture',$facture)
+            ->setParameter('date',$date)
+            ->getQuery()
+            ->getResult()
+            ;
+        return $q;
+    } 
+    public function getSommeBc($bcId)
+    {
+        $q = $this->createQueryBuilder('i');
+        $q->select('SUM(pBc.montant * i.quantite) AS somme');
+        $q ->join('i.prestationBc','pBc');
+        $q->where('pBc.bc = :bc');
+        $q->setParameter('bc', $bcId)
+        ;
+        return $q->getQuery()->getSingleScalarResult() === null ? 0 : floatval($q->getQuery()->getSingleScalarResult()) ;
+
+        //return $q->getQuery()->getResult();
+    }
 }

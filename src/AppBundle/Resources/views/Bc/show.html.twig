@@ -1,131 +1,224 @@
 {% extends "base.html.twig" %}
-{% block title %}Bon de commande - {{ parent() }}{% endblock %}
-{% block bodysaisie %}
-{#{% include "@App/messages.html.twig" %}#}
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h4> Bon de commande </h4>
-    </div>
-    <div class="panel-body">
-        <table class="table table-hover record_properties">
-            <tbody>
-                <tr>
-                    <th scope="row">Num</th>
-                    <td>{{ bc.num }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">Date</th>
-                    <td>{{ bc.date | date('d/m/Y') }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">Responsable</th>
-                    <td>{{ bc.responsableBc.nom }}</td>
-                </tr>
-                <tr>
-                    <th scope="row">Projet</th>
-                    <td>{{ bc.projet.nom }}</td>
-                </tr>
-                <tr>
-                <th scope="row">Client</th>
-                <td>{{ bc.projet.client.nom }}</td>
-            </tr>
-                <tr>
-                    <th scope="row">Montant</th>
-                    <td>{{ somme | number_format(2,',',' ')}}</td>
-                </tr>
-                <tr>
-                    <th scope="row">Montant consommé</th>
-                    <td></td>
-                </tr>
-                <tr>
-                    <th scope="row">Montant restant</th>
-                    <td>0,00</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <div class="panel-footer">
-        <div class="btn-group record_actions">
-            <a class="btn btn-info" href="{{ path('bc') }}">
-                <i class="glyphicon glyphicon-list"></i> Retour à la liste
-            </a>
-            <a class="btn btn-primary" href="{{ path('bc_edit', {id: bc.id | Mycrypt}) }}">
-                <i class="glyphicon glyphicon-edit"></i>Modifier
-            </a>
-            <button class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteBc"><i
-                    class="glyphicon glyphicon-trash"></i> Supprimer</button>
-        </div>
-    </div>
-</div>
-
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h5>Liste des prestations</h5>
-    </div>
-    <div class="panel-body">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Prestations</th>
-                    <th>Site</th>
-                    <th>Zone</th>
-                    <th>Montant</th>
-                    <th>Quantité</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for prestationBc in prestationBcs %}
-                <tr>
-                    <td> {{ prestationBc.prestation.nom }}</td>
-                    <td> {{ prestationBc.site is empty ? '' : prestationBc.site.nom }}</td>
-                    <td> {{ prestationBc.zone.nom }}</td>
-                    <td> {{ prestationBc.montant | number_format(2,',',' ') }}</td>
-                    <td> {{ prestationBc.qte }}</td>
-                    <td>
-                        <a class="btn btn-primary" href=""><i class="glyphicon glyphicon-edit"></i></a>
-                        <button class="btn btn-danger"> <i class="glyphicon glyphicon-trash"></i></button>
-                    </td>
-                </tr>
-
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    <div class="panel-footer">
-        <a class="btn btn-primary" href="{{ path('bc_add_prestation', {id: bc.id | Mycrypt}) }}">
-            <i class="glyphicon glyphicon-plus"></i>Ajouter
-        </a>
-    </div>
-
-</div>
-<!-- Modale delete Bc-->
-<div id="modalDeleteBc" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjoutRoleLabel"
-    aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4>Confirmer la suppression</h4>
-            </div>
-            <div class="modal-body">
-                <p>Veuillez confimer la suppression </p>
-            </div>
-            <div class="modal-footer">
-                {{ form_start(delete_form) }}
-                {{ form_widget(delete_form) }}
-                <button class="btn btn-danger" type="submit"><i class="glyphicon glyphicon-trash-o"></i> Oui</button>
-                <button class="btn btn-primary" data-dismiss="modal">Non</button>
-                <input name="modal" type="hidden" value="0">
-                {{ form_end(delete_form) }}
-            </div>
-        </div>
-    </div>
-</div>
-
+{% block title %}
+    Bon de commande - 
+    {{ parent() }}
 {% endblock %}
-{% block js %}
+{% block detail %}
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h4>
+                Bon de commande 
+            </h4>
+        </div>
+        <div class="panel-body">
+            <table class="table table-hover record_properties">
+                <tbody>
+                    <tr>
+                        <th class="col-md-1" scope="row"> Num </th>
+                        <td> {{ bc.num }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row"> Date </th>
+                        <td> {{ bc.date | date('d/m/Y') }} </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"> Responsable </th>
+                        <td> {{ bc.responsableBc.nom }} </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"> Projet </th>
+                        <td> {{ bc.projet.nom }} </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"> Client </th>
+                        <td> {{ bc.projet.client.nom }} </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"> Montant</th>
+                        <td> {{ somme | number_format(2,',',' ') }} </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"> Montant consommé </th>
+                        <td> 0,00 </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"> Montant restant  </th>
+                        <td> 0,00 </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="panel-footer">
+            <div class="btn-group record_actions">
+                <a title = "Liste" class="btn btn-info" href="{{ path('bc_index') }}">
+                    <i class="glyphicon glyphicon-list"></i>
+                </a>
+                <a title = "Modifier" class="btn btn-primary" href="{{ path('bc_edit', {id: bc.id | Mycrypt}) }}">
+                    <i class="glyphicon glyphicon-edit"></i>
+                </a>
+                <button title ="Supprimer" class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteBc">
+                    <i class="glyphicon glyphicon-trash"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block contenu %}
+     <div class="panel panel-default">
+        <div class="panel-heading">
+            <h5>
+                Liste des prestations
+            </h5>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th> Prestations </th>
+                        <th> Code Site </th>
+                        <th> Nom Site </th>
+                        <th> Zone </th>
+                        <th> Unité </th>
+                        <th class="text-right"> Quantité</th>
+                        <th class="text-right"> Montant </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for prestationBc in prestationBcs %}
+                        <tr>
+                            <td>
+                                {{ prestationBc.prestation.nom }}
+                            </td>
+                            <td>
+                                {{ prestationBc.site is empty ? '' : prestationBc.site.code }}
+                            </td>
+                            <td>
+                                {{ prestationBc.site is empty ? '' : prestationBc.site.nom }}
+                            </td>
+                            <td>
+                                {{ prestationBc.zone.nom }}
+                            </td>
+                            <td>
+                                {{ prestationBc.unite }}
+                            </td>
+                            <td class="text-right">
+                                {{ prestationBc.quantite }}
+                            </td>
+                            <td class="text-right">
+                                {{ prestationBc.montant | number_format(2,',',' ') }}
+                            </td>
+                            
+                            <td>
+                                <a class="btn btn-primary" href="{{ path ('bc_edit_prestation', {id: prestationBc.id | Mycrypt})}}">
+                                    <i class="glyphicon glyphicon-edit"></i>
+                                </a>
+                                <button title="Supprimer" class="btn btn-danger" data-toggle="modal" data-target="#modalDeletePrestation" data-id="{{ prestationBc.id }}">
+                                    <i class="glyphicon glyphicon-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="panel-footer">
+            <a class="btn btn-primary" href="{{ path('bc_add_prestation', {id: bc.id | Mycrypt}) }}">
+                <i class="glyphicon glyphicon-plus"></i>
+                Ajouter
+                        
+            </a>
+        </div>
+
+    </div>
+    <!-- Modale delete Bc-->
+    <div id="modalDeleteBc" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="AjoutRoleLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4>
+                        Confirmer la suppression
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Veuillez confimer la suppression 
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    {{ form_start(delete_form) }}
+                    {{ form_widget(delete_form) }}
+                    <button class="btn btn-danger" type="submit">
+                        <i class="glyphicon glyphicon-trash-o"></i>
+                        Oui
+                    </button>
+                    <button class="btn btn-primary" data-dismiss="modal">
+                        Non
+                    </button>
+                    <input name="modal" type="hidden" value="0">
+                        {{ form_end(delete_form) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modale delete PrstationBc-->
+        <div id="modalDeletePrestation" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalDeletePrestationLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                                        
+                        </button>
+                        <h4>
+                            Confirmer la suppression
+                                        
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            Vous êtes sur le point de supprimer cet élément, cette procédure est irréversible.
+                                        
+                        </p>
+                        <p>
+                            Voulez-vous poursuivre?
+                                        
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <form name="form" id="modalDeletePrestationForm" action="#" method="post">
+                            <button class="btn btn-danger" type="submit">
+                                <i class="glyphicon glyphicon-trash"></i>
+                                Supprimer
+                                                
+                            </button>
+                            <button class="btn btn-primary" data-dismiss="modal">
+                                Annuler
+                                                
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% endblock %}
+    {% block js %}
 <script>
-
+    $(document).ready(function () {
+        $('#modalDeletePrestation').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var id = button.data('id') // Extract info from data-* attributes
+            var cURL = Routing.generate('bc_delete_prestation', { id: id });
+            $("#modalDeletePrestationForm").attr('action', cURL);
+        })
+    
+    })
 </script>
-{% endblock %}
+    {% endblock %}
+    

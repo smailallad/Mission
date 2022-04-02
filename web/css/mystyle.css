@@ -27,6 +27,7 @@ input[type="date"], input[type="time"], input[type="datetime-local"], input[type
 
 .btn {
     padding: 3px 6px;
+    height: 25px;
 }
 
 .d-fixe-top{

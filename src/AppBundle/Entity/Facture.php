@@ -36,6 +36,11 @@ class Facture
     private $date;
 
     /**
+     * @ORM\Column(type="float",nullable=false)
+     */
+    private $tva;
+
+    /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Bc")
      */
     private $bc;
@@ -134,5 +139,29 @@ class Facture
     public function getBc()
     {
         return $this->bc;
+    }
+
+    /**
+     * Set tva.
+     *
+     * @param float $tva
+     *
+     * @return Facture
+     */
+    public function setTva($tva)
+    {
+        $this->tva = $tva;
+
+        return $this;
+    }
+
+    /**
+     * Get tva.
+     *
+     * @return float
+     */
+    public function getTva()
+    {
+        return $this->tva;
     }
 }

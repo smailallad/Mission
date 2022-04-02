@@ -65,7 +65,7 @@ class InterventionType extends AbstractType
                 'mapped'        => false,
                 'attr'          => array(
                     'readonly'  => true
-                )
+                ) 
             ))
         ->add('quantite',NumberType::class)
         ->add('designation',TextareaType::class,array(

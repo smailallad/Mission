@@ -3,6 +3,8 @@
 namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\JoinColumn;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -35,11 +37,12 @@ class PrestationBc
     /**
     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Site")
     */
-    private $site;
+    private $site; 
     /**
-    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Bc")
+    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Bc",inversedBy="prestationBcs")
+    * @JoinColumn(name="bc_id", referencedColumnName="id",nullable=false)
     * @Assert\NotNull(message = "Entrer une valeur.")
-    * @ORM\JoinColumn(nullable=false)
+    * @Groups("site_json")
     */
     private $bc;
     /**
@@ -54,8 +57,12 @@ class PrestationBc
      *
      * @ORM\Column(type="integer")
      */
-    private $qte;
+    private $quantite;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=false)
+     */
+    private $unite;
     
 
 
@@ -94,27 +101,27 @@ class PrestationBc
     }
 
     /**
-     * Set qte.
+     * Set quantite.
      *
-     * @param int $qte
+     * @param int $quantite
      *
      * @return PrestationBc
      */
-    public function setQte($qte)
+    public function setQuantite($quantite)
     {
-        $this->qte = $qte;
+        $this->quantite = $quantite;
 
         return $this;
     }
 
     /**
-     * Get qte.
+     * Get quantite.
      *
      * @return int
      */
-    public function getQte()
+    public function getQuantite()
     {
-        return $this->qte;
+        return $this->quantite;
     }
 
     /**

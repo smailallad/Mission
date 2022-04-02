@@ -39,18 +39,44 @@ class Bc
      */
     private $active;
     /**
+     * @ORM\Column(name="otp",type="string", length=255)
+     */
+    private $otp;
+    /**
+     * @ORM\Column(name="description",type="string", length=255)
+     */
+    private $description;
+    /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\ResponsableBc")
-     * @Assert\NotNull(message = "Entrer une valeur.")
+     * @Assert\NotNull(message = "Entrer une valeur du responsable.")
      * @ORM\JoinColumn(nullable=false)
     */
     private $responsableBc; 
     /**
     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Po")
-    * @Assert\NotNull(message = "Entrer une valeur.")
-    * @ORM\JoinColumn(nullable=false)
     */
     private $po; 
+     /**
+    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Projet")
+    * @Assert\NotNull(message = "Entrer une valeur du projet.")
+    * @ORM\JoinColumn(nullable=false)
+    */
+    private $projet;
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\PrestationBc",mappedBy="bc")
+     */
+    private $prestationBcs;
+
+    public function __toString()
+    {
+        return $this->num;
+    }
     
+    public function __construct()
+    {
+        $this->active = true;
+    }
     /**
      * Get id.
      *
@@ -194,5 +220,115 @@ class Bc
     public function getActive()
     {
         return $this->active;
+    }
+
+    
+
+    /**
+     * Set description.
+     *
+     * @param string $description
+     *
+     * @return Bc
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description.
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set projet.
+     *
+     * @param \AppBundle\Entity\Projet $projet
+     *
+     * @return Bc
+     */
+    public function setProjet(\AppBundle\Entity\Projet $projet)
+    {
+        $this->projet = $projet;
+
+        return $this;
+    }
+
+    /**
+     * Get projet.
+     *
+     * @return \AppBundle\Entity\Projet
+     */
+    public function getProjet()
+    {
+        return $this->projet;
+    }
+
+    /**
+     * Set otp.
+     *
+     * @param string $otp
+     *
+     * @return Bc
+     */
+    public function setOtp($otp)
+    {
+        $this->otp = $otp;
+
+        return $this;
+    }
+
+    /**
+     * Get otp.
+     *
+     * @return string
+     */
+    public function getOtp()
+    {
+        return $this->otp;
+    }
+
+    /**
+     * Add prestationBc.
+     *
+     * @param \AppBundle\Entity\PrestationBc $prestationBc
+     *
+     * @return Bc
+     */
+    public function addPrestationBc(\AppBundle\Entity\PrestationBc $prestationBc)
+    {
+        $this->prestationBcs[] = $prestationBc;
+
+        return $this;
+    }
+
+    /**
+     * Remove prestationBc.
+     *
+     * @param \AppBundle\Entity\PrestationBc $prestationBc
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removePrestationBc(\AppBundle\Entity\PrestationBc $prestationBc)
+    {
+        return $this->prestationBcs->removeElement($prestationBc);
+    }
+
+    /**
+     * Get prestationBcs.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPrestationBcs()
+    {
+        return $this->prestationBcs;
     }
 }

@@ -27,16 +27,16 @@
 {% endblock %}
 
 {% block js %}
-<script>
+<script> 
 function process_user(event) {
 var date = $('#appbundle_pointageuser_date').val();
 //alert(date);
 var cURL = Routing.generate('pointage_users', { date: date });
  $('#appbundle_pointageuser_user option'). remove();
-$.post(
+$.post( 
         cURL,
         function (data) 
-        {   //console.log(data);
+        {   console.log(data);
             var users = JSON.parse(data.users);
             //console.log(data.interventions.length);
             //console.log(users);

@@ -6,6 +6,8 @@ use AppBundle\Repository\PrestationRepository;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
 class PrestationBcType extends AbstractType
@@ -22,7 +24,7 @@ class PrestationBcType extends AbstractType
             'class'         => 'AppBundle:Prestation',
             'choice_name'   => 'nom',
             'multiple'      => false,
-            'required'      => true,
+            //'required'      => true,
             //'attr' => array('size' => '20'),
             'query_builder' => function(PrestationRepository $er) use($projet)
                                     {
@@ -30,35 +32,50 @@ class PrestationBcType extends AbstractType
                                     },
                                     //'attr' =>array('class'=>'form-control')
             )
-        )
+        ) 
         ->add('zone',EntityType::class, array(
             'label'         => 'Zone',
             'class'         => 'AppBundle:Zone',
             'choice_name'   => 'nom',
             'multiple'      => false,
-            'required'      => true,
+            //'required'      => true,
+            'attr' => array(
+                'onchange' => 'siteDelete()',
+            )
             )
         )
-        ->add('site',EntityType::class, array(
-            'label'         => 'Site',
-            'class'         => 'AppBundle:Site',
-            'choice_name'   => 'nom',
-            'multiple'      => false,
-            'required'      => false,
-            //'attr' => array('size' => '20'),
-            'query_builder' => function(SiteRepository $er) use($client)
-                                    {
-                                       return $er->getSitesClient($client);
-                                    },
-                                    //'attr' =>array('class'=>'form-control')
+        ->add('siteId',HiddenType::class,array(
+            'mapped'        => false,
+        ))
+        ->add('siteCode',TextType::class,array(
+            'label'         => 'Code site',
+            'mapped'        => false,
+            'attr'          => array(
+                'readonly'  => true,
+                'class'     => 'form-control'
+            )
+        ))
+        ->add('siteNom',TextType::class,array(
+            'label'         => 'Nom site',
+            'mapped'        => false,
+            'attr'          => array(
+                'readonly'  => true,
+                'class'     => 'form-control'
+            )
+        ))
+
+        ->add('unite',TextType::class,array(
+            'label'         => 'Unité'
+            )
+
+        )
+        ->add('quantite',NumberType::class, array(
+            'label'         => 'Quantité',
             )
         )
         ->add('montant',NumberType::class, array(
             'label'         => 'Montant',
-            )
-        )
-        ->add('qte',NumberType::class, array(
-            'label'         => 'Quantité',
+            //'required'      => false,
             )
         )
         ;
@@ -70,7 +87,7 @@ class PrestationBcType extends AbstractType
         $resolver->setDefaults(array(
             'data_class'        => 'AppBundle\Entity\PrestationBc',
             'method'            => 'POST',
-            'projet'        => null,
+            'projet'            => null,
             'client'            => null,
         ));
     }

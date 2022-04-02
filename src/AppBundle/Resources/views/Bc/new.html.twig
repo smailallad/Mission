@@ -1,14 +1,14 @@
 {% extends "base.html.twig" %}
 {% form_theme form 'Form/bootstrap_3_layout.html.twig' %}
-{% block title %}Nouveau Site - {{ parent() }}{% endblock %}
+{% block title %}Nouveau BC - {{ parent() }}{% endblock %}
 {% block bodysaisie %}
 {#{% include "@App/messages.html.twig" %}#}
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h2>Nouveau Site</h2>
+        <h2>Nouveau BC</h2>
     </div>
     <div class="panel-body">
-        {{ form_start(form, {action: path('site_new')}) }}
+        {{ form_start(form, {action: path('bc_new')}) }}
         {{ form_widget(form) }}
             <p>
                 <button class="btn btn-primary" type="submit">Valider</button>
@@ -17,7 +17,7 @@
     </div>
     <div class="panel-footer">
         <div class="btn-group record_actions">
-            <a class="btn btn-info" href="{{ path('site') }}">
+            <a class="btn btn-info" href="{{ path('bc_index') }}">
                 <i class="glyphicon glyphicon-list"></i> Liste
             </a>
         </div>

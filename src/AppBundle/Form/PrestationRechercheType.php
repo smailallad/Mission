@@ -20,6 +20,9 @@ class PrestationRechercheType extends AbstractType
         ->add('projet',EntityType::class,array(
             'class'         => 'AppBundle:Projet',
             'label'         => 'Projet',
+            'attr' => array(
+                'onchange' => 'fPrestationChange()',
+            ),
             'query_builder' => function(\Doctrine\ORM\EntityRepository $p)
                                 {
                                     return $p   ->createQueryBuilder('p')

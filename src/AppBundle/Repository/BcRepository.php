@@ -10,4 +10,14 @@ namespace AppBundle\Repository;
  */
 class BcRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function listeBcs()
+    {
+        $q = $this->createQueryBuilder('bc')
+                ->join('bc.projet','p')
+                ->leftJoin('bc.po','po')
+                ->join('bc.responsableBc','r')
+                ->join('p.client','c')
+        ;
+        return $q;
+    }
 }

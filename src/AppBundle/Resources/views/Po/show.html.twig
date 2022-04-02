@@ -16,8 +16,6 @@
                     <th scope="row">date</th>
                     <td>{{ po.date is empty ? '' : po.date | date('d/m/Y') }}</td>
                 </tr>
-                <th scope="row">Projet</th>
-                <td>{{ po.projet.nom }}</td>
                 <tr>
                     <th>Active</th>
                     <td>
@@ -34,7 +32,7 @@
     <div class="panel-footer">
         <div class="btn-group record_actions">
             <a class="btn btn-info" href="{{ path('po_index') }}">
-                <i class="glyphicon glyphicon-list"></i> Retour à la liste
+                <i class="glyphicon glyphicon-list"></i> Liste
             </a>
             {% if (po.active == false) %}
             <a class="btn btn-primary" href="{{ path('po_edit', {id: po.id | Mycrypt}) }}">

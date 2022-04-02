@@ -19,7 +19,10 @@ class SiteRechercheType extends AbstractType
         $builder
         ->add('client',EntityType::class,array(
             'class'         => 'AppBundle:Client',
-            'label'         => 'Client',
+            'label'         => 'Client', 
+            'attr' => array(
+                'onchange' => 'fSiteChange()',
+            ),
             //'placeholder'   => '-Choisir un client-',
             'query_builder' => function(\Doctrine\ORM\EntityRepository $c)
                                 {

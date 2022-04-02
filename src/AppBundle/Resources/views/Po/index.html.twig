@@ -13,7 +13,6 @@
             <tr>
                 <th scope="col">Num PO</th>
                 <th scope="col">Date</th>
-                <th scope="col">Projet</th>
                 <th scope="col" class="text-center">Etat</th>
                 <th scope="col"></th>
             </tr>
@@ -23,7 +22,6 @@
             <tr>
                 <td><a href="{{ path('po_show', {id: po.id | Mycrypt}) }}">{{ po.num }}</a></td>
                 <td>{{ po.date is empty ? '' : po.date | date('d/m/Y') }}</td>
-                <td>{{ po.projet.nom }}</td>
                 <td class="text-center">
                     {% if po.active %}
                     <i class="glyphicon glyphicon-check"></i>

@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -19,6 +20,7 @@ class Wilaya
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups({"site_json"})  
      */
     private $id;
 
@@ -26,6 +28,7 @@ class Wilaya
      * @var string
      *
      * @ORM\Column(name="nom", type="string", length=255, unique=true)
+     * @Groups({"site_json"})  
      */
     private $nom;
    /**
@@ -44,8 +47,14 @@ class Wilaya
      *      )
      */
     private $montantFm;
+    
+    public function __toString()
+    {
+        return $this->nom;
+    }
+
     /**
-     * Get id
+     * Get id.
      *
      * @return int
      */
@@ -55,7 +64,7 @@ class Wilaya
     }
 
     /**
-     * Set nom
+     * Set nom.
      *
      * @param string $nom
      *
@@ -69,7 +78,7 @@ class Wilaya
     }
 
     /**
-     * Get nom
+     * Get nom.
      *
      * @return string
      */
@@ -79,59 +88,7 @@ class Wilaya
     }
 
     /**
-     * Set client
-     *
-     * @param \AppBundle\Entity\Client $client
-     *
-     * @return Wilaya
-     */
-    public function setClient(\AppBundle\Entity\Client $client = null)
-    {
-        $this->client = $client;
-
-        return $this;
-    }
-
-    /**
-     * Get client
-     *
-     * @return \AppBundle\Entity\Client
-     */
-    public function getClient()
-    {
-        return $this->client;
-    }
-
-    /**
-     * Set zone
-     *
-     * @param \AppBundle\Entity\Zone $zone
-     *
-     * @return Wilaya
-     */
-    public function setZone(\AppBundle\Entity\Zone $zone = null)
-    {
-        $this->zone = $zone;
-
-        return $this;
-    }
-
-    /**
-     * Get zone
-     *
-     * @return \AppBundle\Entity\Zone
-     */
-    public function getZone()
-    {
-        return $this->zone;
-    }
-    public function __toString()
-    {
-        return $this->nom;
-    }
-
-    /**
-     * Set montantFm
+     * Set montantFm.
      *
      * @param float $montantFm
      *
@@ -145,7 +102,7 @@ class Wilaya
     }
 
     /**
-     * Get montantFm
+     * Get montantFm.
      *
      * @return float
      */
@@ -155,16 +112,26 @@ class Wilaya
     }
 
     /**
-     * Set id.
+     * Set zone.
      *
-     * @param int $id
+     * @param \AppBundle\Entity\Zone $zone
      *
      * @return Wilaya
      */
-    public function setId($id)
+    public function setZone(\AppBundle\Entity\Zone $zone)
     {
-        $this->id = $id;
+        $this->zone = $zone;
 
         return $this;
+    }
+
+    /**
+     * Get zone.
+     *
+     * @return \AppBundle\Entity\Zone
+     */
+    public function getZone()
+    {
+        return $this->zone;
     }
 }

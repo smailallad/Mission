@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="AppBundle\Repository\InterventionUserRepository")
  *
  */
-class InterventionUser
+class InterventionUser 
 {
     /**
      * @var int
@@ -24,7 +24,7 @@ class InterventionUser
     private $id;
     
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Intervention")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Intervention",inversedBy="interventionUsers")
      * @Assert\NotBlank(message="il faut affecté une intervention")
      * @ORM\JoinColumn(nullable=false)
      */

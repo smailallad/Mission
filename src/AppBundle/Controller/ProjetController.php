@@ -11,6 +11,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Serializer\SerializerInterface;
+
 /**
  * @Route("/projet")
  * @Security("has_role('ROLE_FACTURATION')")
@@ -18,13 +20,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class ProjetController extends Controller
 {
     /**
-     * @Route("/projet",name="projet")
+     * @Route("/projet",name="projet_index")
      */
     public function indexAction()
     {
         $manager = $this->getDoctrine()->getManager();
         $form = $this->createForm(ProjetFilterType::class);
-        if (!is_null($response = $this->saveFilter($form, 'projet', 'projet'))) {
+        if (!is_null($response = $this->saveFilter($form, 'projet', 'projet_index'))) {
             return $response;
         }
         //$qb = $manager->getRepository('AppBundle:Projet')->createQueryBuilder('s');
@@ -50,7 +52,7 @@ class ProjetController extends Controller
             $manager->flush();
             //$this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
             $cryptage = $this->container->get('my.cryptage');
-            return $this->redirect($this->generateUrl('projet'));
+            return $this->redirect($this->generateUrl('projet_index'));
         }
         return $this->render('@App/Projet/new.html.twig', array(
             'projet' => $projet,
@@ -72,7 +74,7 @@ class ProjetController extends Controller
         if ($editForm->handleRequest($request)->isValid()) {
             $this->getDoctrine()->getManager()->flush();
             $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
-            return $this->redirect($this->generateUrl('projet'));
+            return $this->redirect($this->generateUrl('projet_index'));
         }
         return $this->render('@App/Projet/edit.html.twig', array(
             'projet'          => $projet,
@@ -112,16 +114,34 @@ class ProjetController extends Controller
             return $this->redirect($this->generateUrl('projet_show', array('id' => $id)));
         }
         //$this->get('session')->getFlashBag()->add('success', 'Suppression avec succès.');
-        return $this->redirect($this->generateUrl('projet'));
+        return $this->redirect($this->generateUrl('projet_index'));
     }
-    //*********************************************************************************//
+
+    /**
+     * @Route("/{client}",name="search_projets_client",options = { "expose" = true })
+     */
+    public function searchProjetsClientAction($client, SerializerInterface $serializer)
+    {
+        $manager = $this->getDoctrine()->getManager();
+        $projets  = $manager->getRepository("AppBundle:Projet")->getProjetsClient($client);
+        $projets = $serializer->serialize(
+            $projets,
+            'json',
+            ['groups' => ['projet_json']]
+        );
+        return $this->json(["projets"     => $projets,
+                            ],
+                            200);
+    }
+
+    //*********************************************************************************
     /**
     * @route("/{field}/{type}/sort",name="projet_sort",requirements={ "type"="ASC|DESC" })
     */
     public function sortAction($field, $type)
     {
         $this->setOrder('projet', $field, $type);
-        return $this->redirect($this->generateUrl('projet'));
+        return $this->redirect($this->generateUrl('projet_index'));
     }
     /**
      * Create Delete form

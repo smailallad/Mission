@@ -12,6 +12,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 //use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Serializer\SerializerInterface;
+
 /**
  * @Route("/prestation")
  * @Security("has_role('ROLE_FACTURATION')")
@@ -19,13 +21,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class PrestationController extends Controller
 {
     /**
-     * @Route("/prestation",name="prestation")
+     * @Route("/prestation",name="prestation_index")
      */
     public function indexAction()
     {   
         $manager = $this->getDoctrine()->getManager();
         $form = $this->createForm(PrestationFilterType::class);
-        if (!is_null($response = $this->saveFilter($form, 'prestation', 'prestation'))) {
+        if (!is_null($response = $this->saveFilter($form, 'prestation', 'prestation_index'))) {
             return $response;
         }
         $qb = $manager->getRepository('AppBundle:Prestation')->createQueryBuilder('s');
@@ -50,7 +52,7 @@ class PrestationController extends Controller
             $manager->flush();
             //$this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
             $cryptage = $this->container->get('my.cryptage');
-            return $this->redirect($this->generateUrl('prestation'));
+            return $this->redirect($this->generateUrl('prestation_index'));
         }
         return $this->render('@App/Prestation/new.html.twig', array(
             'prestation' => $prestation,
@@ -72,7 +74,7 @@ class PrestationController extends Controller
         if ($editForm->handleRequest($request)->isValid()) {
             $this->getDoctrine()->getManager()->flush();
             $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
-            return $this->redirect($this->generateUrl('prestation'));
+            return $this->redirect($this->generateUrl('prestation_index'));
         }
         return $this->render('@App/Prestation/edit.html.twig', array(
             'prestation'    => $prestation,
@@ -89,12 +91,12 @@ class PrestationController extends Controller
         $prestation = $this->getDoctrine()->getRepository('AppBundle:Prestation')->find($id);
        /*  $prestationBcs = $this->getDoctrine()->getRepository('AppBundle:PrestationBc')->findByPrestation($id);
         $editMontantForm = $this->createForm(PrestationBcType::class, New PrestationBc, array(
-            'action' =>  $this->generateUrl('prestation'),
+            'action' =>  $this->generateUrl('prestation_index'),
             'method' => 'POST', 
         ));
         $newMontantForm = $this->createForm(PrestationBcType::class, New PrestationBc, array(
             'prestation'    => $prestation,
-            'action'        => $this->generateUrl('prestation'),
+            'action'        => $this->generateUrl('prestation_index'),
             'method'        => 'POST',
             
         )); */
@@ -124,7 +126,7 @@ class PrestationController extends Controller
             return $this->redirect($this->generateUrl('prestation_show', array('id' => $id)));
         }
         //$this->get('session')->getFlashBag()->add('success', 'Suppression avec succès.');
-        return $this->redirect($this->generateUrl('prestation'));
+        return $this->redirect($this->generateUrl('prestation_index'));
     }
 
     /**
@@ -195,14 +197,40 @@ class PrestationController extends Controller
         return $this->redirect($this->generateUrl('prestation_show', array('id' => $cryptage->my_encrypt($id))));
     }
 
-    //*********************************************************************************//
+     /**
+     * @Route("/{projet}/{pagenum}/searchPrestation/{prestation}",name="search_prestation",options = { "expose" = true })
+     */
+    public function searchPrestationAction($projet,$pagenum,$prestation=null,SerializerInterface $serializer)
+    {
+        $manager = $this->getDoctrine()->getManager();
+        $maxRows = 10 ;// parametre
+        $startRow = $pagenum * $maxRows;
+        $totalRows = $manager->getRepository("AppBundle:Prestation")->getTotalRows($projet,$prestation);
+        $totalpages = ceil($totalRows/$maxRows)-1;
+        $prestations = $manager->getRepository("AppBundle:Prestation")->getPrestations($projet,$prestation,$startRow,$maxRows);
+        $prestations = $prestations->getQuery()->getResult();
+        $prestations = $serializer->serialize(
+            $prestations,
+            'json',
+            ['groups' => ['projet_json']]
+        );
+        
+        return $this->json(["prestations"     => $prestations,
+                            "pagenum"   => $pagenum,
+                            "totalpages"=> $totalpages,
+                            ],
+                            200);
+    }
+
+    //*********************************************************************************
+
     /**
     * @route("/{field}/{type}/sort",name="prestation_sort",requirements={ "type"="ASC|DESC" })
     */
     public function sortAction($field, $type)
     {
         $this->setOrder('prestation', $field, $type);
-        return $this->redirect($this->generateUrl('prestation'));
+        return $this->redirect($this->generateUrl('prestation_index'));
     }
     /**
      * Create Delete form

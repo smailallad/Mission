@@ -9,6 +9,7 @@ use AppBundle\Form\SiteFilterType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
@@ -18,7 +19,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
  */
 class SiteController extends Controller
 {
-    /**
+    /** 
      * @Route("/site",name="site")
      */
     public function indexAction()
@@ -156,7 +157,57 @@ class SiteController extends Controller
         }
         return $this->redirect($this->generateUrl('site'));*/
     }
-    //*********************************************************************************//
+
+    /**
+     * @Route("/c/{client}/p/{pagenum}/s/{site}",name="search_site_client",options = { "expose" = true })
+     */
+    public function searchSiteClientAction($client,$pagenum,$site=null,SerializerInterface $serializer)
+    {
+        $manager = $this->getDoctrine()->getManager();
+        $maxRows = 10 ;
+        $startRow = $pagenum * $maxRows;
+        $totalRows = $manager->getRepository("AppBundle:Site")->getTotalRowsSiteClient($client,$site);
+        $totalpages = ceil($totalRows/$maxRows)-1;
+        $sites = $manager->getRepository("AppBundle:Site")->getSitess($client,$site,$startRow,$maxRows);
+        $sites = $sites->getQuery()->getResult();
+
+        $sites = $serializer->serialize(
+            $sites,
+            'json',
+            ['groups' => ['site_json']]
+        );
+        return $this->json(["sites"     => $sites,
+                            "pagenum"   => $pagenum,
+                            "totalpages"=> $totalpages,
+                            ],
+                            200);
+    }
+    
+    /**
+     * @Route("/c/{client}/p/{pagenum}/z/{zone}/s/{site}",name="search_site_client_zone",options = { "expose" = true })
+     */
+    public function searchSiteClientZoneAction($client,$pagenum,$zone,$site=null,SerializerInterface $serializer)
+    {
+        $manager = $this->getDoctrine()->getManager();
+        $maxRows = 10 ;
+        $startRow = $pagenum * $maxRows;
+        $totalRows = $manager->getRepository("AppBundle:Site")->getTotalRowsSiteClientZone($client,$site,$zone);
+
+        $totalpages = ceil($totalRows/$maxRows)-1;
+        $sites = $manager->getRepository("AppBundle:Site")->getSiteClientZone($client,$site,$zone,$startRow,$maxRows);
+        $sites = $sites->getQuery()->getResult();
+        
+        $sites = $serializer->serialize(
+            $sites,
+            'json',
+            ['groups' => ['site_json']]
+        );
+        return $this->json(["sites"     => $sites,
+                            "pagenum"   => $pagenum,
+                            "totalpages"=> $totalpages,
+                            ],
+                            200);
+    }
     /**
      * @route("/{field}/{type}/sort",name="site_sort",requirements={ "type"="ASC|DESC" })
      */
@@ -191,12 +242,8 @@ class SiteController extends Controller
             ->getSession()
             ->set('sort.' . $name, ['field' => $field, 'type' => $type]);
     }
-    protected function saveFilter(
-        FormInterface $form,
-        $name,
-        $route = null,
-        array $params = null
-    ) {
+    protected function saveFilter(FormInterface $form,$name,$route = null,array $params = null) 
+    {
         //$request = $this->getRequest();
         $request = $this->container->get('request_stack')->getCurrentRequest();
         $url = $this->generateUrl(

@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -21,6 +22,7 @@ class Projet
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * @Groups("projet_json")
      */
     private $id;
 
@@ -28,6 +30,7 @@ class Projet
      * @var string
      *
      * @ORM\Column(name="nom", type="string", length=255, unique=true)
+     * @Groups("projet_json")
      */
     private $nom;
 
