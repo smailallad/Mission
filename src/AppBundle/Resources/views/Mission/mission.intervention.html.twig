@@ -74,7 +74,7 @@
                 {% for intervention in interventions %}
                 <tr>
                     <td>
-                        {% if (appel_employe == "non") and (
+                        {% if (appel_employe == "non")and (intervention.facture is empty) and (
                         (is_granted("ROLE_ADMIN")) or
                         (is_granted("ROLE_ROLLOUT") and (not mission.vComptabilite)) or
                         (is_granted("ROLE_BUREAU") and (not mission.vComptabilite) and (not mission.vRollout)))

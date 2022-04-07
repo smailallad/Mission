@@ -1,0 +1,96 @@
+{% extends "base.html.twig" %}
+{% form_theme form 'Form/bootstrap_3_layout.html.twig' %}
+{% block title %}
+BC -{{ parent() }}
+{% endblock %}
+
+{% block detailSaisie %}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4> Bon de commande </h4>
+    </div>
+    <div class="panel-body">
+            <table class="table table-hover record_properties">
+                <tbody>
+                    <tr>
+                        <th class="col-md-1" scope="row"> Num </th>
+                        <td> {{ bc.num }}</td>
+                    </tr>
+                    <tr>
+                        <th scope="row"> Date </th>
+                        <td> {{ bc.date | date('d/m/Y') }} </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"> Responsable </th>
+                        <td> {{ bc.responsableBc.nom }} </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"> Projet </th>
+                        <td> {{ bc.projet.nom }} </td>
+                    </tr>
+                    <tr>
+                        <th scope="row"> Client </th>
+                        <td> {{ bc.projet.client.nom }} </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    <div class ="panel-footer">
+    <a title="Liste" class="btn btn-info" href="{{ path('bc_show',{id: bc.id | Mycrypt}) }}">
+        <i class="glyphicon glyphicon-list"></i> 
+    </a>
+    </div>
+</div>
+<div id="client_id" class="invisible">{{ client.id}}</div>
+
+{% endblock %}
+{% block contenuSaisie %}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h4>Modifier la Prestation</h4>
+            <table class="table table-hover record_properties">
+            <tbody>
+                <tr>
+                    <th class="col-md-1" scope="row"> Désignation </th>
+                    <td> {{ prestationBc.prestation.nom }}</td>
+                </tr>
+                <tr>    
+                    <th class="col-md-1" scope="row"> Code site </th>
+                    <td> {{ prestationBc.site.code }}</td>
+                </tr>
+                <tr>
+                    <th class="col-md-1" scope="row"> Nom site </th>
+                    <td> {{ prestationBc.site.nom }}</td>
+                </tr>
+                <tr>
+                    <th class="col-md-1" scope="row"> Wilaya </th>
+                    <td> {{ prestationBc.site.wilaya.nom }}</td>
+                </tr>
+                <tr>
+                    <th class="col-md-1" scope="row"> Zone </th>
+                    <td> {{ prestationBc.zone.nom }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="panel-body">
+       
+        {{ form_start(form, {action: path('bc_edit_prestation',{id: prestationBc.id | Mycrypt})}) }}
+        {{ form_widget(form) }}
+        <p>
+            <button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-edit"></i> Modifier</button>
+        </p>
+        {{ form_end(form) }}    
+    </div>
+    <div class="panel-footer">
+        <a class="btn btn-primary" href="{{ path('bc_show',{id: bc.id | Mycrypt}) }}">Annuler</a>
+    </div>
+</div>
+
+
+{% endblock %}
+{% block js %}
+
+{% endblock %}

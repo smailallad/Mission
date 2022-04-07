@@ -106,7 +106,7 @@ BC -{{ parent() }}
     </div>
     <div class="panel-footer">
         <button class="btn btn-primary" type="submit"> Valider </button>
-        
+        <a class="btn btn-info" href="{{ path('bc_show',{id: bc.id | Mycrypt}) }}">Annuler</a>
     </div>
 </div>
 {{ form_end(form) }}

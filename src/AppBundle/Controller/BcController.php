@@ -2,12 +2,15 @@
 namespace AppBundle\Controller;
 use AppBundle\Entity\Bc;
 use AppBundle\Form\BcType;
+use AppBundle\Form\Bc1Type;
 use Doctrine\ORM\QueryBuilder;
 use AppBundle\Form\BcFilterType;
 use AppBundle\Entity\PrestationBc;
 use AppBundle\Form\PrestationBcType;
+use AppBundle\Form\PrestationBc1Type;
 use Symfony\Component\Form\FormInterface;
 use AppBundle\Form\SiteRechercheClientType;
+use DateTime;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -27,17 +30,17 @@ class BcController extends Controller
     {   
         $manager = $this->getDoctrine()->getManager();
         $form = $this->createForm(BcFilterType::class);
-        /*if (!is_null($response = $this->saveFilter($form, 'bc', 'bc_index'))) {
+        if (!is_null($response = $this->saveFilter($form, 'bc', 'bc_index'))) {
             return $response;
-        }*/
+        }
       
         $qb = $manager->getRepository('AppBundle:Bc')->listeBcs();
         $paginator = $this->filter($form, $qb, 'bc');
-        dump($paginator);
-        $consomer = [];
+        //dump($paginator);
+        $consommer = [];
         foreach ($paginator as $value) {
-            $bcId = $value->getId();
-            $consommer [strval($bcId)] = $manager->getRepository('AppBundle:Intervention')->getSommeBc($bcId);
+            $bc = $value->getId();
+            $consommer [strval($bc)] = $manager->getRepository('AppBundle:Intervention')->getSommeBcConsommer($bc);
         }
         //dump($consomer);
 
@@ -76,17 +79,52 @@ class BcController extends Controller
     {   $cryptage = $this->container->get('my.cryptage');
         $id = $cryptage->my_decrypt($id);
         $bc = $this->getDoctrine()->getRepository('AppBundle:Bc')->find($id);
-        $editForm = $this->createForm(BcType::class, $bc, array(
+        $prestationBcs = $bc->getPrestationBcs();
+        //dump(count($prestationBcs));
+        if (count($prestationBcs) > 0)
+        {   // interdit de modifier le Projet readonly true.
+            $readonly = true;
+            $editForm = $this->createForm(Bc1Type::class, $bc, array(
             'action' => $this->generateUrl('bc_edit', array('id' => $cryptage->my_encrypt($bc->getId()))),
             'method' => 'PUT',
-        ));
+            ));
+
+        }else
+        {
+            $readonly = false;
+            $editForm = $this->createForm(BcType::class, $bc, array(
+                'action' => $this->generateUrl('bc_edit', array('id' => $cryptage->my_encrypt($bc->getId()))),
+                'method' => 'PUT',
+                ));
+        }
+        
+       
         if ($editForm->handleRequest($request)->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-            $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
-            return $this->redirect($this->generateUrl('bc_edit', array('id' => $cryptage->my_encrypt($id))));
+            $date = $bc->getdate();
+            $dateFacture = $this->getDoctrine()->getRepository('AppBundle:Facture')->getMinDate($bc);
+            if ($dateFacture != null)
+            {
+                $dateFacture = new DateTime($dateFacture);
+                if ($date <= $dateFacture)
+                {
+                    $this->getDoctrine()->getManager()->flush();
+                    $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
+                    return $this->redirect($this->generateUrl('bc_edit', array('id' => $cryptage->my_encrypt($id))));
+                }else
+                {
+                    $this->get('session')->getFlashBag()->add('danger', 'La date doit etre inferieur ou égale à : ' . date_format($dateFacture,'d/m/Y') .' .');
+                }
+            }else
+            {
+                $this->getDoctrine()->getManager()->flush();
+                $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
+                return $this->redirect($this->generateUrl('bc_edit', array('id' => $cryptage->my_encrypt($id))));
+            }
+           
         }
         return $this->render('@App/Bc/edit.html.twig', array(
             'bc'            => $bc,
+            'readonly'      => $readonly,
             'edit_form'     => $editForm->createView(),
         ));
     }
@@ -100,10 +138,12 @@ class BcController extends Controller
         $bc             = $this->getDoctrine()->getRepository('AppBundle:Bc')->find($id);
         $prestationBcs  = $this->getDoctrine()->getRepository('AppBundle:PrestationBc')->findByBc($id);
         $somme          = $this->getDoctrine()->getRepository('AppBundle:PrestationBc')->getSomme($id);
+        $consomer       = $this->getDoctrine()->getRepository('AppBundle:Intervention')->getSommeBcConsommer($id);
         $deleteForm = $this->createDeleteForm($id, 'bc_delete');
         return $this->render('@App/Bc/show.html.twig', array(
             'bc'            => $bc,
             'somme'         => $somme,
+            'consommer'     => $consomer,
             'prestationBcs' => $prestationBcs,
             'delete_form'   => $deleteForm->createView())
         );
@@ -124,7 +164,7 @@ class BcController extends Controller
         $form_recherche_site = $this->createForm(SiteRechercheClientType::class);
         
         //$zone  = $this->getDoctrine()->getRepository('AppBundle:Zone')->findAll();
-        $form = $this->createForm(PrestationBcType::class,$prestationBc,['projet'=>$projet,"client"=>$client]);
+        $form = $this->createForm(PrestationBcType::class,$prestationBc,['projet'=>$projet]);
         if ($form->handleRequest($request)->isValid())
         {
             $manager = $this->getDoctrine()->getManager();
@@ -160,31 +200,69 @@ class BcController extends Controller
         $projet = $bc->getProjet();
         $client = $projet->getClient();
         $form_recherche_site = $this->createForm(SiteRechercheClientType::class);
-        
-        //$zone  = $this->getDoctrine()->getRepository('AppBundle:Zone')->findAll();
-        $form = $this->createForm(PrestationBcType::class,$prestationBc,['projet'=>$projet,"client"=>$client]);
+        $intervention = $this->getDoctrine()->getRepository('AppBundle:Intervention')->findByPrestationBc($prestationBc);
+        //dump($intervention);
+        if (count($intervention) > 0 )
+        {
+            $form = $this->createForm(PrestationBc1Type::class,$prestationBc);
+            $readonly = true;
+        }else
+        {   
+            $siteId     = $prestationBc->getSite() != null ? $prestationBc->getSite()->getId() : null;
+            $siteCode   = $prestationBc->getSite() != null ? $prestationBc->getSite()->getCode() : null;
+            $siteNom    = $prestationBc->getSite() != null ? $prestationBc->getSite()->getNom() : null;
+            
+            $form = $this->createForm(PrestationBcType::class,$prestationBc,[   'projet'    => $projet,
+                                                                                'siteId'    => $siteId,
+                                                                                'siteCode'  => $siteCode,
+                                                                                'siteNom'   => $siteNom]);
+            $readonly = false;
+        }
         if ($form->handleRequest($request)->isValid())
         {
-            $manager = $this->getDoctrine()->getManager();
-            $site = $request->request->get('prestation_bc')['siteId'];
-            if ($site != null)
+            $quantiteApres = $prestationBc->getQuantite();
+            $quantiteConsommer = $this->getDoctrine()->getRepository('AppBundle:Intervention')->getQuantitePrestationBc($id);
+            if ($quantiteApres < $quantiteConsommer){
+                $this->get('session')->getFlashBag()->add('danger', 'La quantté doit etre suppérieur ou égale à : '. $quantiteConsommer .' .');
+            }else
             {
-                $site = $manager->getRepository('AppBundle:Site')->find($site);
-                $prestationBc->setSite($site);
+                $manager = $this->getDoctrine()->getManager();
+                if ( !$readonly )
+                {
+                    $site = $request->request->get('prestation_bc')['siteId'];
+                    if (($site != null) and !$readonly)
+                    {
+                        $site = $manager->getRepository('AppBundle:Site')->find($site);
+                        $prestationBc->setSite($site);
+                    }
+                }
+                $manager->flush();
+                return $this->redirect($this->generateUrl('bc_show', array('id' => $cryptage->my_encrypt($bc->getId()))));
             }
-            //$manager->persist($prestationBc);
-            $manager->flush();
-            return $this->redirect($this->generateUrl('bc_show', array('id' => $cryptage->my_encrypt($bc->getId()))));
         }
-        return $this->render('@App/Bc/edit.prestation.html.twig', array(
-            'bc'                    => $bc,
-            'prestationBc'          => $prestationBc,
-            'projet'                => $projet,
-            'client'                => $client,
-            'form'                  => $form->createView(),
-            'form_recherche_site'   => $form_recherche_site->createView(),
-            )
-        );
+        if ($readonly)
+        {
+            return $this->render('@App/Bc/edit.prestation1.html.twig', array(
+                'bc'                    => $bc,
+                'prestationBc'          => $prestationBc,
+                'projet'                => $projet,
+                'client'                => $client,
+                'form'                  => $form->createView(),
+                'form_recherche_site'   => $form_recherche_site->createView(),
+                )
+            );
+        }else
+        {
+            return $this->render('@App/Bc/edit.prestation.html.twig', array(
+                'bc'                    => $bc,
+                'prestationBc'          => $prestationBc,
+                'projet'                => $projet,
+                'client'                => $client,
+                'form'                  => $form->createView(),
+                'form_recherche_site'   => $form_recherche_site->createView(),
+                )
+            );
+        }
     }
 
     /**
@@ -197,7 +275,11 @@ class BcController extends Controller
         $prestationBc = $manager->getRepository('AppBundle:PrestationBc')->find($id);
         $bc = $prestationBc->getBc();
         $manager->remove($prestationBc);
-        $manager->flush();
+        try {
+            $manager->flush();
+        } catch(\Doctrine\DBAL\DBALException $e) {
+            $this->get('session')->getFlashBag()->add('danger', 'Impossible de supprimer cet element.');
+        }
         return $this->redirect($this->generateUrl('bc_show',array('id' => $cryptage->my_encrypt($bc->getId()))));
     }
    
@@ -219,7 +301,7 @@ class BcController extends Controller
             return $this->redirect($this->generateUrl('bc_show', array('id' => $id)));
         }
 
-        return $this->redirect($this->generateUrl('bc'));
+        return $this->redirect($this->generateUrl('bc_index'));
 
     }
     
@@ -275,11 +357,12 @@ class BcController extends Controller
     }
     protected function filter(FormInterface $form, QueryBuilder $qb, $name)
     {   
-        if (!is_null($values = $this->getFilter($name))) {
+        if (!is_null($values = $this->getFilter($name))) { 
             if ($form->submit($values)->isValid()) {
                 $this->get('lexik_form_filter.query_builder_updater')->addFilterConditions($form, $qb);
             }
         }
+        
         // possible sorting
         // nombre de ligne
         $session = $this->get('session');

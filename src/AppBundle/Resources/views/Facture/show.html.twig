@@ -29,19 +29,19 @@
                         </tr>
                         <tr>
                             <th scope="row">Client</th>
-                            <td>{{ facture.bc.projet.client.nom }}/td>
+                            <td>{{ facture.bc.projet.client.nom }}</td>
                         </tr>
                         <tr>
                             <th scope="row">Montant HT</th>
-                            <td class="text-right">DA</td>
+                            <td class="text-right">{{ somme | number_format(2, ',', ' ')  }} DA</td>
                         </tr>
                         <tr>
                             <th scope="row">Tva</th>
-                            <td class="text-right">{{ facture.tva }}%</td>
+                            <td class="text-right">{{ facture.tva }} %</td>
                         </tr>
                         <tr>
                             <th scope="row">Montant TTC</th>
-                            <td class="text-right">DA</td>
+                            <td class="text-right">{{ (somme + (somme * facture.tva / 100)) | number_format(2, ',', ' ')  }} DA</td>
                         </tr>
                     </tbody>
                 </table>
@@ -79,11 +79,26 @@
                                 <td>{{ intervention.site.wilaya.zone.nom }}</td>
                                 <td>{{ intervention.prestation.nom }}</td>
                                 <td>{{ intervention.quantite }}</td>
-                                <td class="text-right">{{ intervention.prestationBc is empty  ?  '' : (intervention.prestationBc.montant) | number_format(2,',',' ') }}</td>
+                                <td class="text-right">{{ intervention.prestationBc is empty  ?  '' : (intervention.prestationBc.montant) | number_format(2,',',' ') ~  ' DA' }} </td>
                                 <td class="text-right">
-                                    <a title="assossier au BC" class="btn btn-primary" href="{{ path('facture_prestation_intervention', {facture: facture.id | Mycrypt,bc: facture.bc.id | Mycrypt,prestation: intervention.prestation.id | Mycrypt, zone : intervention.site.wilaya.zone.id | Mycrypt}) }}">
+                                    {% if intervention.prestationBc is empty %}
+                                        <div class="btn-group">
+                                        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="glyphicon glyphicon-paperclip"></i>
-                                    </a>
+                                         <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                          <li><a href="{{ path('prestationBc_non_associer', {facture: facture.id | Mycrypt,bc: facture.bc.id | Mycrypt,prestation: intervention.prestation.id | Mycrypt, zone : intervention.site.wilaya.zone.id | Mycrypt,intervention: intervention.id| Mycrypt }) }}">Avec site</a></li>
+                                          <li><a href="{{ path('prestationBc_non_associer', {facture: facture.id | Mycrypt,bc: facture.bc.id | Mycrypt,prestation: intervention.prestation.id | Mycrypt, zone : intervention.site.wilaya.zone.id | Mycrypt,intervention: intervention.id| Mycrypt }) }}">Sans site</a></li>
+                                        </ul>
+                                      </div>
+
+
+                                    {% else %}
+                                        <a title="Déssocier au BC" class="btn btn-danger" href="{{ path('prestationBc_dessocier', {facture: facture.id | Mycrypt,bc: facture.bc.id | Mycrypt,intervention: intervention.id| Mycrypt }) }}">
+                                            <i class="glyphicon glyphicon-paperclip"></i>
+                                        </a>
+                                    {% endif %}
                                     <button title="Retirer la prestation de la facture" class="btn btn-danger" data-toggle="modal" data-target="#modalDeletePrestation" data-id="{{ intervention.id }}">
                                         <i class="glyphicon glyphicon-trash"></i>
                                     </button>

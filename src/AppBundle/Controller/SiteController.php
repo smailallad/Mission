@@ -4,6 +4,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Site;
 use AppBundle\Form\SiteType;
+use AppBundle\Form\Site1Type;
 use Doctrine\ORM\QueryBuilder;
 use AppBundle\Form\SiteFilterType;
 use Symfony\Component\Form\FormInterface;
@@ -70,33 +71,47 @@ class SiteController extends Controller
     public function editAction($id, Request $request)
     {
         $cryptage = $this->container->get('my.cryptage');
-        $id = $cryptage->my_decrypt($id);
-        $site = $this->getDoctrine()
-            ->getRepository('AppBundle:Site')
-            ->find($id);
-        $editForm = $this->createForm(SiteType::class, $site, [
-            'action' => $this->generateUrl('site_edit', [
-                'id' => $cryptage->my_encrypt($site->getId()),
-            ]),
-            'method' => 'PUT',
-        ]);
-        if ($editForm->handleRequest($request)->isValid()) {
-            $this->getDoctrine()
-                ->getManager()
-                ->flush();
-            $this->get('session')
-                ->getFlashBag()
-                ->add('success', 'Enregistrement effectuer avec sucées.');
-            return $this->redirect(
-                $this->generateUrl('site_edit', [
-                    'id' => $cryptage->my_encrypt($id),
-                ])
-            );
+        $id         = $cryptage->my_decrypt($id);
+        $site       = $this->getDoctrine()->getRepository('AppBundle:Site')->find($id);
+        $intervention = $this->getDoctrine()->getRepository('AppBundle:Intervention')->findOneBySite($site);
+        //dump($intervention);
+        if ($intervention != null)
+        {
+            $editForm   = $this->createForm(Site1Type::class, $site, [
+                'action'    => $this->generateUrl('site_edit', [
+                'id'        => $cryptage->my_encrypt($site->getId()),
+                ]),
+                'method' => 'PUT',
+            ]);
+            $readonly = true;
+        }else
+        {
+            $editForm   = $this->createForm(SiteType::class, $site, [
+                'action'    => $this->generateUrl('site_edit', [
+                'id'        => $cryptage->my_encrypt($site->getId()),
+                ]),
+                'method' => 'PUT',
+            ]);
+            $readonly = false;
         }
-        return $this->render('@App/Site/edit.html.twig', [
-            'site' => $site,
-            'edit_form' => $editForm->createView(),
-        ]);
+        if ($editForm->handleRequest($request)->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+            $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
+            return $this->redirect($this->generateUrl('site_edit', ['id' => $cryptage->my_encrypt($id)]));
+        }
+        if ($readonly)
+        {
+            return $this->render('@App/Site/edit1.html.twig', [
+                'site'      => $site,
+                'edit_form' => $editForm->createView(),
+                ]);
+        }else
+        {
+            return $this->render('@App/Site/edit.html.twig', [
+                'site'      => $site,
+                'edit_form' => $editForm->createView(),
+                ]);
+        }
     }
     /**
      * @Route("/{id}/show",name="site_show")

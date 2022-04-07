@@ -1,24 +1,25 @@
 {% extends "base.html.twig" %}
 {% form_theme edit_form 'Form/bootstrap_3_layout.html.twig' %}
-{% block title %}Modification - BC{% endblock %}
+{% block title %}Modification - Site{% endblock %}
 {% block bodysaisie %}
-{#{% include "@App/messages.html.twig" %}#}
+
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h2> Modification - BC </h2>
-        {% if readonly %}
-            <table class="table table-hover record_properties">
-                <tbody>
-                    <tr>
-                        <th class="col-md-1" scope="row"> Projet </th>
-                        <td> {{ bc.projet.nom }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        {% endif %}
+        <h2> Modification - Site </h2>
+        <table class="table table-hover record_properties">
+            <tbody>
+                <tr>
+                    <th class="col-md-1" scope="row"> Wilaya </th>
+                    <td> {{ site.wilaya.nom }}</td>
+                </tr>
+                <tr>    
+                    <th class="col-md-1" scope="row"> Client </th>
+                    <td> {{ site.client.nom }}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
     <div class="panel-body">
-    
     
     {{ form_start(edit_form) }}
     {{ form_widget(edit_form) }}
@@ -29,7 +30,7 @@
     </div>
     <div class="panel-footer">
         <div class="btn-group record_actions">
-            <a class="btn btn-info" href="{{ path('bc_show',{id: bc.id | Mycrypt }) }}">
+            <a class="btn btn-info" href="{{ path('site') }}">
                 <i class="glyphicon glyphicon-list"></i> Annuler
             </a>
         </div>

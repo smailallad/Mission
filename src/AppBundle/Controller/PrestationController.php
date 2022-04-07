@@ -2,17 +2,18 @@
 namespace AppBundle\Controller;
 use Doctrine\ORM\QueryBuilder;
 use AppBundle\Entity\Prestation;
-use AppBundle\Form\PrestationType;
 use AppBundle\Entity\PrestationBc;
+use AppBundle\Form\PrestationType;
+use AppBundle\Form\Prestation1Type;
 use AppBundle\Form\PrestationBcType;
 use AppBundle\Form\PrestationFilterType;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 //use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Routing\Annotation\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 /**
  * @Route("/prestation")
@@ -67,10 +68,21 @@ class PrestationController extends Controller
     {   $cryptage = $this->container->get('my.cryptage');
         $id = $cryptage->my_decrypt($id);
         $prestation = $this->getDoctrine()->getRepository('AppBundle:Prestation')->find($id);
-        $editForm = $this->createForm(PrestationType::class, $prestation, array(
-            'action' => $this->generateUrl('prestation_edit', array('id' => $cryptage->my_encrypt($prestation->getId()))),
-            'method' => 'PUT',
-        ));
+        $prestationBc= $prestation->getPrestationBcs();
+        if (count($prestationBc) > 0)
+        {
+            $editForm = $this->createForm(Prestation1Type::class, $prestation, array(
+                'action' => $this->generateUrl('prestation_edit', array('id' => $cryptage->my_encrypt($prestation->getId()))),
+                'method' => 'PUT',
+            ));
+        }else
+        {
+            $editForm = $this->createForm(PrestationType::class, $prestation, array(
+                'action' => $this->generateUrl('prestation_edit', array('id' => $cryptage->my_encrypt($prestation->getId()))),
+                'method' => 'PUT',
+            ));
+        }
+        
         if ($editForm->handleRequest($request)->isValid()) {
             $this->getDoctrine()->getManager()->flush();
             $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
@@ -91,11 +103,7 @@ class PrestationController extends Controller
         $prestation = $this->getDoctrine()->getRepository('AppBundle:Prestation')->find($id);
        /*  $prestationBcs = $this->getDoctrine()->getRepository('AppBundle:PrestationBc')->findByPrestation($id);
         $editMontantForm = $this->createForm(PrestationBcType::class, New PrestationBc, array(
-<<<<<<< HEAD
             'action' =>  $this->generateUrl('prestation_index'),
-=======
-            'action' =>  $this->generateUrl('prestation'),
->>>>>>> c4c86e1f6dacdb75bcb034443d12a868987ff8f1
             'method' => 'POST', 
         ));
         $newMontantForm = $this->createForm(PrestationBcType::class, New PrestationBc, array(

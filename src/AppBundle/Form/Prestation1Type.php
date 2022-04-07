@@ -6,7 +6,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
-class PrestationType extends AbstractType
+class Prestation1Type extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -18,17 +18,12 @@ class PrestationType extends AbstractType
             'label'         => 'Nom',
             )
         )
-        ->add('projet',EntityType::class, array(
+        ->add('projet',TextType::class, array(
             'label'         => 'Projet',
-            'class'         => 'AppBundle:Projet',
-            'choice_name'   => 'nom',
-            'multiple'      => false,
-            'placeholder'   => '-Choisir un projet-',
-            'query_builder' => function(\Doctrine\ORM\EntityRepository $p)
-                            {   return $p->createQueryBuilder('p')
-                                            ->orderBy('p.nom')
-                                            ;
-                            },
+                'attr'      =>[
+                    'readonly'     => true,
+                    'title'        => 'Impossible de modifier le projet, cette prestation figure déja dans un BC pour ce projet.',
+                ]
             )
         )
         ;
@@ -48,6 +43,6 @@ class PrestationType extends AbstractType
      */
     public function getName()
     {
-        return 'prestation';
+        return 'prestation1';
     }
 }

@@ -35,15 +35,15 @@
                     </tr>
                     <tr>
                         <th scope="row"> Montant</th>
-                        <td> {{ somme | number_format(2,',',' ') }} </td>
+                        <td class="text-right"> {{ somme | number_format(2,',',' ') }} DA </td>
                     </tr>
                     <tr>
                         <th scope="row"> Montant consommé </th>
-                        <td> 0,00 </td>
+                        <td class="text-right">{{ consommer | number_format(2,',',' ') }} DA  </td>
                     </tr>
                     <tr>
                         <th scope="row"> Montant restant  </th>
-                        <td> 0,00 </td>
+                        <td class="text-right"> {{ (somme - consommer ) | number_format(2,',',' ') }} DA </td>
                     </tr>
                 </tbody>
             </table>
@@ -80,7 +80,7 @@
                         <th> Zone </th>
                         <th> Unité </th>
                         <th class="text-right"> Quantité</th>
-                        <th class="text-right"> Montant </th>
+                        <th class="text-right"> Prix HT </th>
                         <th></th>
                     </tr>
                 </thead>
@@ -106,7 +106,7 @@
                                 {{ prestationBc.quantite }}
                             </td>
                             <td class="text-right">
-                                {{ prestationBc.montant | number_format(2,',',' ') }}
+                                {{ prestationBc.montant | number_format(2,',',' ') }} DA
                             </td>
                             
                             <td>

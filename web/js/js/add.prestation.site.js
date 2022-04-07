@@ -75,7 +75,7 @@ function nextSite() {
     var zone = $('#prestation_bc_zone').val();
     pagenum++;
     pagenum = Math.min(totalpages, pagenum);
-    listesites(client, pagenum,zone,site)
+    listeSites(client, pagenum,zone,site)
 }
 function lastSite() {
     var totalpages = $('#lastSite').attr('data-totalpages');
@@ -83,7 +83,7 @@ function lastSite() {
     var client = $('#client_id').html();
     var site = $('#site_recherche_client_nom').val();;
     var zone = $('#prestation_bc_zone').val();
-    listesites(client, pagenum,zone,site)
+    listeSites(client, pagenum,zone,site)
 }
 function selectSite(id, code, nom) {
     var code = $('#siteCode_' + id).html();

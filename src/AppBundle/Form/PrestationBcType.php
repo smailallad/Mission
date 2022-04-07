@@ -1,6 +1,5 @@
 <?php
 namespace AppBundle\Form;
-use AppBundle\Repository\SiteRepository;
 use Symfony\Component\Form\AbstractType;
 use AppBundle\Repository\PrestationRepository;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -17,7 +16,9 @@ class PrestationBcType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {   $projet = $options['projet'];
-        $client = $options['client'];
+        $siteId = $options['siteId'];
+        $siteCode = $options['siteCode'];
+        $siteNom = $options['siteNom'];
         $builder
         ->add('prestation',EntityType::class, array(
             'label'         => 'Prestation',
@@ -46,10 +47,12 @@ class PrestationBcType extends AbstractType
         )
         ->add('siteId',HiddenType::class,array(
             'mapped'        => false,
+            'data'          => $siteId,
         ))
         ->add('siteCode',TextType::class,array(
             'label'         => 'Code site',
             'mapped'        => false,
+            'data'          => $siteCode,
             'attr'          => array(
                 'readonly'  => true,
                 'class'     => 'form-control'
@@ -58,6 +61,7 @@ class PrestationBcType extends AbstractType
         ->add('siteNom',TextType::class,array(
             'label'         => 'Nom site',
             'mapped'        => false,
+            'data'          => $siteNom,
             'attr'          => array(
                 'readonly'  => true,
                 'class'     => 'form-control'
@@ -88,7 +92,9 @@ class PrestationBcType extends AbstractType
             'data_class'        => 'AppBundle\Entity\PrestationBc',
             'method'            => 'POST',
             'projet'            => null,
-            'client'            => null,
+            'siteId'            => null,
+            'siteCode'            => null,
+            'siteNom'            => null,
         ));
     }
     /**

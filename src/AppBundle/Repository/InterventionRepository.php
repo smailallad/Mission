@@ -271,16 +271,37 @@ class InterventionRepository extends \Doctrine\ORM\EntityRepository
             ;
         return $q;
     } 
-    public function getSommeBc($bcId)
+    public function getSommeBcConsommer($bc)
     {
         $q = $this->createQueryBuilder('i');
         $q->select('SUM(pBc.montant * i.quantite) AS somme');
         $q ->join('i.prestationBc','pBc');
         $q->where('pBc.bc = :bc');
-        $q->setParameter('bc', $bcId)
+        $q->setParameter('bc', $bc)
         ;
         return $q->getQuery()->getSingleScalarResult() === null ? 0 : floatval($q->getQuery()->getSingleScalarResult()) ;
 
-        //return $q->getQuery()->getResult();
+    }
+    public function getSommeFacture($facture)
+    {
+        $q = $this->createQueryBuilder('i');
+        $q->select('SUM(pBc.montant * i.quantite) AS somme');
+        $q ->join('i.prestationBc','pBc');
+        $q->where('i.facture = :facture');
+        $q->setParameter('facture', $facture)
+        ;
+        return $q->getQuery()->getSingleScalarResult() === null ? 0 : floatval($q->getQuery()->getSingleScalarResult()) ;
+
+    }
+   
+    public function getQuantitePrestationBc($prestationBc1)
+    {
+        $q = $this->createQueryBuilder('i')
+            ->select('SUM(i.quantite) as quantite')
+            ->where('i.prestationBc = :prestationBc')
+            ->setParameter('prestationBc',$prestationBc1)
+            ;
+            return $q->getQuery()->getSingleScalarResult() === null ? 0 : floatval($q->getQuery()->getSingleScalarResult()) ;
+        
     }
 }

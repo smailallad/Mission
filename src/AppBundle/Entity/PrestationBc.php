@@ -29,22 +29,24 @@ class PrestationBc
     */
     private $zone;
     /**
-    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Prestation")
+    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Prestation",inversedBy="prestationBcs")
+    * @ORM\JoinColumn(name="prestation_id",referencedColumnName="id",nullable=false)
     * @Assert\NotNull(message = "Entrer une valeur.")
-    * @ORM\JoinColumn(nullable=false)
     */
     private $prestation;
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Bc",inversedBy="prestationBcs")
+     * @JoinColumn(name="bc_id", referencedColumnName="id",nullable=false)
+     * @Assert\NotNull(message = "Entrer une valeur.")
+     * @Groups("site_json")
+     */
+    private $bc;
+    
     /**
     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Site")
     */
     private $site; 
-    /**
-    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Bc",inversedBy="prestationBcs")
-    * @JoinColumn(name="bc_id", referencedColumnName="id",nullable=false)
-    * @Assert\NotNull(message = "Entrer une valeur.")
-    * @Groups("site_json")
-    */
-    private $bc;
+
     /**
      * @var float
      *

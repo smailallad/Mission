@@ -67,6 +67,7 @@ class Bc
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\PrestationBc",mappedBy="bc")
      */
     private $prestationBcs;
+    
 
     public function __toString()
     {

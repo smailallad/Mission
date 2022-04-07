@@ -6,25 +6,9 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4></h4>
-            {#{% if appel_journal == 'non'%}
-                {% if appel_employe == 'non' %}#}
-                    <a class="btn btn-primary mr-2" href="{{ path('mission_intervention',{id: intervention.mission.id | Mycrypt }) }}">
-                        <i class="glyphicon glyphicon-list"></i>
-                    </a>
-             {#}   {% else %}
-                    <a class="btn btn-primary mr-2" href="{{ path('mission_employe_index') }}">
-                        <i class="glyphicon glyphicon-list"></i>
-                    </a>
-                {% endif %}
-            {% else %}
-                <a class="btn btn-primary mr-2" href="{{ path('journal') }}">
-                    <i class="glyphicon glyphicon-list"></i>
-                </a>
-            {% endif %}
-            Mission
-            {% if is_granted('ROLE_COMPTABLE') %}
-            <a class="ml-5" href=""><img src="{{ asset('icones/Excel-icon.png') }}" title="Exporter vers excel."></a>
-            {% endif %}#}
+            <a class="btn btn-primary mr-2" href="{{ path('mission_intervention',{id: intervention.mission.id | Mycrypt }) }}">
+                <i class="glyphicon glyphicon-list"></i>
+            </a>
             Mission
         </h4>
     </div>
@@ -34,7 +18,6 @@
 </div>
 {% endblock %}
 {% block contenu %}
-{#{% include "@App/messages.html.twig" %}#}
 <div class="panel panel-default">
     <div class="panel-heading">
         <h4> Intervention </h4>
@@ -57,6 +40,14 @@
                 <tr>
                     <th scope="row">Nom site</th>
                     <td>{{ intervention.site.nom }}</td>
+                </tr>
+                <tr>
+                <th scope="row">Num Facture</th>
+                <td>
+                    {% if intervention.facture is not empty %}
+                    {{ intervention.facture.num }}
+                    {% endif %}
+                </td>
                 </tr>
                 </tr>
                 <tr>
@@ -128,7 +119,7 @@
         </table>
     </div>
     <div class="panel-footer"> 
-            {% if (appel_employe == "non") and (
+            {% if (appel_employe == "non") and (intervention.facture is empty) and (
             (is_granted("ROLE_ADMIN")) or
             (is_granted("ROLE_ROLLOUT") and not intervention.mission.vComptabilite ) or
             (is_granted("ROLE_BUREAU") and not intervention.mission.vComptabilite and not intervention.mission.vRollout
@@ -139,7 +130,7 @@
             </a>
             {% endif %}
             <a class="btn btn-primary mr-2" href="{{ path('mission_intervention',{id: intervention.mission.id | Mycrypt }) }}">Retour</a>
-            {% if (appel_employe == "non") and ((not intervention.mission.vComptabilite and not
+            {% if (appel_employe == "non")and (intervention.facture is empty) and ((not intervention.mission.vComptabilite and not
             intervention.mission.vRollout and not
             intervention.mission.vEmploye)) %}
             <button class="btn btn-danger" data-toggle="modal" data-target="#modalDeleteIntervention"><i
@@ -159,7 +150,7 @@
                     <tr>
                         <th scope="row">{{ realisateur.user.nom }}</th>
                         <td>
-                            {% if (appel_employe == "non") and (
+                            {% if (appel_employe == "non")and (intervention.facture is empty) and (
                             (is_granted("ROLE_ADMIN")) or
                             (is_granted("ROLE_ROLLOUT") and not intervention.mission.vComptabilite ) or
                             (is_granted("ROLE_BUREAU") and not intervention.mission.vComptabilite and not
@@ -178,7 +169,7 @@
         </div>
         <div class="panel-footer">
             <div class="btn-group record_actions">
-                {% if (appel_employe == "non") and (
+                {% if (appel_employe == "non") and (intervention.facture is empty)and (
                 (is_granted("ROLE_ADMIN") or
                 (is_granted("ROLE_ROLLOUT") and not intervention.mission.vComptabilite ) or
                 (is_granted("ROLE_BUREAU") and not intervention.mission.vComptabilite and not

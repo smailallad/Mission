@@ -44,6 +44,11 @@ class Prestation
      */
     private $projet;
 
+     /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\PrestationBc",mappedBy="prestation")
+     */
+    private $prestationBcs;
+
     /**
      * Get id
      * 

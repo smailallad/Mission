@@ -44,6 +44,11 @@ class Prestation
      */
     private $projet;
 
+     /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\PrestationBc",mappedBy="prestation")
+     */
+    private $prestationBcs;
+
     /**
      * Get id
      * 
@@ -134,5 +139,48 @@ class Prestation
     public function __toString()
     {
         return $this->nom;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->prestationBcs = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add prestationBc.
+     *
+     * @param \AppBundle\Entity\PrestationBc $prestationBc
+     *
+     * @return Prestation
+     */
+    public function addPrestationBc(\AppBundle\Entity\PrestationBc $prestationBc)
+    {
+        $this->prestationBcs[] = $prestationBc;
+
+        return $this;
+    }
+
+    /**
+     * Remove prestationBc.
+     *
+     * @param \AppBundle\Entity\PrestationBc $prestationBc
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removePrestationBc(\AppBundle\Entity\PrestationBc $prestationBc)
+    {
+        return $this->prestationBcs->removeElement($prestationBc);
+    }
+
+    /**
+     * Get prestationBcs.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPrestationBcs()
+    {
+        return $this->prestationBcs;
     }
 }

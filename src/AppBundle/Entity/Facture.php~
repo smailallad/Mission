@@ -143,7 +143,6 @@ class Facture
     {
         return $this->bc;
     }
-<<<<<<< HEAD
 
     /**
      * Set tva.
@@ -168,6 +167,4 @@ class Facture
     {
         return $this->tva;
     }
-=======
->>>>>>> c4c86e1f6dacdb75bcb034443d12a868987ff8f1
 }

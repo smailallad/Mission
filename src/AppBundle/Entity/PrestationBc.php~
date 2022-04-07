@@ -3,11 +3,8 @@
 namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ManyToOne;
-<<<<<<< HEAD
 use Doctrine\ORM\Mapping\JoinColumn;
 use Symfony\Component\Serializer\Annotation\Groups;
-=======
->>>>>>> c4c86e1f6dacdb75bcb034443d12a868987ff8f1
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -32,30 +29,24 @@ class PrestationBc
     */
     private $zone;
     /**
-    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Prestation")
+    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Prestation",inversedBy="prestationBcs")
+    * @ORM\JoinColumn(name="prestation_id",referencedColumnName="id",nullable=false)
     * @Assert\NotNull(message = "Entrer une valeur.")
-    * @ORM\JoinColumn(nullable=false)
     */
     private $prestation;
     /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Bc",inversedBy="prestationBcs")
+     * @JoinColumn(name="bc_id", referencedColumnName="id",nullable=false)
+     * @Assert\NotNull(message = "Entrer une valeur.")
+     * @Groups("site_json")
+     */
+    private $bc;
+    
+    /**
     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Site")
     */
-<<<<<<< HEAD
     private $site; 
-    /**
-    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Bc",inversedBy="prestationBcs")
-    * @JoinColumn(name="bc_id", referencedColumnName="id",nullable=false)
-    * @Assert\NotNull(message = "Entrer une valeur.")
-    * @Groups("site_json")
-=======
-    private $site;
-    /**
-    * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Bc")
-    * @Assert\NotNull(message = "Entrer une valeur.")
-    * @ORM\JoinColumn(nullable=false)
->>>>>>> c4c86e1f6dacdb75bcb034443d12a868987ff8f1
-    */
-    private $bc;
+
     /**
      * @var float
      *
@@ -130,15 +121,9 @@ class PrestationBc
      *
      * @return int
      */
-<<<<<<< HEAD
     public function getQuantite()
     {
         return $this->quantite;
-=======
-    public function getQte()
-    {
-        return $this->qte;
->>>>>>> c4c86e1f6dacdb75bcb034443d12a868987ff8f1
     }
 
     /**
@@ -235,5 +220,29 @@ class PrestationBc
     public function getBc()
     {
         return $this->bc;
+    }
+
+    /**
+     * Set unite.
+     *
+     * @param string $unite
+     *
+     * @return PrestationBc
+     */
+    public function setUnite($unite)
+    {
+        $this->unite = $unite;
+
+        return $this;
+    }
+
+    /**
+     * Get unite.
+     *
+     * @return string
+     */
+    public function getUnite()
+    {
+        return $this->unite;
     }
 }

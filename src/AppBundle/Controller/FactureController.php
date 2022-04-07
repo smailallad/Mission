@@ -29,7 +29,7 @@ class FactureController extends Controller
         if (!is_null($response = $this->saveFilter($form, 'facture', 'facture_index'))) {
             return $response;
         }
-        $qb = $manager->getRepository('AppBundle:Facture')->createQueryBuilder('f');
+        $qb = $manager->getRepository('AppBundle:Facture')->listeFactures();
         $paginator = $this->filter($form, $qb, 'facture');
         $forme=$form->createView();
         return $this->render('@App/Facture/index.html.twig', array(
@@ -61,11 +61,20 @@ class FactureController extends Controller
             $nbr = count($interventions);
             if ($nbr > 0)
             {
-                $this->get('session')->getFlashBag()->add('danger','Vous avez : ' . $nbr . ' Service(s) supperieur à la date de la facture, modification de la date impossible. ');
+                $this->get('session')->getFlashBag()->add('danger','Vous avez : ' . $nbr . ' intervention(s) supperieur à la date de la facture, modification de la date impossible. ');
             }else
             {
-                $this->getDoctrine()->getManager()->flush();
-                return $this->redirect($this->generateUrl('facture_show', ['id' => $cryptage->my_encrypt($facture->getId()),]));
+                if ($facture->getBc() != null )
+                {
+                    if ($date < $facture->getBc()->getdate())
+                    {
+                        $this->get('session')->getFlashBag()->add('danger','La date doit etre supperieur ou égale à : ' . date_format($facture->getBc()->getdate(),'d/m/Y') . '.');
+                    }
+                }else
+                {
+                    $this->getDoctrine()->getManager()->flush();
+                    return $this->redirect($this->generateUrl('facture_show', ['id' => $cryptage->my_encrypt($facture->getId())]));
+                }
             }
             
         }
@@ -83,10 +92,12 @@ class FactureController extends Controller
         $id = $cryptage->my_decrypt($id);
         $facture = $this->getDoctrine()->getRepository('AppBundle:Facture')->find($id);
         $interventions = $this->getDoctrine()->getRepository('AppBundle:Intervention')->findByFacture($facture);
+        $somme = $this->getDoctrine()->getRepository('AppBundle:Intervention')->getSommeFacture($id);
         $deleteForm = $this->createDeleteForm($id, 'facture_delete');
         return $this->render('@App/Facture/show.html.twig', [
             'facture'       => $facture,
-            'interventions'   => $interventions,
+            'somme'         => $somme,
+            'interventions' => $interventions,
             'delete_form'   => $deleteForm->createView(),
         ]);
         
@@ -167,7 +178,7 @@ class FactureController extends Controller
         $facture = $this->getDoctrine()->getRepository('AppBundle:Facture')->find($id);
         $projet  = $facture->getBc()->getProjet();
         $prestations = $this->getDoctrine()->getRepository('AppBundle:Intervention')->getInterventionsNonFacturer($facture->getDate(),$projet);
-        return $this->render('@App/Facture/prestationsNonFacturer.html.twig', [
+        return $this->render('@App/Facture/interventionsNonFacturer.html.twig', [
             'prestations'   => $prestations,
             'facture'       => $facture,
         ]);
@@ -194,21 +205,85 @@ class FactureController extends Controller
     }
 
     /**
-     * @Route("/facture/{facture}/bc/{bc}/prestation/{prestation}/zone/{zone}/intervention", name="facture_prestation_intervention")
+     * @Route("/facture/{facture}/bc/{bc}/prestation/{prestation}/zone/{zone}/intervention/{intervention}", name="prestationBc_non_associer")
      */
-    public function bcPrestationZoneIntervention($facture,$bc,$prestation,$zone)
+    public function prestationBcNonAssocierAction($facture,$bc,$prestation,$zone,$intervention)
     {
         $cryptage = $this->container->get('my.cryptage');
         $facture = $cryptage->my_decrypt($facture);
         $bc = $cryptage->my_decrypt($bc);
         $prestation = $cryptage->my_decrypt($prestation);
         $zone = $cryptage->my_decrypt($zone);
-        $prestationBc = $this->getDoctrine()->getRepository('AppBundle:PrestationBc')->findPrestationIntervention($bc,$prestation,$zone);
-        
-        return $this->render('@App/Facture/prestationBcIntervention.html.twig', [
-            'prestations'      => $prestationBc,
-            'facture'          => $facture,
+        $intervention = $cryptage->my_decrypt($intervention);
+        $intervention = $this->getDoctrine()->getRepository('AppBundle:Intervention')->find($intervention);
+        $prestationBcs = $this->getDoctrine()->getRepository('AppBundle:PrestationBc')->findPrestationIntervention($bc,$prestation,$zone);
+        $prestationBc=[];
+        $prestationBc2=[];
+        foreach ($prestationBcs as $prestationBc1) {
+            
+            $quantite = $this->getDoctrine()->getRepository('AppBundle:Intervention')->getQuantitePrestationBc($prestationBc1);
+            if ($quantite < $prestationBc1->getQuantite() )
+            {
+                $prestationBc[] =   $prestationBc1;
+                $prestationBc2[]=   ["prestation"           => $prestationBc1,
+                                    "quantiteRester"       => $prestationBc1->getQuantite() - $quantite,
+                                    "quantiteIntervention"  => $intervention->getQuantite(),
+                                    ];
+            }
+        }
+        //dump($prestationBc);
+        //dump($prestationBc2);
+        return $this->render('@App/Facture/prestationBcsNonAssocier.html.twig', [
+            'prestationBcs'     => $prestationBc,
+            'facture'           => $facture,
+            'intervention'      => $intervention->getId(),
+            'prestationBc2'     => $prestationBc2,
         ]);
+    }
+    /**
+     * @Route("/facture/{facture}/intervention/{intervention}", name="prestationBc_dessocier")
+     */
+    public function prestationBcDessocierAction($facture,$intervention)
+    {
+        $cryptage = $this->container->get('my.cryptage');
+        $intervention = $cryptage->my_decrypt($intervention);
+        $intervention = $this->getDoctrine()->getRepository('AppBundle:Intervention')->find($intervention);  
+        $intervention->setPrestationBc(null);
+        $this->getDoctrine()->getManager()->flush();     
+        
+        return $this->redirect($this->generateUrl('facture_show',array('id' => $facture)));
+    }
+
+    /**
+     * @Route("/facture/{facture}/prestation/{prestationBc}/intervention/{intervention}", name="associer_prestation")
+     */
+    public function associerPrestationAction($facture,$prestationBc,$intervention)
+    {
+        $cryptage = $this->container->get('my.cryptage');
+        
+        $prestationBc = $cryptage->my_decrypt($prestationBc);
+        $intervention = $cryptage->my_decrypt($intervention);
+        $prestationBc = $this->getDoctrine()->getRepository('AppBundle:PrestationBc')->find($prestationBc);
+        $intervention = $this->getDoctrine()->getRepository('AppBundle:Intervention')->find($intervention);
+        $quantite = $this->getDoctrine()->getRepository('AppBundle:Intervention')->getQuantitePrestationBc($prestationBc);
+        
+        /*dump("Qte Intervention : " . $intervention->getQuantite());
+        dump("Qte prestationBc : " . $prestationBc->getQuantite());
+        dump("Qte Facturer : " . $quantite);
+        dump("Qte Reste a facturer : " . ($prestationBc->getQuantite() - $quantite));
+        dump("prestationBc Id : " . $prestationBc->getId());
+        dump("intervention Id : " . $intervention->getId());*/
+        if ($intervention->getQuantite() > ($prestationBc->getQuantite() - $quantite))
+        {
+            $msg = "Facturation impossible : Quatité à facturer : " . $intervention->getQuantite() . ", Quantité BC pour cette prestation est : " . $prestationBc->getQuantite() . ", Quantié facturer déja avec ce BC pour cette prestation est : " . $quantite . ", il vous reste que : " . ($prestationBc->getQuantite() - $quantite) . " au lieu de : " . $intervention->getQuantite() . ".";
+            $this->get('session')->getFlashBag()->add('danger', $msg);
+        }else
+        {
+            $intervention->setPrestationBc($prestationBc);
+            $this->getDoctrine()->getManager()->flush();
+        }
+
+        return $this->redirect($this->generateUrl('facture_show',array('id' => $facture)));
     }
 
 

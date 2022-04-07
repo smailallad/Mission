@@ -7,7 +7,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
-class BcType extends AbstractType
+class Bc1Type extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -39,26 +39,13 @@ class BcType extends AbstractType
                             },
             )
         )
-        ->add('projet',EntityType::class, array(
-            'label'         => 'Projet',
-            'class'         => 'AppBundle:Projet',
-            'choice_name'   => 'nom',
-            'multiple'      => false,
-            'placeholder'   => '-Choisir un PO-',
-            'query_builder' => function(\Doctrine\ORM\EntityRepository $p)
-                            {   return $p->createQueryBuilder('p')
-                                ->orderBy('p.nom')
-                                ;
-                            },
-            )
-        )
         ->add('po',EntityType::class, array(
             'label'         => 'Po',
             'class'         => 'AppBundle:Po',
             'choice_name'   => 'num',
             'multiple'      => false,
             'required'      => false,
-            'placeholder'   => '-Choisir un projet-',
+            'placeholder'   => '-Choisir un PO-',
             'query_builder' => function(\Doctrine\ORM\EntityRepository $p)
                             {   return $p->createQueryBuilder('p');
                             },
@@ -88,6 +75,6 @@ class BcType extends AbstractType
      */
     public function getName()
     {
-        return 'bc';
+        return 'bc1';
     }
 }

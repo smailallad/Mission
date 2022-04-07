@@ -18,7 +18,7 @@ $(document).ready(function () {
         var site = $('#site_recherche_client_nom').val();
         var zone = $('#prestation_bc_zone').val();
 
-        listesites(client, pagenum,zone,site)
+        listeSites(client, pagenum,zone,site)
     });
     $('#modalSite').on('shown.bs.modal', function (e) {
         var pagenum = 0;

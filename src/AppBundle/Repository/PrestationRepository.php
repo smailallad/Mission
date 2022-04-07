@@ -48,7 +48,9 @@ class PrestationRepository extends \Doctrine\ORM\EntityRepository
         $q = $this->createQueryBuilder('p');
         $q  ->join('p.projet','pr')
             ->andwhere('p.projet = :projet')
-            ->setParameter('projet', $projet);
+            ->setParameter('projet', $projet)
+            ->orderBy('p.nom')
+            ;
         return $q;
     }
 }
