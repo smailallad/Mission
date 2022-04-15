@@ -82,7 +82,10 @@
                                 <td class="text-right">{{ intervention.prestationBc is empty  ?  '' : (intervention.prestationBc.montant) | number_format(2,',',' ') ~  ' DA' }} </td>
                                 <td class="text-right">
                                     {% if intervention.prestationBc is empty %}
-                                        <div class="btn-group">
+                                        <a title="Associer au BC" class="btn btn-primary" href="{{ path('prestationBc_non_associer', {intervention: intervention.id| Mycrypt }) }}">
+                                            <i class="glyphicon glyphicon-paperclip"></i>
+                                        </a>
+                                        {#<div class="btn-group">
                                         <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="glyphicon glyphicon-paperclip"></i>
                                          <span class="caret"></span>
@@ -91,11 +94,11 @@
                                           <li><a href="{{ path('prestationBc_non_associer', {facture: facture.id | Mycrypt,bc: facture.bc.id | Mycrypt,prestation: intervention.prestation.id | Mycrypt, zone : intervention.site.wilaya.zone.id | Mycrypt,intervention: intervention.id| Mycrypt }) }}">Avec site</a></li>
                                           <li><a href="{{ path('prestationBc_non_associer', {facture: facture.id | Mycrypt,bc: facture.bc.id | Mycrypt,prestation: intervention.prestation.id | Mycrypt, zone : intervention.site.wilaya.zone.id | Mycrypt,intervention: intervention.id| Mycrypt }) }}">Sans site</a></li>
                                         </ul>
-                                      </div>
+                                      </div>#}
 
 
                                     {% else %}
-                                        <a title="Déssocier au BC" class="btn btn-danger" href="{{ path('prestationBc_dessocier', {facture: facture.id | Mycrypt,bc: facture.bc.id | Mycrypt,intervention: intervention.id| Mycrypt }) }}">
+                                        <a title="Déssocier au BC" class="btn btn-danger" href="{{ path('prestationBc_dessocier', {intervention: intervention.id | Mycrypt }) }}">
                                             <i class="glyphicon glyphicon-paperclip"></i>
                                         </a>
                                     {% endif %}
@@ -111,6 +114,9 @@
             <div class="panel-footer">
                 <a class="btn btn-primary" href="{{ path('interventions_non_facturer', {facture: facture.id | Mycrypt}) }}">
                     Ajouter des interventions
+                </a>
+                <a class="btn btn-primary" href="{{ path('associer_prestation_Auto', {facture: facture.id | Mycrypt}) }}">
+                    Associer au BC
                 </a>
             </div>
         </div>

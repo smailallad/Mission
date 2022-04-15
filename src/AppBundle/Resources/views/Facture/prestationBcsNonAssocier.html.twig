@@ -41,8 +41,10 @@
                     <th>N° BC</th>
                     <th>Désignation</th>
                     <th>Zone</th>
-                    <th>Code du site</th>
-                    <th>Nom du site</th>
+                    {% if avecSite %}
+                        <th>Code du site</th>
+                        <th>Nom du site</th>
+                    {% endif %}
                     <th class="text-right">Quatité BC</th>
                     <th class="text-right">Quatité rester</th>
                     <th class="text-right">Quatité à facturer</th>
@@ -54,7 +56,7 @@
                         <td>{{ prestationBc.prestation.bc.num }}</td>
                         {% if (prestationBc.quantiteRester >= prestationBc.quantiteIntervention ) %}
                         <td> 
-                            <a href="{{ path('associer_prestation',{facture: facture | Mycrypt, prestationBc: prestationBc.prestation.id | Mycrypt, intervention: intervention | Mycrypt}) }}">{{ prestationBc.prestation.prestation.nom }}
+                            <a href="{{ path('associer_prestation',{ prestationBc: prestationBc.prestation.id | Mycrypt, intervention: intervention | Mycrypt}) }}">{{ prestationBc.prestation.prestation.nom }}
                             </a>
                         </td>
                         {% else %}
@@ -64,14 +66,16 @@
                         {% endif %}
                         <td>{{ prestationBc.prestation.zone.nom }}
                         </td>
-                        <td>{% if prestationBc.prestation.site != null %}
-                                {{ prestationBc.prestation.site.code }}
-                            {% endif %}
-                        </td>
-                        <td>{% if prestationBc.prestation.site != null %}
-                            {{ prestationBc.prestation.site.nom }}
-                            {% endif %}
-                        </td>
+                        {% if avecSite %}
+                            <td>{% if prestationBc.prestation.site != null %}
+                                    {{ prestationBc.prestation.site.code }}
+                                {% endif %}
+                            </td>
+                            <td>{% if prestationBc.prestation.site != null %}
+                                {{ prestationBc.prestation.site.nom }}
+                                {% endif %}
+                            </td>
+                        {% endif %}
                         <td class="text-right">{{ prestationBc.prestation.quantite }}</td>
                         <td class="text-right">{{ prestationBc.quantiteRester }}</td>
                         <td class="text-right">{{ prestationBc.quantiteIntervention }}</td>
@@ -79,7 +83,7 @@
                 {% endfor %}
             </tbody>
         </table>
-        <a class="btn btn-primary" href="{{ path ('facture_show',{id: facture | Mycrypt })}}">Annuler</a>
+        <a class="btn btn-primary" href="{{ path ('facture_show',{id: facture | Mycrypt })}}">Annuler</a> 
     </div>
     <div class="col-md-1"></div>
     {% endblock %}

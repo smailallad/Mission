@@ -1,5 +1,6 @@
 <?php
 namespace AppBundle\Controller;
+use DateTime;
 use AppBundle\Entity\Bc;
 use AppBundle\Form\BcType;
 use AppBundle\Form\Bc1Type;
@@ -8,9 +9,9 @@ use AppBundle\Form\BcFilterType;
 use AppBundle\Entity\PrestationBc;
 use AppBundle\Form\PrestationBcType;
 use AppBundle\Form\PrestationBc1Type;
+use AppBundle\Form\PrestationBc2Type;
 use Symfony\Component\Form\FormInterface;
 use AppBundle\Form\SiteRechercheClientType;
-use DateTime;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -109,7 +110,7 @@ class BcController extends Controller
                 {
                     $this->getDoctrine()->getManager()->flush();
                     $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
-                    return $this->redirect($this->generateUrl('bc_edit', array('id' => $cryptage->my_encrypt($id))));
+                    return $this->redirect($this->generateUrl('bc_index'));
                 }else
                 {
                     $this->get('session')->getFlashBag()->add('danger', 'La date doit etre inferieur ou égale à : ' . date_format($dateFacture,'d/m/Y') .' .');
@@ -118,7 +119,7 @@ class BcController extends Controller
             {
                 $this->getDoctrine()->getManager()->flush();
                 $this->get('session')->getFlashBag()->add('success', 'Enregistrement effectuer avec sucées.');
-                return $this->redirect($this->generateUrl('bc_edit', array('id' => $cryptage->my_encrypt($id))));
+                return $this->redirect($this->generateUrl('bc_index'));
             }
            
         }
@@ -137,6 +138,8 @@ class BcController extends Controller
         $id = $cryptage->my_decrypt($id);
         $bc             = $this->getDoctrine()->getRepository('AppBundle:Bc')->find($id);
         $prestationBcs  = $this->getDoctrine()->getRepository('AppBundle:PrestationBc')->findByBc($id);
+        $avecSite  = $this->getDoctrine()->getRepository('AppBundle:PrestationBc')->getSitesBc($bc);
+        $avecSite = count($avecSite)>0 ? true : false ;
         $somme          = $this->getDoctrine()->getRepository('AppBundle:PrestationBc')->getSomme($id);
         $consomer       = $this->getDoctrine()->getRepository('AppBundle:Intervention')->getSommeBcConsommer($id);
         $deleteForm = $this->createDeleteForm($id, 'bc_delete');
@@ -145,6 +148,7 @@ class BcController extends Controller
             'somme'         => $somme,
             'consommer'     => $consomer,
             'prestationBcs' => $prestationBcs,
+            'avecSite'      => $avecSite,
             'delete_form'   => $deleteForm->createView())
         );
     }
@@ -154,34 +158,96 @@ class BcController extends Controller
      */
     public function bcAddPrestation($id,Request $request)
     {
-        $cryptage = $this->container->get('my.cryptage');
-        $id = $cryptage->my_decrypt($id);
-        $prestationBc = new PrestationBc();
+        $cryptage       = $this->container->get('my.cryptage');
+        $manager        = $this->getDoctrine()->getManager();
+        $id             = $cryptage->my_decrypt($id);
+        $prestationBc   = new PrestationBc();
         $bc             = $this->getDoctrine()->getRepository('AppBundle:Bc')->find($id);
         $prestationBc->setBc($bc);
-        $projet = $bc->getProjet();
-        $client = $projet->getClient();
-        $form_recherche_site = $this->createForm(SiteRechercheClientType::class);
         
-        //$zone  = $this->getDoctrine()->getRepository('AppBundle:Zone')->findAll();
-        $form = $this->createForm(PrestationBcType::class,$prestationBc,['projet'=>$projet]);
-        if ($form->handleRequest($request)->isValid())
+        $form_recherche_site = $this->createForm(SiteRechercheClientType::class);
+        $msg        = "";
+        $trouver    = false;
+        $avecSite   = true;
+        $valider    = false;
+        $prestationAvecSite = $this->getDoctrine()->getRepository('AppBundle:PrestationBc')->findOneByBc($bc);
+        dump($prestationAvecSite);
+        if ($prestationAvecSite !== null)
+        {   
+            if ($prestationAvecSite->getSite() != null)
+            {
+                $form = $this->createForm(PrestationBcType::class,$prestationBc,['projet'=>$bc->getProjet(),'avecSite'=>true]);
+                $avecSite= true;
+            }else
+            {
+                $form = $this->createForm(PrestationBc2Type::class,$prestationBc,['projet'=>$bc->getProjet()]);
+                $avecSite = false;
+            }
+
+        }else
         {
-            $manager = $this->getDoctrine()->getManager();
+            $form = $this->createForm(PrestationBcType::class,$prestationBc,['projet'=>$bc->getProjet(),'avecSite'=>true]);
+            $avecSite = true;
+        }
+
+        if (count($request->request->all())>0 and $avecSite == true)
+        { 
             $site = $request->request->get('prestation_bc')['siteId'];
             if ($site != null)
             {
                 $site = $manager->getRepository('AppBundle:Site')->find($site);
                 $prestationBc->setSite($site);
             }
-            $manager->persist($prestationBc);
-            $manager->flush();
-            return $this->redirect($this->generateUrl('bc_show', array('id' => $cryptage->my_encrypt($id))));
+        }
+
+        if ($form->handleRequest($request)->isValid())
+        {
+            if ($avecSite) // Bon de commande avec Sites.
+            {
+                if ($site == null) // Site non saisie
+                {
+                    $this->get('session')->getFlashBag()->add('danger',"Veuillez saisir un site.");
+                    $valider = false;
+                }else // Site Saisie
+                {
+                    $sites = $this->getDoctrine()->getRepository('AppBundle:PrestationBc')->getSitesBc($bc);
+                    foreach ($sites as $siteBc) {
+                        // si plusieurs site dans un BC
+                        if (($site != $siteBc->getSite()) and (strpos($msg,$siteBc->getSite()->getCode()) === false) )
+                        {   
+                            $msg .= $siteBc->getSite()->getCode() . ', ';
+                        }
+                    }
+                    $valider = true;
+                    if ($msg != "")
+                {
+                    $this->get('session')->getFlashBag()->add('warning',"Veuillez verifier si ya pa d'erreur, ce Bon de commande possede plusieurs sites : " . $msg . " " . $site->getCode() . ".");
+                }
+                }
+                
+            }else // Bon de commande sans sites.
+            {
+                // Chercher la prestation et la zone
+                $trouver = $this->getDoctrine()->getRepository('AppBundle:PrestationBc')->findBy(['prestation' => $prestationBc->getPrestation(),'zone'=> $prestationBc->getZone()]);
+                $valider = count($trouver) > 0 ? false : true;
+                if (!$valider )
+                {
+                    $this->get('session')->getFlashBag()->add('danger',"Prestations saisir déjà pour cette zone.");
+                }
+            }
+
+            if ($valider)
+            {
+                $manager->persist($prestationBc);
+                $manager->flush();
+                return $this->redirect($this->generateUrl('bc_show', array('id' => $cryptage->my_encrypt($id))));
+            }
         }
         return $this->render('@App/Bc/add.prestation.html.twig', array(
             'bc'                    => $bc,
-            'projet'                => $projet,
-            'client'                => $client,
+            'avecSite'              => $avecSite,
+            'projet'                => $bc->getProjet(),
+            'client'                => $bc->getProjet()->getClient(),
             'form'                  => $form->createView(),
             'form_recherche_site'   => $form_recherche_site->createView(),
             )
@@ -194,6 +260,7 @@ class BcController extends Controller
     public function bcEditPrestation($id,Request $request)
     {
         $cryptage = $this->container->get('my.cryptage');
+        $manager = $this->getDoctrine()->getManager();
         $id = $cryptage->my_decrypt($id);
         $prestationBc = $this->getDoctrine()->getRepository('AppBundle:PrestationBc')->find($id);
         $bc = $prestationBc->getBc();
@@ -201,41 +268,46 @@ class BcController extends Controller
         $client = $projet->getClient();
         $form_recherche_site = $this->createForm(SiteRechercheClientType::class);
         $intervention = $this->getDoctrine()->getRepository('AppBundle:Intervention')->findByPrestationBc($prestationBc);
+        $siteId     = $prestationBc->getSite() != null ? $prestationBc->getSite()->getId() : null;
+        $siteCode   = $prestationBc->getSite() != null ? $prestationBc->getSite()->getCode() : null;
+        $siteNom    = $prestationBc->getSite() != null ? $prestationBc->getSite()->getNom() : null;
+        $avecSite = $siteId != null ? true :false;
         //dump($intervention);
-        if (count($intervention) > 0 )
+        if (count($intervention) > 0 ) 
         {
+            // Prestation affecter déjà pour une intervention.
             $form = $this->createForm(PrestationBc1Type::class,$prestationBc);
             $readonly = true;
         }else
         {   
-            $siteId     = $prestationBc->getSite() != null ? $prestationBc->getSite()->getId() : null;
-            $siteCode   = $prestationBc->getSite() != null ? $prestationBc->getSite()->getCode() : null;
-            $siteNom    = $prestationBc->getSite() != null ? $prestationBc->getSite()->getNom() : null;
-            
             $form = $this->createForm(PrestationBcType::class,$prestationBc,[   'projet'    => $projet,
                                                                                 'siteId'    => $siteId,
                                                                                 'siteCode'  => $siteCode,
-                                                                                'siteNom'   => $siteNom]);
+                                                                                'siteNom'   => $siteNom,
+                                                                                'avecSite'  => $avecSite]);
             $readonly = false;
+             
+        }
+        
+        if (count($request->request->all())>0 and !$readonly and $avecSite)
+        { 
+            $siteId = $request->request->get('prestation_bc')['siteId'];
+            if ($siteId != null)
+            {
+                $site = $manager->getRepository('AppBundle:Site')->find($siteId);
+                $prestationBc->setSite($site);
+            }
         }
         if ($form->handleRequest($request)->isValid())
         {
             $quantiteApres = $prestationBc->getQuantite();
-            $quantiteConsommer = $this->getDoctrine()->getRepository('AppBundle:Intervention')->getQuantitePrestationBc($id);
+            $quantiteConsommer = $this->getDoctrine()->getRepository('AppBundle:Intervention')->getSommeQuantitePrestationBc($id);
             if ($quantiteApres < $quantiteConsommer){
                 $this->get('session')->getFlashBag()->add('danger', 'La quantté doit etre suppérieur ou égale à : '. $quantiteConsommer .' .');
             }else
             {
-                $manager = $this->getDoctrine()->getManager();
-                if ( !$readonly )
-                {
-                    $site = $request->request->get('prestation_bc')['siteId'];
-                    if (($site != null) and !$readonly)
-                    {
-                        $site = $manager->getRepository('AppBundle:Site')->find($site);
-                        $prestationBc->setSite($site);
-                    }
-                }
+
+                
                 $manager->flush();
                 return $this->redirect($this->generateUrl('bc_show', array('id' => $cryptage->my_encrypt($bc->getId()))));
             }
@@ -247,6 +319,7 @@ class BcController extends Controller
                 'prestationBc'          => $prestationBc,
                 'projet'                => $projet,
                 'client'                => $client,
+                'avecSite'              => $avecSite,
                 'form'                  => $form->createView(),
                 'form_recherche_site'   => $form_recherche_site->createView(),
                 )
@@ -258,6 +331,7 @@ class BcController extends Controller
                 'prestationBc'          => $prestationBc,
                 'projet'                => $projet,
                 'client'                => $client,
+                'avecSite'              => $avecSite,
                 'form'                  => $form->createView(),
                 'form_recherche_site'   => $form_recherche_site->createView(),
                 )

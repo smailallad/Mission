@@ -1,16 +1,21 @@
 <?php
 
 namespace AppBundle\Entity;
+use Doctrine\ORM\Mapping\Index;
+//use Doctrine\DBAL\Schema\Index;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ManyToOne;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  *
  * @ORM\Table(name="prestation_bc")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\PrestationBcRepository")
+ * @UniqueEntity(fields={"prestation","zone","site"}, message=" Prestation déja saisie pour cette zone et site.")
  */
 class PrestationBc
 {
@@ -65,9 +70,12 @@ class PrestationBc
      * @ORM\Column(type="string", length=255, nullable=false)
      */
     private $unite;
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Intervention",mappedBy="prestationBc")
+     */
+    private $Interventions;
     
-
-
     /**
      * Get id.
      *
@@ -244,5 +252,70 @@ class PrestationBc
     public function getUnite()
     {
         return $this->unite;
+    }
+
+    /**
+     * @Assert\Callback
+     */
+    public function validate(ExecutionContextInterface $context, $payload)
+    {
+        $quantite = $this->getQuantite();
+        if ( $quantite <= 0 ) 
+        {
+            $context->buildViolation('Quantité invalide, valeur doit etre supperieur à zéro .')
+            ->atPath('quantite')
+            ->addViolation();
+        }
+        
+        $montant = $this->getMontant();
+        if ( $montant <= 0 ) 
+        {
+            $context->buildViolation('Montant invalide, valeur doit etre supperieur à zéro .')
+            ->atPath('montant')
+            ->addViolation();
+        }        
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->Interventions = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add intervention.
+     *
+     * @param \AppBundle\Entity\Intervention $intervention
+     *
+     * @return PrestationBc
+     */
+    public function addIntervention(\AppBundle\Entity\Intervention $intervention)
+    {
+        $this->Interventions[] = $intervention;
+
+        return $this;
+    }
+
+    /**
+     * Remove intervention.
+     *
+     * @param \AppBundle\Entity\Intervention $intervention
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeIntervention(\AppBundle\Entity\Intervention $intervention)
+    {
+        return $this->Interventions->removeElement($intervention);
+    }
+
+    /**
+     * Get interventions.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getInterventions()
+    {
+        return $this->Interventions;
     }
 }

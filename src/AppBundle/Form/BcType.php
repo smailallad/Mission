@@ -68,6 +68,7 @@ class BcType extends AbstractType
             'label'         => 'OTP'    
             )
         )
+        ->add('active')
         ->add('description',TextType::class, array(
             'label'         => 'Description'    
             )

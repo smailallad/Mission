@@ -5,6 +5,7 @@ namespace AppBundle\Entity;
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\ManyToOne;
+use Doctrine\ORM\Mapping\JoinColumn;
 use AppBundle\Entity\InterventionUser;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -99,8 +100,9 @@ class Intervention
      */
     private $facture;
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\PrestationBc")
-     */
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\PrestationBc",inversedBy="interventions")
+     * @JoinColumn(name="prestationBc_id", referencedColumnName="id")
+    */
     private $prestationBc;
 
     /**

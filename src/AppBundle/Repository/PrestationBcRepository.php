@@ -22,7 +22,7 @@ class PrestationBcRepository extends \Doctrine\ORM\EntityRepository
 
     }
 
-    public function findPrestationIntervention($bc,$prestation,$zone)
+    public function getPrestationIntervention($bc,$prestation,$zone,$site)
     {
         $q = $this->createQueryBuilder('pb')
             ->join('pb.bc','bc')
@@ -33,10 +33,28 @@ class PrestationBcRepository extends \Doctrine\ORM\EntityRepository
             ->andWhere('z = :zone')
             ->setParameter('bc',$bc)
             ->setParameter('prestation',$prestation)
-            ->setParameter('zone',$zone)
+            ->setParameter('zone',$zone);
+            if ($site != null)
+            {   
+                $q  ->andWhere('pb.site = :site')
+                    ->setParameter('site',$site)
+                ;
+                
+            }
+    
             ;
         return $q->getQuery()->getResult();
 
+    }
+
+    public function getSitesBc($bc)
+    {
+        $q = $this  ->createQueryBuilder('p')
+                    ->join('p.site','s')
+                    ->where('p.bc =:bc')
+                    ->setParameter('bc',$bc)
+        ;
+        return $q->getQuery()->getResult();
     }
     
 

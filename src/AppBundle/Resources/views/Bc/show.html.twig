@@ -75,11 +75,15 @@
                 <thead>
                     <tr>
                         <th> Prestations </th>
+                        {% if avecSite %}
                         <th> Code Site </th>
                         <th> Nom Site </th>
+                        {% endif %}
                         <th> Zone </th>
                         <th> Unité </th>
-                        <th class="text-right"> Quantité</th>
+                        <th class="text-right"> Qte BC</th>
+                        <th class="text-right"> Qte Consommée</th>
+                        <th class="text-right"> Qte Restée</th>
                         <th class="text-right"> Prix HT </th>
                         <th></th>
                     </tr>
@@ -90,12 +94,14 @@
                             <td>
                                 {{ prestationBc.prestation.nom }}
                             </td>
+                            {% if avecSite %}
                             <td>
                                 {{ prestationBc.site is empty ? '' : prestationBc.site.code }}
                             </td>
                             <td>
                                 {{ prestationBc.site is empty ? '' : prestationBc.site.nom }}
                             </td>
+                            {% endif %}
                             <td>
                                 {{ prestationBc.zone.nom }}
                             </td>
@@ -104,6 +110,18 @@
                             </td>
                             <td class="text-right">
                                 {{ prestationBc.quantite }}
+                            </td>
+                            <td class="text-right">
+                                {% set qte = 0 %}
+                                {% if prestationBc.interventions is not empty %}
+                                    {% for intervention in prestationBc.interventions  %}
+                                        {% set qte = qte + intervention.quantite %}
+                                    {% endfor %}
+                                {% endif %}
+                                {{ qte }}
+                            </td>
+                            <td class="text-right">
+                                {{ prestationBc.quantite - qte }}
                             </td>
                             <td class="text-right">
                                 {{ prestationBc.montant | number_format(2,',',' ') }} DA

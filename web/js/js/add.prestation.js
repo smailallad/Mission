@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    //************* Site **************
     $('#listeSite').click(function (e) {
         e.preventDefault();
     });

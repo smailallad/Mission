@@ -9,17 +9,13 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 
-class PrestationBcType extends AbstractType
+class PrestationBc2Type extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {   $projet     = $options['projet'];
-        $siteId     = $options['siteId'];
-        $siteCode   = $options['siteCode'];
-        $siteNom    = $options['siteNom'];
-        $avecSite   = $options['avecSite'];
         $builder
         ->add('prestation',EntityType::class, array(
             'label'         => 'Prestation',
@@ -45,34 +41,7 @@ class PrestationBcType extends AbstractType
                 'onchange' => 'siteDelete()',
             )
             )
-            );
-        if ($avecSite)
-        {
-            $builder
-            ->add('siteId',HiddenType::class,array(
-                'mapped'        => false,
-                'data'          => $siteId,
-            ))
-            ->add('siteCode',TextType::class,array(
-                'label'         => 'Code site',
-                'mapped'        => false,
-                'data'          => $siteCode,
-                'attr'          => array(
-                    'readonly'  => true,
-                    'class'     => 'form-control'
-                )
-            ))
-            ->add('siteNom',TextType::class,array(
-                'label'         => 'Nom site',
-                'mapped'        => false,
-                'data'          => $siteNom,
-                'attr'          => array(
-                    'readonly'  => true,
-                    'class'     => 'form-control'
-                )
-                ));
-            }
-        $builder
+        )
         ->add('unite',TextType::class,array(
             'label'         => 'Unité'
             )
@@ -97,10 +66,6 @@ class PrestationBcType extends AbstractType
             'data_class'        => 'AppBundle\Entity\PrestationBc',
             'method'            => 'POST',
             'projet'            => null,
-            'siteId'            => null,
-            'siteCode'          => null,
-            'siteNom'           => null,
-            'avecSite'          => null,
         ));
     }
     /**
@@ -108,7 +73,7 @@ class PrestationBcType extends AbstractType
      */
     public function getName()
     {
-        return 'new_prestation_bc';
+        return 'new_prestation_bc2';
     }
     
 }

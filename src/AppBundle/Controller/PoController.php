@@ -198,8 +198,8 @@ class PoController extends Controller
         
         if (!is_null($values = $this->getFilter($name))) {
             if ($form->submit($values)->isValid()) {
-                dump($form->get('num')->getData());
-                dump($form->get('active')->getData());
+                //dump($form->get('num')->getData());
+                //dump($form->get('active')->getData());
                 $this->get('lexik_form_filter.query_builder_updater')->addFilterConditions($form, $qb);
             }
         }

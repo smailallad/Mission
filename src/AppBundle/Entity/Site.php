@@ -55,7 +55,7 @@ class Site
      * @Assert\NotNull(message = "Entrer une valeur.")
      * @Groups("site_json")
     */
-    private $client; 
+    private $client;
 
     public function __construct()
     {

@@ -259,7 +259,7 @@ class InterventionRepository extends \Doctrine\ORM\EntityRepository
         return $q->getQuery()->getResult();
     }
     
-    public function findInterventionsFactureApresDate($facture,$date)
+    public function getInterventionsFactureApresDate($facture,$date)
     {
         $q = $this->createQueryBuilder('i')
             ->where('i.facture = :facture')
@@ -294,7 +294,7 @@ class InterventionRepository extends \Doctrine\ORM\EntityRepository
 
     }
    
-    public function getQuantitePrestationBc($prestationBc1)
+    public function getSommeQuantitePrestationBc($prestationBc1)
     {
         $q = $this->createQueryBuilder('i')
             ->select('SUM(i.quantite) as quantite')
@@ -303,5 +303,14 @@ class InterventionRepository extends \Doctrine\ORM\EntityRepository
             ;
             return $q->getQuery()->getSingleScalarResult() === null ? 0 : floatval($q->getQuery()->getSingleScalarResult()) ;
         
+    }
+    public function getInterventionsNonAssocier($facture)
+    {
+        $q = $this->createQueryBuilder('i')
+            ->where('i.facture = :facture')
+            ->andWhere('i.prestationBc is null')
+            ->setParameter('facture',$facture)
+        ;
+        return $q->getQuery()->getResult();
     }
 }
