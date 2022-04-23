@@ -128,4 +128,18 @@ class Po
         return $this->active;
     }
 
+
+    /**
+     * Set id.
+     *
+     * @param int $id
+     *
+     * @return Po
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 }

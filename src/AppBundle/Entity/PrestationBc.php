@@ -45,7 +45,7 @@ class PrestationBc
      * @Assert\NotNull(message = "Entrer une valeur.")
      * @Groups("site_json")
      */
-    private $bc;
+    private $bc; 
     
     /**
     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Site")
@@ -74,7 +74,7 @@ class PrestationBc
     /**
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Intervention",mappedBy="prestationBc")
      */
-    private $Interventions;
+    private $interventions;
     
     /**
      * Get id.
@@ -280,7 +280,7 @@ class PrestationBc
      */
     public function __construct()
     {
-        $this->Interventions = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->interventions = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -292,7 +292,7 @@ class PrestationBc
      */
     public function addIntervention(\AppBundle\Entity\Intervention $intervention)
     {
-        $this->Interventions[] = $intervention;
+        $this->interventions[] = $intervention;
 
         return $this;
     }
@@ -306,7 +306,7 @@ class PrestationBc
      */
     public function removeIntervention(\AppBundle\Entity\Intervention $intervention)
     {
-        return $this->Interventions->removeElement($intervention);
+        return $this->interventions->removeElement($intervention);
     }
 
     /**
@@ -316,6 +316,20 @@ class PrestationBc
      */
     public function getInterventions()
     {
-        return $this->Interventions;
+        return $this->interventions;
+    }
+
+    /**
+     * Set id.
+     *
+     * @param int $id
+     *
+     * @return PrestationBc
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
     }
 }

@@ -19,16 +19,15 @@ use AppBundle\Entity\Vehicule;
 use AppBundle\Entity\Carburant;
 use AppBundle\Entity\Prestation;
 use AppBundle\Entity\Recrutement;
+use AppBundle\Entity\PrestationBc;
 use AppBundle\Entity\FonctionUser;
 use AppBundle\Entity\FraisMission;
 use AppBundle\Entity\Intervention;
 use AppBundle\Entity\PointageUser;
-use AppBundle\Entity\PrestationBc;
 use AppBundle\Entity\DepenseMission;
 use AppBundle\Entity\FamilleDepense;
 use AppBundle\Entity\CarburantMission;
 use AppBundle\Entity\InterventionUser;
-use AppBundle\Entity\ClientFacturation;
 use AppBundle\Entity\EntretienVehicule;
 use AppBundle\Entity\InterventionVehicule;
 use AppBundle\Entity\JustificationDepense;
@@ -38,7 +37,6 @@ use AppBundle\Entity\KmsInterventionVehicule;
 use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -46,13 +44,14 @@ use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Output\NullOutput;
 
-class RestoreCommand extends ContainerAwareCommand
+class Restore_V1Command extends ContainerAwareCommand
 {  // php bin/console restore
     protected function configure()
     {
         $this
-            ->setName('restore')
+            ->setName('restore_v1')
             ->setDescription('...')
             ->addArgument('argument', InputArgument::OPTIONAL, 'Argument description')
             ->addOption('option', null, InputOption::VALUE_NONE, 'Option description')
@@ -246,12 +245,393 @@ class RestoreCommand extends ContainerAwareCommand
             }
             $output->writeln('<comment>'.str_pad('#',100-$k,'#').' 100%.</comment>'); 
         }
-        
-
+        //#############################################################################################################"
+        // Mise a jour de l'ancienne BD
+        //#############################################################################################################"
+        {
+            // Table Projet
+            $output->write('<info>' . str_pad('MAJ table Projet',30,'.') . ': </info>');
+            $sql = "UPDATE projet SET des_projet = 'OTA' WHERE code_projet = 1;
+                    UPDATE projet SET des_projet = 'NOKIA' WHERE code_projet = 2;
+                    UPDATE projet SET des_projet = 'CITAL' WHERE code_projet = 3;
+                    UPDATE projet SET des_projet = 'SONATRACH' WHERE code_projet = 5;
+                    UPDATE projet SET des_projet = 'INFRAFER' WHERE code_projet = 7;
+                    UPDATE projet SET des_projet = 'OOREDOO' WHERE code_projet = 9;
+                    UPDATE projet SET des_projet = 'AT' WHERE code_projet = 12;
+                    UPDATE projet SET des_projet = 'MOBILIS' WHERE code_projet = 14;
+                    INSERT INTO projet (code_projet, des_projet) VALUES (40,'NOKIA');
+                    ";
+            $reqs = $dbs->prepare($sql);
+            if (!$reqs->execute()) {
+                $output->writeln('');
+                $output->write('<error>' . $reqs->errorInfo()[2] . '</error>');
+            }else{
+                $output->writeln('<comment>'.str_pad('#',100,'#').' 100%.</comment>');
+            }
+            // Table Sous Projet
+            $output->write('<info>' . str_pad('MAJ table Sous Projet',30,'.') . ': </info>');
+            // Renomé les noms des sous projets
+            $sql = "UPDATE sous_projet SET des_sous_projet = 'DWDM AT' WHERE code_sous_projet = 24;
+                    UPDATE sous_projet SET des_sous_projet = 'DWDM MOBLIS' WHERE code_sous_projet = 27;
+                    UPDATE sous_projet SET des_sous_projet = 'DWDM OOREDOO' WHERE code_sous_projet = 21;
+                    UPDATE sous_projet SET des_sous_projet = 'DWDM OTA' WHERE code_sous_projet = 10;
+                    UPDATE sous_projet SET des_sous_projet = 'FTTH AT' WHERE code_sous_projet = 32;
+                    UPDATE sous_projet SET des_sous_projet = 'MED CABLE ASN' WHERE code_sous_projet = 34;
+                    UPDATE sous_projet SET des_sous_projet = 'PDH NEC' WHERE code_sous_projet = 25;
+                    UPDATE sous_projet SET des_sous_projet = 'PSAX OTA' WHERE code_sous_projet = 29;
+                    UPDATE sous_projet SET des_sous_projet = 'RADIO OTA' WHERE code_sous_projet = 35;
+                    UPDATE sous_projet SET des_sous_projet = 'ROUTEUR OTA' WHERE code_sous_projet = 19;
+                    UPDATE sous_projet SET des_sous_projet = 'SDH NEC' WHERE code_sous_projet = 26;
+                    UPDATE sous_projet SET des_sous_projet = 'SDH OOREDOO' WHERE code_sous_projet = 3;
+                    UPDATE sous_projet SET des_sous_projet = 'SDH OTA' WHERE code_sous_projet = 1;
+                    UPDATE sous_projet SET des_sous_projet = 'SSU OTA' WHERE code_sous_projet = 28;
+                    UPDATE sous_projet SET des_sous_projet = 'WERVEUR OTA' WHERE code_sous_projet = 20;
+                    UPDATE sous_projet SET des_sous_projet = 'SERVEUR OOREDOO' WHERE code_sous_projet = 22;
+                    UPDATE sous_projet SET des_sous_projet = 'TRAMWAY' WHERE code_sous_projet = 23;
+                    UPDATE sous_projet SET des_sous_projet = 'SNC LAVALIN' WHERE code_sous_projet = 33;
+                    ";
+            $reqs = $dbs->prepare($sql);
+            if (!$reqs->execute()) {
+                $output->writeln('');
+                $output->write('<error>' . $reqs->errorInfo()[2] . '</error>');
+            }else{
+                $output->writeln('<comment>'.str_pad('#',100,'#').' 100%.</comment>');    
+            }
+            // reaffecté les sous projet
+            $output->write('<info>' . str_pad('Reafecter Sous Projet',30,'.') . ': </info>');
+            $sql = "UPDATE sous_projet SET code_projet = 12 WHERE code_projet = 16;
+                    UPDATE sous_projet SET code_projet = 3 WHERE code_projet = 11;
+                    UPDATE sous_projet SET code_projet = 12 WHERE code_projet = 16;
+                    UPDATE sous_projet SET code_projet = 9 WHERE code_projet = 10;
+                    UPDATE sous_projet SET code_projet = 9 WHERE code_projet = 13;
+                    UPDATE sous_projet SET code_projet = 1 WHERE code_projet = 4;
+                    UPDATE sous_projet SET code_projet = 1 WHERE code_projet = 8;
+                    UPDATE sous_projet SET code_projet = 1 WHERE code_projet = 15;
+                    UPDATE sous_projet SET code_projet = 1 WHERE code_projet = 18;
+                    UPDATE sous_projet SET code_projet = 5 WHERE code_projet = 6;
+                    ";
+            $reqs = $dbs->prepare($sql);
+            if (!$reqs->execute()) {
+                $output->writeln('');
+                $output->write('<error>' . $reqs->errorInfo()[2] . '</error>');
+            }else{
+                $output->writeln('<comment>'.str_pad('#',100,'#').' 100%.</comment>');
+            }
+            // suppression les projets non associer
+            $output->write('<info>' . str_pad('Correction anomalies',30,'.') . ': </info>');
+            $sql = "DELETE FROM projet WHERE projet.code_projet NOT IN (SELECT sous_projet.code_projet FROM sous_projet);";
+            $reqs = $dbs->prepare($sql);
+            if (!$reqs->execute()) {
+                $output->writeln('');
+                $output->write('<error>' . $reqs->errorInfo()[2] . '</error>');
+            }else{
+                $output->writeln('<comment>'.str_pad('#',100,'#').' 100%.</comment>');
+            }
+            // Ajouter Projet SONATRACH et NOKIA pour les sites
+            $sql = "INSERT INTO projet (code_projet, des_projet) VALUES (40,'NOKIA');
+                    INSERT INTO projet (code_projet, des_projet) VALUES (5,'SONATRACH');
+                    ";
+            $reqs = $dbs->prepare($sql);
+            if (!$reqs->execute()) {
+                $output->writeln('');
+                $output->write('<error>' . $reqs->errorInfo()[2] . '</error>');
+            }else{
+                $output->writeln('<comment>'.str_pad(' ',32).str_pad('#',100,'#').' 100%.</comment>');
+            }
+            // Supprimer les tarif prestaions
+            $sql = "DELETE FROM tarif_prestation";
+            $reqs = $dbs->prepare($sql);
+            if (!$reqs->execute()) {
+                $output->writeln('');
+                $output->write('<error>' . $reqs->errorInfo()[2] . '</error>');
+            }else{
+                $output->writeln('<comment>'.str_pad(' ',32).str_pad('#',100,'#').' 100%.</comment>');
+            }
+            // Supprimer les prestations non utilisées
+            $sql = "DELETE FROM prestation WHERE prestation.code_prestation NOT IN (	SELECT intervention.code_prestation FROM intervention);";
+            $reqs = $dbs->prepare($sql);
+            if (!$reqs->execute()) {
+                $output->writeln('');
+                $output->write('<error>' . $reqs->errorInfo()[2] . '</error>');
+            }else{
+                $output->writeln('<comment>'.str_pad(' ',32).str_pad('#',100,'#').' 100%.</comment>');
+            }
+            // Suppression intervention N° : 3176 qui est en plus
+            $sql = "DELETE FROM realisateur_intervention WHERE code_intervention =3176;
+                    DELETE FROM intervention WHERE intervention.code_intervention = 3176;";
+            $reqs = $dbs->prepare($sql);
+            if (!$reqs->execute()) {
+                $output->writeln('');
+                $output->write('<error>' . $reqs->errorInfo()[2] . '</error>');
+            }else{
+                $output->writeln('<comment>'.str_pad(' ',32).str_pad('#',100,'#').' 100%.</comment>');
+            }
+            // mise a jour table prestation 
+            // Corrections des champs.
+            $sql = "UPDATE prestation SET des_prestation = REPLACE(des_prestation, 'aprés', 'après') WHERE des_prestation LIKE '%aprés%'";
+            $reqs = $dbs->prepare($sql);
+            if (!$reqs->execute()) {
+                $output->writeln('');
+                $output->write('<error>' . $reqs->errorInfo()[2] . '</error>');
+            }else{
+                $output->writeln('<comment>'.str_pad(' ',32).str_pad('#',100,'#').' 100%.</comment>');
+            }
+            $sql = "UPDATE prestation SET des_prestation = REPLACE(des_prestation, '.', '') WHERE des_prestation LIKE '%.'";
+            $reqs = $dbs->prepare($sql);
+            if (!$reqs->execute()) {
+                $output->writeln('');
+                $output->write('<error>' . $reqs->errorInfo()[2] . '</error>');
+            }else{
+                $output->writeln('<comment>'.str_pad(' ',32).str_pad('#',100,'#').' 100%.</comment>');
+            }
+            $sql = "UPDATE prestation SET des_prestation = 'Equipement Installation Add/remove carte et module optique avec tirage fibre by night TSS320H' WHERE code_prestation = 193";
+            $reqs = $dbs->prepare($sql);
+            if (!$reqs->execute()) {
+                $output->writeln('');
+                $output->write('<error>' . $reqs->errorInfo()[2] . '</error>');
+            }else{
+                $output->writeln('<comment>'.str_pad(' ',32).str_pad('#',100,'#').' 100%.</comment>');
+            }
+            $sql = "UPDATE prestation SET des_prestation = 'Equipement Installation Add/remove carte et module optique avec tirage fibre by night TSS160' WHERE code_prestation = 104";
+            $reqs = $dbs->prepare($sql);
+            if (!$reqs->execute()) {
+                $output->writeln('');
+                $output->write('<error>' . $reqs->errorInfo()[2] . '</error>');
+            }else{
+                $output->writeln('<comment>'.str_pad(' ',32).str_pad('#',100,'#').' 100%.</comment>');
+            }
+            $output->write('<info>' . str_pad('MAJ table Prestation',30,'.') . ': </info>');
+            $sous_projets=[2,4,5,6,7,18]; // changer le sous projet vers OTA = 1 pour les prestations de ses sous projet
+            $k=1;
+            foreach ($sous_projets as $sous_projet) {
+                $sql = "SELECT * FROM prestation WHERE code_sous_projet = " . $sous_projet . ";";
+                $reqs = $dbs->prepare($sql);
+                if (!$reqs->execute()) {
+                    $output->writeln('');
+                    $output->write('<error>' . $reqs->errorInfo()[2] . '</error>');
+                }
+                $recs = $reqs->fetchAll();
+                foreach ($recs as $rec){
+                    //chercher les prestations du sous projet OTA = 1
+                    $sql = "SELECT * FROM prestation WHERE des_prestation = '" . addslashes($rec["des_prestation"]) . "' AND code_sous_projet = 1;";
+                    $reqs1 = $dbs->prepare($sql);
+                    if (!$reqs1->execute()) {
+                        $output->writeln('');
+                        $output->write('<error>' . $reqs1->errorInfo()[2] . '</error>');
+                    }
+                    $resc1 = $reqs1->fetch(PDO::FETCH_ASSOC);
+                    if ($resc1 == false){ //  non trover: mise a jour de prestation
+                        $sql ="UPDATE prestation SET code_sous_projet = 1 WHERE code_sous_projet = " . $sous_projet . " AND des_prestation = '" . addslashes($rec["des_prestation"]) ."' ;";
+                        $reqs2 = $dbs->prepare($sql);
+                        if (!$reqs2->execute()) {
+                            $output->writeln('');
+                            $output->write('<error>' . $reqs2->errorInfo()[2] . '</error>');
+                        }else{
+                            if ($k < 100 ){
+                                $output->write('<comment>#</comment>');
+                                $k++;
+                            }
+                        }
+                    }else { //($recs["code_prestation"] != $resc1["code_prestation"]) { //   Trouver: mise a jour des interventions 
+                        $sql ="UPDATE intervention SET code_prestation= " . $resc1["code_prestation"] ." WHERE code_prestation =" . $rec["code_prestation"]. ";";
+                        $reqs2 = $dbs->prepare($sql);                        
+                        if (!$reqs2->execute()) {
+                            $output->writeln('');
+                            $output->write('<error>' . $reqs2->errorInfo()[2] . '</error>');
+                        }else{
+                            if ($k < 100 ){
+                                $output->write('<comment>#</comment>');
+                                $k++;
+                            }
+                        }
+                    }
+                } 
+            }
+            $output->writeln('<comment>'.str_pad('#',100-$k,'#').' 100%.</comment>'); 
+            // Supprimer les prestations non utilisées
+            $output->write('<info>' . str_pad('Prestations non utilisés',31,'.') . ': </info>');
+            $sql = "DELETE FROM prestation WHERE prestation.code_prestation NOT IN (SELECT intervention.code_prestation FROM intervention);";
+            $reqs = $dbs->prepare($sql);
+            if (!$reqs->execute()) {
+                $output->writeln('');
+                $output->write('<error>' . $reqs->errorInfo()[2] . '</error>');
+            }else{
+                $output->writeln('<comment>'.str_pad('#',100,'#').' 100%.</comment>');
+            }
+            // supprimer les sous projet non utilisé
+            $output->write('<info>' . str_pad('Sous Projet non utilisés',31,'.') . ': </info>');
+            $sql ="DELETE FROM sous_projet WHERE sous_projet.code_sous_projet NOT IN (SELECT prestation.code_sous_projet FROM prestation);";
+            $reqs = $dbs->prepare($sql);
+            if (!$reqs->execute()) {
+                $output->writeln('');
+                $output->write('<error>' . $reqs->errorInfo()[2] . '</error>');
+            }else {
+                $output->writeln('<comment>'.str_pad('#',100,'#').' 100%.</comment>');
+            }
+        }
         //#############################################################################################################"
         // Upgrade
         //#############################################################################################################"
         {
+            // Client ***************************************************************************************************************
+            // copier table Projet dans Entity Client
+            $output->writeln('');
+            $output->write('<info>' .str_pad('Copier Client',30,'.') .': </info>');
+            $reqs = $dbs->prepare("SELECT * FROM projet Order By code_projet ASC");
+            $reqs->execute();
+            $ress = $reqs->fetchAll();
+            $k=1;
+            foreach ($ress as $recs)
+            {
+                $client    = new Client();
+                $client ->setId($recs["code_projet"])
+                        ->setNom($recs["des_projet"])
+                        ;
+                $manager->persist($client);
+                $output->write('<comment>#</comment>');
+                $k++;
+            }
+            try {
+                $manager->flush();
+            } catch (\Throwable $th) {
+                $output->writeln('');
+                $output->writeln('<error>Erreur: '. $th->getMessage() .'</error>');
+                $manager = $this->getContainer()->get('doctrine')->resetManager();
+            }
+            $output->writeln('<comment>'.str_pad('#',100-$k,'#').' 100%</comment>');
+            // ******************
+            // Table Site
+            // ******************
+            $output->writeln('<info>' .str_pad('MAJ Site',30,'.') .': </info>');
+            $reqs = $dbs->prepare("ALTER TABLE site DROP client");
+            if (!$reqs->execute()) {
+                //$output->writeln('');
+                //$output->write('<error>' . $reqs->errorInfo()[2] . '</error>');
+            }
+            $reqs = $dbs->prepare("ALTER TABLE site ADD client int");
+            if (!$reqs->execute()) {
+                $output->writeln('');
+                $output->write('<error>' . $reqs->errorInfo()[2] . '</error>');
+            }
+            $reqs = $dbs->prepare("UPDATE site SET client = 0 WHERE client IS NULL");
+            if (!$reqs->execute()) {
+                $output->writeln('');
+                $output->write('<error>' . $reqs->errorInfo()[2] . '</error>');
+            }
+            //  OTA 
+            $reqs = $dbs->prepare("UPDATE site SET client = 1 
+                                    WHERE (
+                                    ((code_site REGEXP '^[aco][0-9]{2}[sxmbt]|^[a-z \-]+$|^msc[0-9]+$|^[a-z \-]+$|^pk[0-9]+$' ) 
+                                    and (not (code_site REGEXP '^ct |^ca ' )) 
+                                    and (code_site not in ('PY','ZCINA','Arzew','CAROTHEQUECINA','CIS','AOP','CINA','TD-HMD')) 
+                                    and (code_site not in ('Boutique Orredoo','Boutique orredoo bej','WH WTA Oran','WH WTA Rouiba'))
+                                    and (code_site not in ('centrale electrique'))
+                                    and (code_site not in ('chaiba','Constantine NMS','DDO','Draa el mizane','el kala','EMRT Blida','HOUCINE DEY','WH AT'))
+                                    and (code_site not in ('Hydra mobilis'))
+                                    and (code_site not in ('LTPCC','LSI du depot','Annaba Cclt'))
+                                    and (code_site not in ('Alcatel'))
+                                    )
+                                    or (code_site in ('WH_OTA','WH OTA','WH-OTA Constantine')))
+                                    and ( client =0 ) 
+                                    ");
+            if (!$reqs->execute()) {
+                $output->writeln('');
+                $output->write('<error>' . $reqs->errorInfo()[2] . '</error>');
+            }else{        
+                $output->writeln('<info>'.str_pad('Site OTA',29,'.') . ' : </info><comment>'.str_pad('#',100,'#').' 100%.</comment>');
+            }
+            // Mobilis
+            $reqs = $dbs->prepare("UPDATE site SET client = 14
+                                    WHERE (code_site REGEXP '^[0-9]+$' or code_site = 'PY' ) 
+                                    or (code_site in ('Hydra mobilis'))
+                                    and ( client =0 )
+                                    ");
+            if (!$reqs->execute()) {
+                $output->writeln('');
+                $output->write('<error>' . $reqs->errorInfo()[2] . '</error>');
+            }else{        
+                $output->writeln('<info>'.str_pad('Site Mobilis',29,'.') . ' : </info><comment>'.str_pad('#',100,'#').' 100%.</comment>');
+            }
+            // AT
+            $reqs = $dbs->prepare("UPDATE site SET client = 12
+                                    WHERE ((code_site  REGEXP '^ct|^ca|^sp[0-9]+$')
+                                    or(code_site in ('SR ADL / HONET OBN C','TCC11','WH AT','Hydra mobilis','chaiba','Constantine NMS','DDO','Draa el mizane','el kala','EMRT Blida','HOUCINE DEY','WH AT','rep03','rep06')))
+                                    and ( client =0 )
+                                    ");
+            if (!$reqs->execute()) {
+                $output->writeln('');
+                $output->write('<error>' . $reqs->errorInfo()[2] . '</error>');
+            }else{        
+                $output->writeln('<info>'.str_pad('Site AT',29,'.') . ' : </info><comment>'.str_pad('#',100,'#').' 100%.</comment>');
+            }
+            // Ooredoo ********************************************************************
+            $reqs = $dbs->prepare("UPDATE site SET client = 9
+                                    WHERE ((code_site  REGEXP '^al[0-9]+$|^alt[0-9]+$|^ans[0-9]+$|^bas[0-9]+$|^to[0-9]+$|^tp[0-9]+$|^ts[0-9]+$|^bat[0-9]+$|^sos[0-9]+$|^se[0-9]+$|^set[0-9]+$|^sks[0-9]+$|^ai[0-9]+$|^bj[0-9]+$|^bjt[0-9]+$|^bl[0-9]+$|^bm|^bo|^ch|^et|^gu|^kh|^ms[0-9]+|^ob|^t[osp]t[0-9]+$')
+                                    or (code_site in ('Boutique Orredoo','Boutique orredoo bej','WH_WTA','WH WTA Oran','WH WTA Rouiba','A1679','BLT02','MIS21','S0S29')))
+                                    and ( client =0 )
+                                    ");
+            if (!$reqs->execute()) {
+                $output->writeln('');
+                $output->write('<error>' . $reqs->errorInfo()[2] . '</error>');
+            }else{        
+                $output->writeln('<info>'.str_pad('Site OOREDOO',29,'.') . ' : </info><comment>'.str_pad('#',100,'#').' 100%.</comment>');
+            }
+            // CITAL ***********************************************************************
+            $reqs = $dbs->prepare("UPDATE site SET client = 3
+                                    WHERE ((code_site  REGEXP '^p[0-9]+$|^sst[0-9]+$')
+                                    or (code_site in ('LTPCC','LSI du depot','Annaba Cclt','Téléphérique','Dépôt BEK')))
+                                    and ( client =0 )
+                                    ");
+            if (!$reqs->execute()) {
+                $output->writeln('');
+                $output->write('<error>' . $reqs->errorInfo()[2] . '</error>');
+            }else{        
+                $output->writeln('<info>'.str_pad('Site CITAL',29,'.') . ' : </info><comment>'.str_pad('#',100,'#').' 100%.</comment>');
+            }      
+            // SONATRACH ************************************************************************
+            $reqs = $dbs->prepare("UPDATE site SET client = 5
+                                    WHERE ((code_site  REGEXP 'elr1|^pc[0-9]+$|ps[0-9]+$|sta[0-9]+$') 
+                                    or (code_site in ('PY','ZCINA','Arzew','CAROTHEQUECINA','CIS','AOP','CINA','TD-HMD','24 FEV','E1C','E2A','O2P','OMN77','OMO13','OMP53','s1a','TA-GR1','U25BIS','U26LR1')))
+                                    and ( client =0 )
+                                    ");
+            if (!$reqs->execute()) {
+                $output->writeln('');
+                $output->write('<error>' . $reqs->errorInfo()[2] . '</error>');
+            }else{        
+                $output->writeln('<info>'.str_pad('Site SONATRACH',29,'.') . ' : </info><comment>'.str_pad('#',100,'#').' 100%.</comment>');
+            }
+            // SNC LAVALIN *****************************************************************
+            $reqs = $dbs->prepare("UPDATE site SET client = 17
+                                    WHERE (code_site = 'centrale electrique' ) 
+                                    and ( client =0 )
+                                    ");
+            if (!$reqs->execute()) {
+                $output->writeln('');
+                $output->write('<error>' . $reqs->errorInfo()[2] . '</error>');
+            }else{        
+                $output->writeln('<info>'.str_pad('Site SNC LAVALIN',29,'.') . ' : </info><comment>'.str_pad('#',100,'#').' 100%.</comment>');
+            }
+            // NOKIA *****************************************************************
+            $reqs = $dbs->prepare("UPDATE site SET client = 40
+                                    WHERE (code_site in ('Alcatel','WH_ALU') ) 
+                                    and ( client =0 )
+                                    ");
+            if (!$reqs->execute()) {
+                $output->writeln('');
+                $output->write('<error>' . $reqs->errorInfo()[2] . '</error>');
+            }else{        
+                $output->writeln('<info>'.str_pad('Site NOKIA',29,'.') . ' : </info><comment>'.str_pad('#',100,'#').' 100%.</comment>');
+            }
+            // Le reste OTA *****************************************************************
+            $reqs = $dbs->prepare("UPDATE site SET client = 1
+                                    WHERE ( client =0 )
+                                    ");
+            if (!$reqs->execute()) {
+                $output->writeln('');
+                $output->write('<error>' . $reqs->errorInfo()[2] . '</error>');
+            }else{        
+                $output->writeln('<info>'.str_pad('Le reste Site OTA',29,'.') . ' : </info><comment>'.str_pad('#',100,'#').' 100%.</comment>');
+            }
             // **********************
             // Roles **********************************************************************************************************
             $output->write('<info>' . str_pad('Copier Roles',30,'.'). ': </info>');
@@ -498,54 +878,6 @@ class RestoreCommand extends ContainerAwareCommand
                 $manager = $this->getContainer()->get('doctrine')->resetManager();
             }
             $output->writeln('<comment>'.str_pad('#',100-$k,'#').' 100%.</comment>');
-            
-            // Client *******************************************************************************************
-            $output->writeln('');
-            $output->write('<info>' .str_pad('Copier Client',30,'.') .': </info>');
-            $reqs = $dbs->prepare("SELECT * FROM projet Order By code_projet ASC");
-            $reqs->execute();
-            $ress = $reqs->fetchAll();
-            $k=1;
-            foreach ($ress as $recs)
-            {
-                $client    = new Client();
-                $client ->setId($recs["code_projet"])
-                        ->setNom($recs["des_projet"])
-                        ;
-                $manager->persist($client);
-                $output->write('<comment>#</comment>');
-                $k++;
-            }
-            try {
-                $manager->flush();
-            } catch (\Throwable $th) {
-                $output->writeln('');
-                $output->writeln('<error>Erreur: '. $th->getMessage() .'</error>');
-                $manager = $this->getContainer()->get('doctrine')->resetManager();
-            }
-            $output->writeln('<comment>'.str_pad('#',100-$k,'#').' 100%</comment>');
-
-            // Client facturation *************************************************************************************************
-            $output->write('<info>' . str_pad('Client Facturation',30,'.'). ': </info>');
-            $clientFacturation = new ClientFacturation();
-            $clientFacturation  ->setId(1)
-                                ->setNom("Alcatel-Lucent International Algérie")
-                                ->setAdresse("14, Avenue des frères Bouadou 16005 Bir Mourad Rais, Alger")
-                                ->setTelephone("021 44 77 66")
-                                ->setRc("16/00-07S0973859")
-                                ->setTin("00000085952")
-                                ->setNif("000716097385968")
-            ;
-            $manager->persist($clientFacturation);
-            try {
-                $manager->flush();
-            } catch (\Throwable $th) {
-                $output->writeln('');
-                $output->writeln('<error>Erreur: '. $th->getMessage() .'</error>');
-                $manager = $this->getContainer()->get('doctrine')->resetManager();
-            }
-            $output->writeln('<comment>'.str_pad('#',100,'#').' 100%</comment>');
-
             // Zone ***************************************************************************************************************
             $output->write('<info>' . str_pad('Copier Zone',30,'.'). ': </info>');
             $reqs = $dbs->prepare("SELECT * FROM zone Order By zone");
@@ -556,7 +888,7 @@ class RestoreCommand extends ContainerAwareCommand
             {
                 $zone = new Zone();
                 $zone   ->setId($recs['zone'])
-                        ->setNom($recs['zone'])
+                        ->setNom("Zone_".$recs['zone'])
                 ;
                 $manager->persist($zone);
                 $output->write('<comment>#</comment>');
@@ -570,7 +902,6 @@ class RestoreCommand extends ContainerAwareCommand
                 $manager = $this->getContainer()->get('doctrine')->resetManager();
             }
             $output->writeln('<comment>'.str_pad('#',100-$k,'#').' 100%.</comment>');
-
             // Wilaya ***********************************************************************************************************
             $output->write('<info>' . str_pad('Copier Wilaya',30,'.'). ': </info>');
             $reqs = $dbs->prepare("SELECT * FROM wilaya Order By code_wilaya");
@@ -579,28 +910,12 @@ class RestoreCommand extends ContainerAwareCommand
             $k=1;
             foreach ($ress as $recs)
             {
-                //chercher les frais de mission
-                $fm = 0;
-                $sql = "SELECT * FROM frais_mission_wilaya WHERE code_wilaya = " . $recs["code_wilaya"];
-                $reqs1 = $dbs->prepare($sql);
-                if (!$reqs1->execute()) {
-                    $output->writeln('');
-                    $output->write('<error>' . $reqs1->errorInfo()[2] . '</error>');
-                }
-                $resc1 = $reqs1->fetch(PDO::FETCH_ASSOC);
-                if ($resc1 !== false)
-                {
-                    $fm = $resc1["mon_f_mission"];
-                } 
-
                 $zone = $repository->getRepository("AppBundle:Zone")->find($recs["zone_wilaya"]);
-                $code = str_pad($recs["code_wilaya"], 2, "0", STR_PAD_LEFT); 
                 $wilaya = new Wilaya();
                 $wilaya ->setId($recs['code_wilaya'])
-                        ->setCode($code)
                         ->setNom($recs['nom_wilaya'])
                         ->setZone($zone)
-                        ->setMontantFm($fm)
+                        ->setMontantFm(0)
                 ;
                 $manager->persist($wilaya);
                 $output->write('<comment>#</comment>');
@@ -736,22 +1051,25 @@ class RestoreCommand extends ContainerAwareCommand
             $k=1;
             foreach ($ress as $recs)
             {   $marque = $repository->getRepository("AppBundle:Marque")->find($recs["marque_id"]);
+                $reqAssurance = $dbv->prepare("SELECT * FROM assurance where vehicule_id = " . $recs["id"] . " AND dernier = 1" );
+                $reqAssurance->execute();
+                $assurance = $reqAssurance->fetch(PDO::FETCH_ASSOC);
+                $reqCTech = $dbv->prepare("SELECT * FROM controletech where vehicule_id = " . $recs["id"] . " AND dernier = 1" );
+                $reqCTech->execute();
+                $controlTech = $reqCTech->fetch(PDO::FETCH_ASSOC);
                 $vehicule    = new Vehicule();
                 $vehicule   ->setId($recs["id"])
                             ->setNom($recs["nom"])
                             ->setMarque($marque)
                             ->setActive($recs["active"])
                             ->setMatricule($recs["matricule"])
-                            ->setNbrjAlertRelever($recs["nbrj_alert_relever"])
-                            ->setKmsRelever($recs["kms_relever"])
-                            ->setDateRelever(new DateTime($recs["date_relever"]))
-                            ->setDebutAssurance(new DateTime($recs["debut_assurance"]))
-                            ->setFinAssurance(new DateTime($recs["fin_assurance"]))
-                            ->setDebutControlTech(new DateTime($recs["debut_control_tech"]))
-                            ->setFinControlTech(new DateTime($recs["fin_control_tech"]))
-                            ->setObsAssurance($recs["obs_assurance"])
-                            ->setObsControlTech($recs["obs_control_tech"])
-
+                            ->setNbrjAlertRelever($recs["nbrjalertRelever"])
+                            ->setKmsRelever($recs["kmsRelever"])
+                            ->setDateRelever(new DateTime($recs["dateRelever"]))
+                            ->setDebutAssurance(new DateTime($assurance["dateDebut"]))
+                            ->setFinAssurance(new DateTime($assurance["dateFin"]))
+                            ->setDebutControlTech(new DateTime($controlTech["dateDebut"]))
+                            ->setFinControlTech(new DateTime($controlTech["dateFin"]))
                             ;
                 $manager->persist($vehicule);
                 $output->write('<comment>#</comment>');
@@ -768,7 +1086,7 @@ class RestoreCommand extends ContainerAwareCommand
             //*** Gestion des vehicules 
             // InterventionVehicule *****************************************************************************************
             $output->write('<info>' . str_pad('Copier Intervention Vehicule',30,'.'). ': </info>');
-            $reqs = $dbv->prepare("SELECT * FROM intervention_vehicule Order By id ASC");
+            $reqs = $dbv->prepare("SELECT * FROM intervention Order By id ASC");
             $reqs->execute();
             $ress = $reqs->fetchAll();
             $nbr = count($ress);
@@ -783,7 +1101,6 @@ class RestoreCommand extends ContainerAwareCommand
                 $interventionVehicule   ->setId($recs['id'])
                                         ->setDesignation($recs['designation'])
                                         ->setUnite($recs['unite'])
-                                        ->setImportant($recs['important'])
                                         ;
                 $manager->persist($interventionVehicule);
                 if ($c == $pas ){
@@ -805,7 +1122,7 @@ class RestoreCommand extends ContainerAwareCommand
             //*** Gestion des vehicules 
             // Entretien Vehicule **********************************************************************************************
             $output->write('<info>' . str_pad('Copier Entretion Vehicule',30,'.'). ': </info>');
-            $reqs = $dbv->prepare("SELECT * FROM entretien_vehicule Order By id ASC");
+            $reqs = $dbv->prepare("SELECT * FROM entretien Order By id ASC");
             $reqs->execute();
             $ress = $reqs->fetchAll();
             $nbr = count($ress);
@@ -817,7 +1134,32 @@ class RestoreCommand extends ContainerAwareCommand
             $k=1;
             foreach ($ress as $recs)
             {   $vehicule = $repository->getRepository("AppBundle:Vehicule")->find($recs["vehicule_id"]);
-                $user = $repository->getRepository("AppBundle:User")->find($recs["user_id"]);
+                switch ($recs["chauffeur_id"]) {
+                    case 1:
+                        $chauffeur = 1;
+                        break;
+                    case 2:
+                        $chauffeur = 2;
+                        break;
+                    case 3:
+                        $chauffeur = 9;
+                    case 4:
+                        $chauffeur = 24;
+                        break;
+                    case 5:
+                        $chauffeur = 5;
+                        break;
+                    case 6:
+                        $chauffeur = 12;
+                        break;
+                    case 7:
+                        $chauffeur = 3;
+                        break;
+                    case 8:
+                        $chauffeur = 47;
+                        break;             
+                    }
+                $user = $repository->getRepository("AppBundle:User")->find($chauffeur);
                 $entretienVehicule  = new EntretienVehicule();
                 $entretienVehicule  ->setId($recs['id'])
                             ->setVehicule($vehicule)
@@ -846,7 +1188,7 @@ class RestoreCommand extends ContainerAwareCommand
             //*** Gestion des vehicules 
             // KmsInterventionVehicule *********************************************************************************************
             $output->write('<info>' . str_pad('Copier Kms Vehicule',30,'.'). ': </info>');
-            $reqs = $dbv->prepare("SELECT * FROM kms_intervention_vehicule Order By id ASC");
+            $reqs = $dbv->prepare("SELECT * FROM kmsintervention Order By id ASC");
             $reqs->execute();
             $ress = $reqs->fetchAll();
             $nbr = count($ress);
@@ -858,7 +1200,7 @@ class RestoreCommand extends ContainerAwareCommand
             $k=1;
             foreach ($ress as $recs)
             {   $marque = $repository->getRepository("AppBundle:Marque")->find($recs["marque_id"]);
-                $interventionVehicule = $repository->getRepository("AppBundle:InterventionVehicule")->find($recs["intervention_vehicule_id"]);
+                $interventionVehicule = $repository->getRepository("AppBundle:InterventionVehicule")->find($recs["intervention_id"]);
                 $kmsInterventionVehicule    = new KmsInterventionVehicule();
                 $kmsInterventionVehicule    ->setId($recs['id'])
                                             ->setMarque($marque)
@@ -883,11 +1225,10 @@ class RestoreCommand extends ContainerAwareCommand
                 $manager = $this->getContainer()->get('doctrine')->resetManager();
             }
             $output->writeln('<comment>'.str_pad('#',100-$k,'#').' 100%.</comment>');
-            
             //*** Gestion des vehicules 
             // InterventionEntretien ou LigneEntretien **********************************************************************
             $output->write('<info>' . str_pad('Copier Intervention Entretien',30,'.'). ': </info>');
-            $reqs = $dbv->prepare("SELECT * FROM intervention_entretien Order By ID ASC");
+            $reqs = $dbv->prepare("SELECT * FROM ligneentretien Order By id ASC");
             $reqs->execute();
             $ress = $reqs->fetchAll();
             $nbr = count($ress);
@@ -898,10 +1239,10 @@ class RestoreCommand extends ContainerAwareCommand
             $c = 1;
             $k=1;
             foreach ($ress as $recs)
-            {   $entretienVehicule = $repository->getRepository("AppBundle:EntretienVehicule")->find($recs["entretien_vehicule_id"]);
-                $interventionVehicule = $repository->getRepository("AppBundle:InterventionVehicule")->find($recs["intervention_vehicule_id"]);
+            {   $entretienVehicule = $repository->getRepository("AppBundle:EntretienVehicule")->find($recs["entretien_id"]);
+                $interventionVehicule = $repository->getRepository("AppBundle:InterventionVehicule")->find($recs["intervention_id"]);
                 $interventionEntretien    = new InterventionEntretien();
-                $interventionEntretien    ->setId($recs['ID'])
+                $interventionEntretien    ->setId($recs['id'])
                                             ->setEntretienVehicule($entretienVehicule)
                                             ->setInterventionVehicule($interventionVehicule)
                                             ->setQte($recs['qte'])
@@ -924,7 +1265,6 @@ class RestoreCommand extends ContainerAwareCommand
                 $manager = $this->getContainer()->get('doctrine')->resetManager();
             }            
             $output->writeln('<comment>'.str_pad('#',100-$k,'#').' 100%.</comment>');
-            
             // Projet *********************************************************************************************************
             // copier table sous projet dans Entity Projet
             $output->write('<info>' . str_pad('Copier Projet',30,'.'). ': </info>');
@@ -938,7 +1278,6 @@ class RestoreCommand extends ContainerAwareCommand
             }
             $c = 1;
             $k=1;
-            $clientFacturation = $repository->getRepository('AppBundle:ClientFacturation')->find(1);
             foreach ($ress as $recs)
             {
                 $client = $repository->getRepository('AppBundle:Client')->find($recs['code_projet']);
@@ -946,7 +1285,6 @@ class RestoreCommand extends ContainerAwareCommand
                 $projet ->setId($recs["code_sous_projet"])
                         ->setNom($recs["des_sous_projet"])
                         ->setclient($client)
-                        ->setClientFacturation($clientFacturation);
                         ;
                 $manager->persist($projet);
                 if ($c == $pas ){
@@ -965,7 +1303,6 @@ class RestoreCommand extends ContainerAwareCommand
                 $manager = $this->getContainer()->get('doctrine')->resetManager();
             }
             $output->writeln('<comment>'.str_pad('#',100-$k,'#').' 100%.</comment>');
-            
             // Prestation ***************************************************************************************************************************
             $output->write('<info>' . str_pad('Copier Prestation',30,'.'). ': </info>');
             $reqs = $dbs->prepare("SELECT * FROM prestation WHERE code_sous_projet");
@@ -985,7 +1322,6 @@ class RestoreCommand extends ContainerAwareCommand
                 $prestation     ->setId($recs["code_prestation"])
                                 ->setNom($recs["des_prestation"])
                                 ->setProjet($projet)
-                                ->setActive(true)
                             ;
                 $manager->persist($prestation);
                 if ($c == $pas ){
@@ -1004,8 +1340,7 @@ class RestoreCommand extends ContainerAwareCommand
                 $manager = $this->getContainer()->get('doctrine')->resetManager();
             }
             $output->writeln('<comment>'.str_pad('#',100-$k,'#').' 100%.</comment>');
-            
-            // Intervention ***********************************************************************************************
+            //*** Intervention ***********************************************************************************************
             $output->write('<info>' . str_pad('Copier Intervention',30,'.'). ': </info>');
             $reqs = $dbs->prepare("SELECT * FROM intervention Order By code_intervention ASC");
             $reqs->execute();
@@ -1024,8 +1359,8 @@ class RestoreCommand extends ContainerAwareCommand
                 $site = $repository->getRepository('AppBundle:Site')->findOneBy(['code' => $recs['code_site']]);
                 $prestation = $repository->getRepository('AppBundle:Prestation')->find($recs['code_prestation']);
                 $vehicule = $repository->getRepository('AppBundle:Vehicule')->find($recs['id_vehicule']);
-                $intervention    = new Intervention();
-                $intervention    ->setId($recs["code_intervention"])
+                $destination    = new Intervention();
+                $destination    ->setId($recs["code_intervention"])
                                 ->setMission($mission)
                                 ->setSite($site)
                                 ->setPrestation($prestation)
@@ -1034,8 +1369,9 @@ class RestoreCommand extends ContainerAwareCommand
                                 ->setDesignation($recs['des_intervention'])
                                 ->setQuantite($recs['quantite'])
                                 ->setVehicule($vehicule)
+                                ->setTarif(0)
                             ;
-                $manager->persist($intervention);
+                $manager->persist($destination);
                 if ($c == $pas ){
                     $output->write('<comment>#</comment>');
                     $c = 1;
@@ -1052,8 +1388,7 @@ class RestoreCommand extends ContainerAwareCommand
                 $manager = $this->getContainer()->get('doctrine')->resetManager();
             }
             $output->writeln('<comment>'.str_pad('#',100-$k,'#').' 100%.</comment>');
-            
-            // Famille depense *********************************************************************************************
+            //*** Famille depense *********************************************************************************************
             $output->write('<info>' . str_pad('Copier Famille',30,'.'). ': </info>');
             $reqs = $dbs->prepare("SELECT * FROM famille_dep Order By code_fam_dep ASC");
             $reqs->execute();
@@ -1087,10 +1422,8 @@ class RestoreCommand extends ContainerAwareCommand
                 $manager = $this->getContainer()->get('doctrine')->resetManager();
             }
             $output->writeln('<comment>'.str_pad('#',100-$k,'#').' 100%.</comment>');
-            
-            // Depense *******************************************************************************************
+            //*** Depense *******************************************************************************************
             $output->write('<info>' . str_pad('Copier Depense',30,'.'). ': </info>');
-            // Griffe dupliquer (48 et 87) remplacer le 87 par 48.
             $reqs = $dbs->prepare("UPDATE depense SET code_depense = 48 WHERE code_depense = 87 ");
             $reqs->execute();
             $reqs = $dbs->prepare("SELECT * FROM table_depense WHERE (code_depense != 87) Order By code_depense ASC");
@@ -1128,8 +1461,7 @@ class RestoreCommand extends ContainerAwareCommand
                 $manager = $this->getContainer()->get('doctrine')->resetManager();
             }
             $output->writeln('<comment>'.str_pad('#',100-$k,'#').' 100%.</comment>');
-            
-            // Justification Depense ****************************************************************************************
+            //*** Justification Depense ****************************************************************************************
             $output->write('<info>' . str_pad('Copier Justification',30,'.'). ': </info>');
             $reqs = $dbs->prepare("SELECT * FROM jus_depense Order By code_jus ASC");
             $reqs->execute();
@@ -1142,7 +1474,7 @@ class RestoreCommand extends ContainerAwareCommand
             $c = 1;
             $k=1;
             foreach ($ress as $recs)
-            {   
+            {   //$familleDepense = $repository->getRepository('AppBundle:FamilleDepense')->find($recs['code_fam_dep']);
                 $destination    = new JustificationDepense();
                 $destination    ->setId($recs["code_jus"])
                                 ->setNom($recs["des_jus"])
@@ -1164,8 +1496,7 @@ class RestoreCommand extends ContainerAwareCommand
                 $manager = $this->getContainer()->get('doctrine')->resetManager();
             }
             $output->writeln('<comment>'.str_pad('#',100-$k,'#').' 100%.</comment>');
-            
-            // Depense Mission ******************************************************************************************
+            //*** Depense Mission ******************************************************************************************
             $output->write('<info>' . str_pad('Copier Depense Mission',30,'.'). ': </info>');
             // Enlever Cle ID, ajout Method SetId()
             // Remplire la table Carburant créer nouvellement
@@ -1272,9 +1603,8 @@ class RestoreCommand extends ContainerAwareCommand
                 $output->writeln('<error>Erreur: '. $th->getMessage() .'</error>');
                 $manager = $this->getContainer()->get('doctrine')->resetManager();
             }
-            
-            // Correction du carburant pour vehicle
-            // Essance pour Ford A et Gas-oil pour Toyata A
+            //*** Correction du carburant pour vehicle
+            //*** Essance pour Ford A et Gas-oil pour Toyata A
             $reqd = $dbd->prepare("UPDATE  carburant_mission SET vehicule_id = 3  WHERE vehicule_id in(1,2,6,7,8,9) and carburant_id in(1,3)");
             if (!$reqd->execute()) {
                 $output->writeln('');
@@ -1285,7 +1615,7 @@ class RestoreCommand extends ContainerAwareCommand
                 $output->writeln('');
                 $output->write('<error>' . $reqd->errorInfo()[2] . '</error>');
             }
-            // Suppression Gas-oil, Essance et Sans-plan dans l'entity dépense */
+            //*** Suppression Gas-oil, Essance et Sans-plan dans l'entity dépense */
             $reqd = $dbd->prepare("DELETE  FROM depense WHERE id in(2,3,4)");
             if (!$reqd->execute()) {
                 $output->writeln('');
@@ -1293,8 +1623,7 @@ class RestoreCommand extends ContainerAwareCommand
             }
 
             $output->writeln('<comment>'.str_pad('#',100-$k,'#').' 100%.</comment>');
-            
-            // Frais Mission ***************************************************************************************
+            //*** Frais Mission ***************************************************************************************
             $output->write('<info>' . str_pad('Copier Frais Mission',30,'.'). ': </info>');
             $id = 1;
             $reqs = $dbs->prepare("SELECT * FROM frais_mission Order By id_frais_mission ASC");
@@ -1335,8 +1664,7 @@ class RestoreCommand extends ContainerAwareCommand
                 $manager = $this->getContainer()->get('doctrine')->resetManager();
             }
             $output->writeln('<comment>'.str_pad('#',100-$k,'#').' 100%.</comment>');
-            
-            // Intervention user *****************************************************************************************
+            //*** Intervention user *****************************************************************************************
             $output->write('<info>' . str_pad('Copier Intervention User',30,'.'). ': </info>');
             $id = 1;
             $reqs = $dbs->prepare("SELECT * FROM realisateur_intervention ");
@@ -1375,8 +1703,7 @@ class RestoreCommand extends ContainerAwareCommand
                 $manager = $this->getContainer()->get('doctrine')->resetManager();
             }
             $output->writeln('<comment>'.str_pad('#',100-$k,'#').' 100%.</comment>');
-            
-            // Tarif Prestation *****************************************************************************************
+            //*** Tarif Prestation *****************************************************************************************
             /*$output->writeln('<comment> 100%.</comment>');
             $output->write('<info>' . str_pad('Copier Tarif',30,'.'). ': </info>');
             $id = 1;
@@ -1416,8 +1743,7 @@ class RestoreCommand extends ContainerAwareCommand
                 $output->writeln('<error>Erreur: '. $th->getMessage() .'</error>');
                 $manager = $this->getContainer()->get('doctrine')->resetManager();
             }*/
-            
-            // Fonction ***************************************************************************************************
+            //*** Fonction ***************************************************************************************************
             $output->write('<info>' . str_pad('Copier Fonction',30,'.'). ': </info>');
             $reqs = $dbs->prepare("SELECT * FROM fonction Order By code_fonction ASC");
             $reqs->execute();
@@ -1452,8 +1778,7 @@ class RestoreCommand extends ContainerAwareCommand
                 $manager = $this->getContainer()->get('doctrine')->resetManager();
             }
             $output->writeln('<comment>'.str_pad('#',100-$k,'#').' 100%.</comment>');
-            
-            // Fonction User ********************************************************************************************
+            //*** Fonction User ********************************************************************************************
             $output->write('<info>' . str_pad('Copier Fonction User',30,'.'). ': </info>');
             $id =1;
             $reqs = $dbs->prepare("SELECT * FROM fonction_employe Order By date_fonction ASC");
@@ -1493,8 +1818,7 @@ class RestoreCommand extends ContainerAwareCommand
                 $manager = $this->getContainer()->get('doctrine')->resetManager();
             }
             $output->writeln('<comment>'.str_pad('#',100-$k,'#').' 100%.</comment>');
-            
-            // Recrutement ***************************************************************************************************************************
+            //*** Recrutement ***************************************************************************************************************************
             $output->write('<info>' . str_pad('Copier Recrutement',30,'.'). ': </info>');
             $id =1;
             $reqs = $dbs->prepare("SELECT * FROM recrutement Order By date_recrutement ASC");
@@ -1534,8 +1858,7 @@ class RestoreCommand extends ContainerAwareCommand
                 $manager = $this->getContainer()->get('doctrine')->resetManager();
             }
             $output->writeln('<comment>'.str_pad('#',100-$k,'#').' 100%.</comment>');
-            
-            // Pointage ***************************************************************************************************************************
+            //*** Pointage ***************************************************************************************************************************
             $output->write('<info>' . str_pad('Copier Pointage',30,'.'). ': </info>');
             $reqs = $dbs->prepare("SELECT * FROM pointage_designation Order By des_pointageID ASC");
             $reqs->execute();
@@ -1571,8 +1894,7 @@ class RestoreCommand extends ContainerAwareCommand
                 $manager = $this->getContainer()->get('doctrine')->resetManager();
             }
             $output->writeln('<comment>'.str_pad('#',100-$k,'#').' 100%.</comment>');
-            
-            // Poinatge Employe  ***************************************************************************************************************************
+            //*** Poinatge Employe  ***************************************************************************************************************************
             $output->write('<info>' . str_pad('Copier Pointage Employe',30,'.'). ': </info>');
             $reqs = $dbs->prepare("SELECT * FROM pointage Order By date_pointage ASC");
             $reqs->execute();

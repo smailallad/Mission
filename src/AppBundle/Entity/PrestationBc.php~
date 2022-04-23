@@ -45,7 +45,7 @@ class PrestationBc
      * @Assert\NotNull(message = "Entrer une valeur.")
      * @Groups("site_json")
      */
-    private $bc;
+    private $bc; 
     
     /**
     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Site")
@@ -72,9 +72,9 @@ class PrestationBc
     private $unite;
 
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Intervention",mappedBy="prestaionBc")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Intervention",mappedBy="prestationBc")
      */
-    private $Interventions;
+    private $interventions;
     
     /**
      * Get id.
@@ -274,5 +274,62 @@ class PrestationBc
             ->atPath('montant')
             ->addViolation();
         }        
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->interventions = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add intervention.
+     *
+     * @param \AppBundle\Entity\Intervention $intervention
+     *
+     * @return PrestationBc
+     */
+    public function addIntervention(\AppBundle\Entity\Intervention $intervention)
+    {
+        $this->interventions[] = $intervention;
+
+        return $this;
+    }
+
+    /**
+     * Remove intervention.
+     *
+     * @param \AppBundle\Entity\Intervention $intervention
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeIntervention(\AppBundle\Entity\Intervention $intervention)
+    {
+        return $this->interventions->removeElement($intervention);
+    }
+
+    /**
+     * Get interventions.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getInterventions()
+    {
+        return $this->interventions;
+    }
+
+    /**
+     * Set id.
+     *
+     * @param int $id
+     *
+     * @return PrestationBc
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
     }
 }

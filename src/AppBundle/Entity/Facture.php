@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\JoinColumn;
 
 /**
  * Facture
@@ -36,17 +37,21 @@ class Facture
     private $date;
 
     /**
-<<<<<<< HEAD
      * @ORM\Column(type="float",nullable=false)
      */
     private $tva;
 
     /**
-=======
->>>>>>> c4c86e1f6dacdb75bcb034443d12a868987ff8f1
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Bc")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Bc",inversedBy="factures")
+     * @JoinColumn(name="bc_id", referencedColumnName="id")
      */
     private $bc;
+
+    /** 
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Intervention",mappedBy="facture") 
+     */
+    private $interventions; 
+
 
     /**
      * Get id
@@ -166,5 +171,48 @@ class Facture
     public function getTva()
     {
         return $this->tva;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->interventions = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add intervention.
+     *
+     * @param \AppBundle\Entity\Intervention $intervention
+     *
+     * @return Facture
+     */
+    public function addIntervention(\AppBundle\Entity\Intervention $intervention)
+    {
+        $this->interventions[] = $intervention;
+
+        return $this;
+    }
+
+    /**
+     * Remove intervention.
+     *
+     * @param \AppBundle\Entity\Intervention $intervention
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeIntervention(\AppBundle\Entity\Intervention $intervention)
+    {
+        return $this->interventions->removeElement($intervention);
+    }
+
+    /**
+     * Get interventions.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getInterventions()
+    {
+        return $this->interventions;
     }
 }

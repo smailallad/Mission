@@ -35,12 +35,12 @@ class UpdateCommand extends ContainerAwareCommand
         if ($input->getOption('option')) {
             // ...
         }
-        $dbs = new \PDO("mysql:host=localhost;dbname=dbrtie;charset=utf8", "smil", "ads2160396");
+        //$dbs = new \PDO("mysql:host=localhost;dbname=dbrtie;charset=utf8", "smil", "ads2160396");
         $dbd = new \PDO("mysql:host=localhost;dbname=rtie3.4;charset=utf8", "smil", "ads2160396");
-        $dbv = new \PDO("mysql:host=localhost;dbname=dbvehicule;charset=utf8", "smil", "ads2160396");
-        $manager = $this->getContainer()->get('doctrine')->getManager();
-        $repository = $this->getContainer()->get('doctrine');
-        $encoder = $this->getContainer()->get('security.password_encoder');
+        //$dbv = new \PDO("mysql:host=localhost;dbname=dbvehicule;charset=utf8", "smil", "ads2160396");
+        //$manager = $this->getContainer()->get('doctrine')->getManager();
+        //$repository = $this->getContainer()->get('doctrine');
+        //$encoder = $this->getContainer()->get('security.password_encoder');
 
         //#############################################################################################################"
         // DROP FOREIGN KEY
@@ -72,7 +72,7 @@ class UpdateCommand extends ContainerAwareCommand
             }
             $output->writeln('<comment>'.str_pad('#',100-$k,'#').' 100%.</comment>');  
         }
-        exit;
+        
         //#############################################################################################################"
         // Schema Update , ADD CONSTRAINT puis CHANGE ID
         //#############################################################################################################"

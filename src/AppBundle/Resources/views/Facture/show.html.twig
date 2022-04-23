@@ -6,7 +6,11 @@
     <div class="col-md-2">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h4> Facture </h4>
+                <h4> 
+                    <a href="{{ path('excel_facture',{facture : facture.id | Mycrypt })}}" class="ml-2 mr-4"><img src="{{ asset('icones/Excel-icon.png') }}" title="Exporter vers excel.">
+                </a>
+                    Facture 
+                </h4>
             </div>
             <div class="panel-body">
                 <table class="table table-hover record_properties">

@@ -96,7 +96,8 @@ class Intervention
     private $vehicule;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Facture")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Facture",inversedBy="interventions")
+     * @JoinColumn(name="facture_id",referencedColumnName="id")
      */
     private $facture;
     /**

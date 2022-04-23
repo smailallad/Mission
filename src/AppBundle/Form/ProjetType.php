@@ -33,6 +33,18 @@ class ProjetType extends AbstractType
                                 },
                 )
             )
+            ->add('clientFacturation',EntityType::class, array(
+                'label'         => 'Client facturation',
+                'class'         => 'AppBundle:ClientFacturation',
+                'choice_name'   => 'nom',
+                'multiple'      => false,
+                'placeholder'   => '-Choisir un client-',
+                'query_builder' => function(\Doctrine\ORM\EntityRepository $c)
+                                {   return $c->createQueryBuilder('c')
+                                            ;
+                                },
+                )
+            )
             ->add('date',DateType::Class, array(
                 'label' =>'Date creation projet',
                 'widget' => 'single_text',

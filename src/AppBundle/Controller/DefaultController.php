@@ -323,7 +323,7 @@ class DefaultController extends Controller
            ->setCellValue('B2', 'world!');
         $objPHPExcel->getActiveSheet()->setTitle('Simple');
         // Set active sheet index to the first sheet, so Excel opens this as the first sheet
-        $objPHPExcel->setActiveSheetIndex(0);
+        //$objPHPExcel->setActiveSheetIndex(0);
 
         // create the writer
         $writer = $this->get('phpexcel')->createWriter($objPHPExcel, 'Excel2007');

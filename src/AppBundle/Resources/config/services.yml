@@ -1,4 +1,6 @@
 services:
+    app_bundle.my_service:
+        class: AppBundle\Service\MyService
     my.cryptage:
         class: AppBundle\Service\Cryptage
         arguments: ['%secret_key%','%secret_iv%']

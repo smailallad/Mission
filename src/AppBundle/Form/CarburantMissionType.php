@@ -29,7 +29,7 @@ class CarburantMissionType extends AbstractType
                     'choice_name'   => 'nom',
                     'label'         => 'Vehicule',
                     'multiple'      => false,
-                    'placeholder'   => '-Choisir le carburant-',
+                    'placeholder'   => '-Choisir un véhicule-',
                     'query_builder' => function(\Doctrine\ORM\EntityRepository $v)
                                     {   return $v   ->createQueryBuilder('v')
                                                     ->where('v.active = 1')

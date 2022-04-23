@@ -42,6 +42,13 @@ class Projet
     private $client;
 
     /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\ClientFacturation")
+     * @Assert\NotNull(message = "Entrer une valeur.")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $clientFacturation;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(type="datetime",nullable=true)
@@ -147,5 +154,33 @@ class Projet
     public function getDate()
     {
         return $this->date;
+    }
+
+   
+
+
+
+    /**
+     * Set clientFacturation.
+     *
+     * @param \AppBundle\Entity\ClientFacturation $clientFacturation
+     *
+     * @return Projet
+     */
+    public function setClientFacturation(\AppBundle\Entity\ClientFacturation $clientFacturation)
+    {
+        $this->clientFacturation = $clientFacturation;
+
+        return $this;
+    }
+
+    /**
+     * Get clientFacturation.
+     *
+     * @return \AppBundle\Entity\ClientFacturation
+     */
+    public function getClientFacturation()
+    {
+        return $this->clientFacturation;
     }
 }

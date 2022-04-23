@@ -19,7 +19,7 @@ class UserController extends Controller
      /**
      * @Route("/users", name="admin_users")
      */
-    public function indexAction(Request $request)
+    public function indexAction()
     {
         $manager = $this->getDoctrine()->getManager();
         $form = $this->createForm(UserFilterType::Class);
@@ -34,6 +34,38 @@ class UserController extends Controller
             'paginator' => $paginator,
         ));
     }
+
+    /**
+     * @Route("/users/email", name="admin_correction_email")
+     */
+    public function correctionEmailAction()
+    {
+        $manager = $this->getDoctrine()->getManager();
+        
+        $users = $manager->getRepository('AppBundle:User')->findAll();
+        foreach ($users as $user) {
+            $nom = $user->getNom();
+            $nom = explode(" ",$nom);
+            $newEmail = "";
+            for ($i=(count($nom)-1); $i >=0; $i--) { 
+                if ($newEmail == "" )
+                {
+                    $newEmail = strtolower($nom[$i]);
+                }else{
+                    $newEmail = $newEmail . "." . strtolower($nom[$i]);
+                }
+            }
+            $newEmail = $newEmail . "@rtie-dz.com";
+            $user ->setEmail($newEmail);
+            $manager->persist($user);
+            $manager->flush();
+
+        }
+        
+        
+        return $this->redirect($this->generateUrl('admin_users'));
+    }
+
     /**
     * @Route("/{id}/show",name="admin_users_show")
     */

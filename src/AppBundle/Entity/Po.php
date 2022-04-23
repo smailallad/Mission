@@ -3,7 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
+
 /**
  * po
  *
@@ -128,4 +128,18 @@ class Po
         return $this->active;
     }
 
+
+    /**
+     * Set id.
+     *
+     * @param int $id
+     *
+     * @return Po
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 }

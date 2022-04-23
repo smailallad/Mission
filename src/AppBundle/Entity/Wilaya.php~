@@ -24,6 +24,17 @@ class Wilaya
      */
     private $id;
 
+     /**
+     * @var string
+     *
+     * @ORM\Column(name="code", type="string", length=2)
+     * @Assert\Regex(
+     *     pattern="/\[0-5]{1}[0-9]{1}/",
+     *     message="Code wilaya incorecte"
+     * )
+     * @Groups({"site_json"})  
+     */
+    private $code;
     /**
      * @var string
      *
@@ -133,5 +144,19 @@ class Wilaya
     public function getZone()
     {
         return $this->zone;
+    }
+
+    /**
+     * Set id.
+     *
+     * @param int $id
+     *
+     * @return Wilaya
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
     }
 }

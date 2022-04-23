@@ -10,4 +10,11 @@ namespace AppBundle\Repository;
  */
 class WilayaRepository extends \Doctrine\ORM\EntityRepository
 {
+    public function getWilayas()
+    {
+        $qb = $this->createQueryBuilder('w')
+                    ->join('w.zone','z')
+        ;
+        return $qb;
+    }
 }

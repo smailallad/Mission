@@ -4,6 +4,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 
 /**
@@ -41,7 +42,22 @@ class Depense
      * @ORM\JoinColumn(nullable=false)
      */
     private $familleDepense;
-
+    
+    /**
+    * @Assert\Callback
+    */
+    public function validate(ExecutionContextInterface $context, $payload)
+    {
+        $nom = $this->getNom();
+        if (in_array(strtoupper($nom),["GAS OIL","GAS-OIL","ESSENCE","ESSENCES","ESSANCE","ESSANCES","SANS PLAN","CARBURANT","CARBURANTS"])) 
+        {
+            $context->buildViolation('Nom invalide, valeur doit etre differente de : ' . $nom)
+            ->atPath('nom')
+            ->addViolation();
+        }
+        
+             
+    }
 
     /**
      * Get id

@@ -192,4 +192,18 @@ class Site
     {
         return $this->client;
     }
+
+    /**
+     * Set id.
+     *
+     * @param int $id
+     *
+     * @return Site
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 }

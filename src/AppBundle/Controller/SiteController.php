@@ -31,10 +31,10 @@ class SiteController extends Controller
             return $response;
         }
         $qb = $manager
-            ->getRepository('AppBundle:Site')
+            ->getRepository('AppBundle:Site') 
             ->createQueryBuilder('s');
         $paginator = $this->filter($form, $qb, 'site');
-        $forme = $form->createView();
+        
         return $this->render('@App/Site/index.html.twig', [
             'form' => $form->createView(),
             'paginator' => $paginator,
@@ -74,7 +74,7 @@ class SiteController extends Controller
         $id         = $cryptage->my_decrypt($id);
         $site       = $this->getDoctrine()->getRepository('AppBundle:Site')->find($id);
         $intervention = $this->getDoctrine()->getRepository('AppBundle:Intervention')->findOneBySite($site);
-        //dump($intervention);
+        // si le site est deja figuré dans une intervention interdire de modifier la zone, la wilaya et le client
         if ($intervention != null)
         {
             $editForm   = $this->createForm(Site1Type::class, $site, [
@@ -282,12 +282,10 @@ class SiteController extends Controller
         }
     }
     protected function filter(FormInterface $form, QueryBuilder $qb, $name)
-    {
+    {dump($qb->getDQL());
         if (!is_null($values = $this->getFilter($name))) {
             if ($form->submit($values)->isValid()) {
-                $this->get(
-                    'lexik_form_filter.query_builder_updater'
-                )->addFilterConditions($form, $qb);
+                $this->get('lexik_form_filter.query_builder_updater')->addFilterConditions($form, $qb);
             }
         }
         // possible sorting
@@ -299,11 +297,7 @@ class SiteController extends Controller
         }
         $this->addQueryBuilderSort($qb, $name);
         $request = $this->container->get('request_stack')->getCurrentRequest();
-        return $this->get('knp_paginator')->paginate(
-            $qb,
-            $request->query->get('page', 1),
-            $nbr_pages
-        );
+        return $this->get('knp_paginator')->paginate($qb,$request->query->get('page', 1),$nbr_pages);
     }
     protected function getFilter($name)
     {

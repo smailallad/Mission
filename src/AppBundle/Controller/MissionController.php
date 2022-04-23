@@ -1474,7 +1474,7 @@ class MissionController extends Controller
         //    $destination = $destinations['destination'];
         //}
         $objPHPExcel = $this->get('phpexcel')->createPHPExcelObject();
-        $objPHPExcel->getDefaultStyle()->getFont()->setName('Bodoni MT');
+        //$objPHPExcel->getDefaultStyle()->getFont()->setName('Bodoni MT');
         
         $objPHPExcel->getProperties()->setCreator($user->getNom())
             ->setLastModifiedBy("SNC RTIE")
@@ -1486,8 +1486,24 @@ class MissionController extends Controller
         //$dateTimeNow = time();
         $dateTimeNow = date('d/m/Y');
 
-
         $feuil = $objPHPExcel->getActiveSheet();
+        $feuil->getDefaultStyle()
+                ->applyFromArray(array(
+                    'font'=>array(
+                        'name' => 'Arial',
+                        'size' => 12,
+                        //'bold' => true
+                    ),
+                    'alignment'=>array(
+                        //'horizontal'=>\PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                        'vertical'  =>\PHPExcel_Style_Alignment::VERTICAL_CENTER,
+                    ),
+                    //'borders' => array(
+                    //    'allborders'=>array(
+                    //        'style' => \PHPExcel_Style_Border::BORDER_DASHDOT
+                    //    )
+                    //)
+                ));
         $feuil->setCellValue('A2', 'Note de frais');
         $feuil->setCellValue('A3', 'Employe');
         //$feuil->setCellValue('A4', 'Desitination');
@@ -1754,7 +1770,7 @@ class MissionController extends Controller
             $destination = $destinations['destination'];
         }
         $objPHPExcel = $this->get('phpexcel')->createPHPExcelObject();
-        $objPHPExcel->getDefaultStyle()->getFont()->setName('Bodoni MT');
+        //$objPHPExcel->getDefaultStyle()->getFont()->setName('Bodoni MT');
         
         $objPHPExcel->getProperties()->setCreator($user->getNom())
             ->setLastModifiedBy("SNC RTIE")
@@ -1768,6 +1784,23 @@ class MissionController extends Controller
 
 
         $feuil = $objPHPExcel->getActiveSheet();
+        $feuil->getDefaultStyle()
+                ->applyFromArray(array(
+                    'font'=>array(
+                        'name' => 'Arial',
+                        'size' => 12,
+                        //'bold' => true
+                    ),
+                    'alignment'=>array(
+                        //'horizontal'=>\PHPExcel_Style_Alignment::HORIZONTAL_CENTER,
+                        'vertical'  =>\PHPExcel_Style_Alignment::VERTICAL_CENTER,
+                    ),
+                    //'borders' => array(
+                    //    'allborders'=>array(
+                    //        'style' => \PHPExcel_Style_Border::BORDER_DASHDOT
+                    //    )
+                    //)
+                ));
         $feuil->setCellValue('A2', 'Mission');
         $feuil->setCellValue('A3', 'Chef mission');
         $feuil->setCellValue('A4', 'Desitination');

@@ -58,6 +58,9 @@
                                     <li><a href="{{ path('fonction') }}">Fonctions</a></li>
                                     <li><a href="{{ path('employe_index')}}">Employés</a></li>
                                     {% endif %}
+                                    {% if is_granted('ROLE_SUPER_COMPTABLE') %}
+                                    <li><a href="{{ path('wilaya_index')}}">Wilaya</a></li>
+                                    {% endif %}
                                     {% if is_granted('ROLE_BUREAU') %}
                                     <li><a href="{{ path('site')}}">Sites</a></li>
                                     {% endif %}

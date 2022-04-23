@@ -56,7 +56,8 @@ class Bc
     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Po")
     */
     private $po; 
-     /**
+    
+    /**
     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Projet")
     * @Assert\NotNull(message = "Entrer une valeur du projet.")
     * @ORM\JoinColumn(nullable=false)
@@ -67,6 +68,11 @@ class Bc
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\PrestationBc",mappedBy="bc")
      */
     private $prestationBcs;
+
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Facture",mappedBy="bc") 
+     */
+    private $factures;
     
 
     public function __toString()
@@ -331,5 +337,41 @@ class Bc
     public function getPrestationBcs()
     {
         return $this->prestationBcs;
+    }
+
+    /**
+     * Add facture.
+     *
+     * @param \AppBundle\Entity\facture $facture
+     *
+     * @return Bc
+     */
+    public function addFacture(\AppBundle\Entity\facture $facture)
+    {
+        $this->factures[] = $facture;
+
+        return $this;
+    }
+
+    /**
+     * Remove facture.
+     *
+     * @param \AppBundle\Entity\facture $facture
+     *
+     * @return boolean TRUE if this collection contained the specified element, FALSE otherwise.
+     */
+    public function removeFacture(\AppBundle\Entity\facture $facture)
+    {
+        return $this->factures->removeElement($facture);
+    }
+
+    /**
+     * Get factures.
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getFactures()
+    {
+        return $this->factures;
     }
 }
