@@ -5,9 +5,9 @@ services:
         class: AppBundle\Service\Cryptage
         arguments: ['%secret_key%','%secret_iv%']
 
-    AppBundle\twig\mycrypt_extension:
-        ressource : 'AppBundle/Twig/ExtensionMycryptExtension'
-        tag: ['twig.extension']
+    #AppBundle\twig\mycrypt_extension:
+    #    ressource : 'AppBundle/Twig/ExtensionMycryptExtension'
+    #    tag: ['twig.extension']
 
     app.listener.doctrineevent:
         class: AppBundle\Events\InterventionPostEvent

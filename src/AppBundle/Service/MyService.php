@@ -12,7 +12,7 @@
 */
 namespace AppBundle\Service;
 
-use Doctrine\ORM\Query\AST\Functions\UpperFunction;
+//use Doctrine\ORM\Query\AST\Functions\UpperFunction;
 
 Class MyService{
 

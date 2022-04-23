@@ -4,7 +4,9 @@ namespace AppBundle\Twig\Extension;
 use Twig\TwigFilter;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class MycryptExtension extends \Twig_Extension
+//class MycryptExtension extends \Twig_Extension
+
+class MycryptExtension extends \Twig\Extension\AbstractExtension
 {
     private $container;
 
