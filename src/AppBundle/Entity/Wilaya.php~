@@ -19,7 +19,7 @@ class Wilaya
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * ORM\GeneratedValue(strategy="AUTO")
      * @Groups({"site_json"})  
      */
     private $id;
@@ -29,7 +29,7 @@ class Wilaya
      *
      * @ORM\Column(name="code", type="string", length=2)
      * @Assert\Regex(
-     *     pattern="/\[0-5]{1}[0-9]{1}/",
+     *     pattern="/[0-5]{1}+[0-9]{1}/",
      *     message="Code wilaya incorecte"
      * )
      * @Groups({"site_json"})  
@@ -158,5 +158,29 @@ class Wilaya
         $this->id = $id;
 
         return $this;
+    }
+
+    /**
+     * Set code.
+     *
+     * @param string $code
+     *
+     * @return Wilaya
+     */
+    public function setCode($code)
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
+    /**
+     * Get code.
+     *
+     * @return string
+     */
+    public function getCode()
+    {
+        return $this->code;
     }
 }

@@ -20,8 +20,8 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  * @UniqueEntity(fields={"username"},message="Valeur existe déjà sur la base de donnée.")
  * @UniqueEntity(fields={"nom"},message="Valeur existe déjà sur la base de donnée.")
  */
-//class User implements UserInterface
-class User implements AdvancedUserInterface
+class User implements UserInterface
+//class User implements AdvancedUserInterface
 
 { 
     

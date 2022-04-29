@@ -11,7 +11,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * Pointage
  *
- * @ORM\Table(name="pointageUser",
+ * @ORM\Table(name="pointage_user",
  * uniqueConstraints={
  *        @UniqueConstraint(name="unique_user_date", 
  *            columns={"user_id", "date"})

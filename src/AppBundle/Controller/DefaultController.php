@@ -300,6 +300,41 @@ class DefaultController extends Controller
     }
 
 
+    /**
+     * @Route("/lire/excel", name="lire_excel")
+     */
+    public function lireExcelAction()
+    {
+        //$objPHPExcel = $this->get('phpexcel')->createPHPExcelObject();
+        //dump(getcwd());
+        $objPHPExcel = \PHPExcel_IOFactory::load("Facture.xls");
+
+        //$excel = $objPHPExcel->load('Exemple14.xls');
+
+        $feuil = $objPHPExcel->getSheet(1);
+
+        $feuil->setCellValue('A50', 'MaitrePylos');
+
+        //**************************** */
+        // ENREGISTER LE FICHIER
+        //**************************** */
+
+        // create the writer
+        $writer = $this->get('phpexcel')->createWriter($objPHPExcel, 'Excel2007');
+        // create the response
+        $response = $this->get('phpexcel')->createStreamedResponse($writer);
+        // adding headers
+        $dispositionHeader = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            'Facture.xls'
+        );
+        $response->headers->set('Content-Type', 'text/vnd.ms-excel; charset=utf-8');
+        $response->headers->set('Pragma', 'public');
+        $response->headers->set('Cache-Control', 'maxage=1');
+        $response->headers->set('Content-Disposition', $dispositionHeader);
+
+        return $response; 
+    }
 
     /**
      * @Route("test_excel",name="test_excel")

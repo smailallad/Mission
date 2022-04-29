@@ -119,7 +119,7 @@ class GroupesController extends Controller
 
     public function updateAction(Groupes $groupes, Request $request)
     {
-        $editForm = $this->createForm(GroupsType::Class, $groupes, array(
+        $editForm = $this->createForm(GroupesType::Class, $groupes, array( 
             'action' => $this->generateUrl('admin_groups_update', array('id' => $groupes->getId())),
             'method' => 'PUT',
         ));
